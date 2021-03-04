@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>shiro入门理解 | 这是一个很酷的事</title><link rel="stylesheet" type="text/css" href="/blog_html/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/blog_html/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/blog_html/favicon.ico"><link rel="apple-touch-icon" href="/blog_html/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/blog_html/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">shiro入门理解</h1><a id="logo" href="/blog_html/.">这是一个很酷的事</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/blog_html/."><i class="fa fa-home"> 首页</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">shiro入门理解</h1><div class="post-meta">Jul 23, 2019<span> | </span><span class="category"><a href="/blog_html/categories/shiro/">shiro</a></span></div><div class="post-content"><h2 id="1-shiro架构简介查找"><a href="#1-shiro架构简介查找" class="headerlink" title="1.shiro架构简介查找"></a>1.shiro架构简介查找</h2><p>进入shiro官网<a href="http://shiro.apache.org/" target="_blank" rel="noopener">http://shiro.apache.org/</a></p>
+<p>点击 Get Started</p>
+<p>点击Architecture</p>
+<h2 id="2-什么是Apache-Shiro"><a href="#2-什么是Apache-Shiro" class="headerlink" title="2.什么是Apache Shiro"></a>2.什么是Apache Shiro</h2><p>Apache Shiro是一个功能强大且灵活的开源安全框架，可以清晰地处理身份验证，授权，企业会话管理和加密。</p>
+<p>Apache Shiro的首要目标是易于使用和理解。安全有时可能非常复杂，甚至是痛苦的，但事实并非如此。框架应尽可能掩盖复杂性，并提供简洁直观的API，以简化开发人员确保其应用程序安全的工作。</p>
+<p>以下是Apache Shiro可以做的一些事情：</p>
+<ul>
+<li>验证用户以验证其身份</li>
+<li>为用户执行访问控制，例如：<ul>
+<li>确定是否为用户分配了某个安全角色</li>
+<li>确定是否允许用户执行某些操作</li>
+</ul>
+</li>
+<li>在任何环境中使用Session API，即使没有Web容器或EJB容器也是如此。</li>
+<li>在身份验证，访问控制或会话生命周期内对事件做出反应。</li>
+<li>聚合用户安全数据的1个或多个数据源，并将其全部显示为单个复合用户“视图”。</li>
+<li>启用单点登录（SSO）功能</li>
+<li>无需登录即可为用户关联启用“记住我”服务<br>……<br>以及更多 - 全部集成到一个易于使用的内聚API中。</li>
+</ul>
+<p>Shiro尝试为所有应用程序环境实现这些目标 - 从最简单的命令行应用程序到最大的企业应用程序，而不会强制依赖其他第三方框架，容器或应用程序服务器。当然，该项目旨在尽可能地融入这些环境，但它可以在任何环境中开箱即用。</p>
+<p>##3.Apache Shiro功能</p>
+<p>Apache Shiro是一个具有许多功能的综合应用程序安全框架。下图显示了Shiro关注其能量的位置，此参考手册将以类似方式组织：</p>
+<p><img src="/blog_html/.com//ShiroFeatures.png" alt="ShiroFeatures"></p>
+<p>Shiro针对Shiro开发团队所称的“应用程序安全的四大基石” - 身份验证，授权，会话管理和加密：</p>
+<ul>
+<li><strong>身份验证：</strong>有时称为“登录”，这是证明用户是他们所说的人的行为。</li>
+<li><strong>授权：</strong>访问控制的过程，即确定“谁”可以访问“什么”。</li>
+<li><strong>会话管理：</strong>即使在非Web或EJB应用程序中，也可以管理特定于用户的会话。</li>
+<li><strong>密码学：</strong>使用加密算法保持数据安全，同时仍然易于使用。</li>
+</ul>
+<p>还有其他功能可以在不同的应用程序环境中支持和强化这些问题，尤其是：</p>
+<ul>
+<li>Web支持：Shiro的Web支持API可帮助轻松保护Web应用程序。</li>
+<li>缓存：缓存是Apache Shiro API中的第一层公民，可确保安全操作保持快速高效。</li>
+<li>并发：Apache Shiro支持具有并发功能的多线程应用程序。</li>
+<li>测试：存在测试支持以帮助您编写单元和集成测试，并确保您的代码按预期受到保护。</li>
+<li>“运行方式”：允许用户假定其他用户的身份（如果允许）的功能，有时在管理方案中很有用。</li>
+<li>“记住我”：记住用户在会话中的身份，因此他们只需要在必要时登录。</li>
+</ul>
+<h2 id="4-Apache-Shiro架构简述"><a href="#4-Apache-Shiro架构简述" class="headerlink" title="4.Apache Shiro架构简述"></a>4.Apache Shiro架构简述</h2><p>Apache Shiro的设计目标是通过直观和易用来简化应用程序安全性。Shiro的核心设计模拟了大多数人对应用程序安全性的看法 - 在某人（或某事）与应用程序交互的环境中。</p>
+<p>软件应用程序通常基于用户故事设计。也就是说，您通常会根据用户（或应该）与软件交互的方式设计用户界面或服务API。例如，您可能会说，“如果用户与我的应用程序交互，则会向他们显示一个按钮，他们可以单击该按钮查看其帐户信息。如果他们没有登录，我会显示一个注册按钮。“</p>
+<p>此示例语句指示应用程序主要是为满足用户要求和需求而编写的。即使“用户”是另一个软件系统而不是人类，您仍然会编写代码以反映基于当前与您的软件交互的人（或什么）的行为。</p>
+<p>Shiro在自己的设计中反映了这些概念。通过匹配软件开发人员已经很直观的内容，Apache Shiro在几乎任何应用程序中都保持直观且易于使用。</p>
+<h2 id="5-Apache-Shiro架构高级概述"><a href="#5-Apache-Shiro架构高级概述" class="headerlink" title="5.Apache Shiro架构高级概述"></a>5.Apache Shiro架构高级概述</h2><p>在最高概念层面，Shiro的架构有3个主要概念：和<code>Subject</code>，<code>SecurityManager</code>和<code>Realms</code>。下图是这些组件如何交互的高级概述，我们将在下面介绍每个概念：</p>
+<p><img src="/blog_html/.com//ShiroBasicArchitecture.png" alt="ShiroBasicArchitecture"></p>
+<ul>
+<li><p><strong>主题</strong>：正如我们在<a href="http://shiro.apache.org/tutorial.html" target="_blank" rel="noopener">教程中</a>提到的，<code>Subject</code>它本质上是当前正在执行的用户的特定于安全性的“视图”。虽然“用户”这个词通常意味着一个<code>Subject</code>人，但是它可以是一个人，但它也可以代表第三方服务，守护进程帐户，cron作业或任何类似的东西 - 基本上是当前与软件交互的任何东西。</p>
+<p><code>Subject</code>实例都被绑定（并要求）a <code>SecurityManager</code>。当您与a进行交互时<code>Subject</code>，这些交互会转换为特定于主题的交互<code>SecurityManager</code>。</p>
+</li>
+<li><p><strong>SecurityManager</strong>：它<code>SecurityManager</code>是Shiro架构的核心，充当一种“伞形”对象，协调其内部安全组件，共同形成一个对象图。但是，一旦为应用程序配置了SecurityManager及其内部对象图，通常会将其保留，应用程序开发人员几乎将所有时间花在<code>Subject</code>API上。</p>
+<p>我们稍后将<code>SecurityManager</code>详细讨论，但重要的是要意识到，当您与a进行交互时<code>Subject</code>，实际上是<code>SecurityManager</code>幕后操作可以完成所有<code>Subject</code>安全操作。这反映在上面的基本流程图中。</p>
+</li>
+<li><p><strong>领域</strong>：领域充当Shiro与应用程序安全数据之间的“桥梁”或“连接器”。当实际与安全相关数据（如用户帐户）进行交互以执行身份验证（登录）和授权（访问控制）时，Shiro会从为应用程序配置的一个或多个领域中查找许多这些内容。</p>
+<p>从这个意义上讲，Realm本质上是一个特定于安全性的<a href="https://en.wikipedia.org/wiki/Data_access_object" target="_blank" rel="noopener">DAO</a>：它封装了数据源的连接细节，并根据需要使相关数据可用于Shiro。配置Shiro时，必须至少指定一个Realm用于身份验证和/或授权。所述<code>SecurityManager</code>可与多个境界被配置，但至少有一个是必需的。</p>
+<p>Shiro提供了开箱即用的Realms，可以连接到许多安全数据源（也称为目录），如LDAP，关系数据库（JDBC），文本配置源（如INI和属性文件等）。如果默认域不符合您的需要，您可以插入自己的Realm实现来表示自定义数据源。</p>
+<p>与其他内部组件一样，Shiro <code>SecurityManager</code>管理如何使用Realms获取要表示为<code>Subject</code>实例的安全性和身份数据。</p>
+</li>
+</ul>
+<p>##6.Apache Shiro的详细的架构</p>
+<p>下图显示了Shiro的核心架构概念，后面是每个概述的简短摘要：</p>
+<p><img src="/blog_html/.com//ShiroArchitecture.png" alt="ShiroArchitecture"></p>
+<ul>
+<li><strong>Subject</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/subject/Subject.html" target="_blank" rel="noopener"><code>org.apache.shiro.subject.Subject</code></a>）<br>当前与软件交互的实体（用户，第三方服务，cron作业等）的特定于安全性的“视图”。</li>
+<li><strong>SecurityManager</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/mgt/SecurityManager.html" target="_blank" rel="noopener">org.apache.shiro.mgt.SecurityManager</a>）<br>如上所述，这<code>SecurityManager</code>是Shiro建筑的核心。它主要是一个“伞形”对象，协调其托管组件，以确保它们一起平稳运行。它还管理Shiro对每个应用程序用户的视图，因此它知道如何对每个用户执行安全操作。</li>
+<li><strong>认证器</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/authc/Authenticator.html" target="_blank" rel="noopener">org.apache.shiro.authc.Authenticator</a>）<br>的<code>Authenticator</code>是，负责执行和反应以验证（注册）用户企图的组件。当用户尝试登录时，该逻辑由执行<code>Authenticator</code>。该<code>Authenticator</code>知道如何与一个或多个协调<code>Realms</code>存储有关用户/帐户信息。从这些数据中获取的数据<code>Realms</code>用于验证用户的身份，以保证用户确实是他们所说的人。<ul>
+<li><strong>身份验证策略</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/authc/pam/AuthenticationStrategy.html" target="_blank" rel="noopener">org.apache.shiro.authc.pam.AuthenticationStrategy</a>）<br>如果<code>Realm</code>配置了多个，<code>AuthenticationStrategy</code>则将协调领域以确定身份验证尝试成功或失败的条件（例如，如果一个领域成功但其他领域失败尝试是否成功？必须所有领域成功吗？只有第一个？）。</li>
+</ul>
+</li>
+<li><strong>授权器</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/authz/Authorizer.html" target="_blank" rel="noopener">org.apache.shiro.authz.Authorizer</a>）<br>的<code>Authorizer</code>是部件负责确定用户在该应用程序的访问控制。这种机制最终会说明是否允许用户做某事。与此类似<code>Authenticator</code>，它<code>Authorizer</code>也知道如何协调多个后端数据源以访问角色和权限信息。在<code>Authorizer</code>使用该信息来确定到底是否允许用户执行特定的操作。</li>
+<li><strong>SessionManager</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/session/mgt/SessionManager.html" target="_blank" rel="noopener">org.apache.shiro.session.mgt.SessionManager</a>）<br>将<code>SessionManager</code>知道如何创建和管理用户<code>Session</code>生命周期，提供在所有环境中的用户强大的会话体验。这是安全框架领域的一项独特功能 - 即使没有可用的Web / Servlet或EJB容器，Shiro也能够在任何环境中本地管理用户Sessions。默认情况下，Shiro将使用现有的会话机制（例如Servlet容器），但如果没有，例如在独立应用程序或非Web环境中，它将使用其内置的企业会话管理提供相同的编程经验。的<code>SessionDAO</code>存在允许任何数据源被用来坚持的会议。<ul>
+<li><strong>SessionDAO</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/session/mgt/eis/SessionDAO.html" target="_blank" rel="noopener">org.apache.shiro.session.mgt.eis.SessionDAO</a>）<br>的<code>SessionDAO</code>执行<code>Session</code>代表的持久性（CRUD）操作<code>SessionManager</code>。这允许将任何数据存储插入会话管理基础结构。</li>
+</ul>
+</li>
+<li><strong>CacheManager的</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/cache/CacheManager.html" target="_blank" rel="noopener">org.apache.shiro.cache.CacheManager</a>）<br>的<code>CacheManager</code>创建和管理<code>Cache</code>其他四郎组件使用实例的生命周期。由于Shiro可以访问许多后端数据源以进行身份​​验证，授权和会话管理，因此缓存一直是框架中的一流架构功能，可在使用这些数据源时提高性能。任何现代开源和/或企业缓存产品都可以插入Shiro，以提供快速有效的用户体验。</li>
+<li><strong>密码学</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/crypto/package-summary.html" target="_blank" rel="noopener">org.apache.shiro.crypto。*</a>）<br>密码学是企业安全框架的自然补充。Shiro的<code>crypto</code>软件包包含易于使用和理解的密码密码，哈希（aka摘要）和不同编解码器实现的表示。该软件包中的所有类都经过精心设计，易于使用且易于理解。使用Java本机加密支持的任何人都知道它可能是一个具有挑战性的驯服动物。Shiro的加密API简化了复杂的Java机制，使密码学易于用于普通的凡人。</li>
+<li><strong>领域</strong>（<a href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/realm/Realm.html" target="_blank" rel="noopener">org.apache.shiro.realm.Realm</a>）<br>如上所述，Realms充当Shiro与应用程序安全数据之间的“桥接”或“连接器”。当实际与安全相关数据（如用户帐户）进行交互以执行身份验证（登录）和授权（访问控制）时，Shiro会从为应用程序配置的一个或多个领域中查找许多这些内容。您可以根据<code>Realms</code>需要配置任意数量（通常每个数据源一个），Shiro将根据需要进行身份验证和授权协调。</li>
+</ul>
+<p>##7.Apache Shiro的SecurityManager</p>
+<p>因为Shiro的API鼓励采用一种<code>Subject</code>中心编程方法，所以大多数应用程序开发人员很少（如果有的话）<code>SecurityManager</code>直接与之交互（框架开发人员有时可能会发现它很有用）。即便如此，了解<code>SecurityManager</code>功能仍然很重要，尤其是在为应用程序配置功能时。</p>
+<p>SecurityManager的设计:</p>
+<p>如前所述，应用程序<code>SecurityManager</code>执行安全操作并管理<em>所有</em>应用程序用户的状态。在Shiro的默认<code>SecurityManager</code>实现中，这包括：</p>
+<ul>
+<li>认证</li>
+<li>授权</li>
+<li>会话管理</li>
+<li>缓存管理</li>
+<li><a href="http://shiro.apache.org/realm.html" target="_blank" rel="noopener">域</a>协调</li>
+<li>事件传播</li>
+<li>“记住我”服务</li>
+<li>主题创作</li>
+<li>退出等等。</li>
+</ul>
+<p>但是，这是尝试在单个组件中管理的许多功能。而且，如果将所有内容集中到单个实现类中，那么使这些内容变得灵活且可自定义将非常困难。</p>
+<p>为了简化配置并实现灵活的配置/可插拔性，Shiro的实现都是高度模块化的设计 - 实际上是模块化的，SecurityManager实现（及其类层次结构）根本不起作用。相反，这些<code>SecurityManager</code>实现主要充当轻量级“容器”组件，几乎将所有行为委托给嵌套/包装组件。这种“包装”设计反映在上面的详细架构图中。</p>
+<p>当组件实际执行逻辑时，<code>SecurityManager</code>实现知道如何以及何时协调组件以获得正确的行为。</p>
+<p>的<code>SecurityManager</code>实现方式和组件也JavaBeans的兼容，它允许（或配置机构）能够容易地通过标准的JavaBeans存取/ mutator方法定制可插组件（获取<em> /组</em>）。这意味着Shiro的架构模块化可以转化为非常容易的自定义行为配置。</p>
+</div><div class="tags"><a href="/blog_html/tags/shiro/">shiro</a></div><div class="post-nav"><a class="pre" href="/blog_html/2019/07/23/markdown文件使用图片/">markdown文件使用图片</a><a class="next" href="/blog_html/2019/07/18/java/CAS compare and swap/">CAS compare and swap</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/arthas/">arthas</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/cmder/">cmder</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/markdown/">markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/maven/">maven</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/mysql/">mysql</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/mysql/sql/">sql</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/shiro/">shiro</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/spring/">spring</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/spring/ioc/">ioc</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/spring-cloud/">spring_cloud</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/负载均衡/">负载均衡</a></li><li class="category-list-item"><a class="category-list-link" href="/blog_html/categories/转载/">转载</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/blog_html/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/blog_html/tags/maven/" style="font-size: 15px;">maven</a> <a href="/blog_html/tags/mvnw/" style="font-size: 15px;">mvnw</a> <a href="/blog_html/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/blog_html/tags/负载均衡/" style="font-size: 15px;">负载均衡</a> <a href="/blog_html/tags/shiro/" style="font-size: 15px;">shiro</a> <a href="/blog_html/tags/arthas/" style="font-size: 15px;">arthas</a> <a href="/blog_html/tags/git/" style="font-size: 15px;">git</a> <a href="/blog_html/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/blog_html/tags/CAS/" style="font-size: 15px;">CAS</a> <a href="/blog_html/tags/swap/" style="font-size: 15px;">swap</a> <a href="/blog_html/tags/linux/" style="font-size: 15px;">linux</a> <a href="/blog_html/tags/markdown/" style="font-size: 15px;">markdown</a> <a href="/blog_html/tags/cat/" style="font-size: 15px;">cat</a> <a href="/blog_html/tags/chown/" style="font-size: 15px;">chown</a> <a href="/blog_html/tags/tail/" style="font-size: 15px;">tail</a> <a href="/blog_html/tags/nginx/" style="font-size: 15px;">nginx</a> <a href="/blog_html/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/blog_html/tags/sql/" style="font-size: 15px;">sql</a> <a href="/blog_html/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog_html/tags/ioc/" style="font-size: 15px;">ioc</a> <a href="/blog_html/tags/spring-data-mongo/" style="font-size: 15px;">spring data mongo</a> <a href="/blog_html/tags/spring-cloud/" style="font-size: 15px;">spring_cloud</a> <a href="/blog_html/tags/spring-cloud-eureka/" style="font-size: 15px;">spring_cloud_eureka</a> <a href="/blog_html/tags/转载/" style="font-size: 15px;">转载</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/blog_html/2021/03/09/spring/spring data mongo的子对象id问题/">spring data mongo的子对象id问题</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/08/19/git/git stash 不怕打扰，临时修改bug/">git stash</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/07/15/spring_cloud/spring_cloud_eureka下线与上线/">spring_cloud_eureka下线与上线</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/06/08/mysql/mysql常用sql/">mysql常用sql</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/05/12/linux/linux的chown/">linux的chown命令</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/05/12/spring_cloud/spring_cloud_eureka删除无效服务/">spring_cloud_eureka删除无效服务</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/04/07/git/git团队开发禁用内容/">git团队开发禁用内容</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/04/07/git/git commit/">git commit</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/04/07/git/git rebase/">git rebase</a></li><li class="post-list-item"><a class="post-list-link" href="/blog_html/2020/04/07/git/暂存区与工作区与head/">暂存区与工作区与head</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/blog_html/." rel="nofollow">这是一个很酷的事.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho. <br></a><a rel="nofollow" target="_Blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"> 京ICP备18028493号</a><div style="text-align:center"><img src="/img/网站图案编号图标.png" style="display:inline-block;"> <p style="display:inline-block;color:#939393;">京公网安备 11010502035713号</p>	</div></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/blog_html/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/blog_html/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/blog_html/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/blog_html/js/smartresize.js?v=0.0.0"></script></div></body></html>
