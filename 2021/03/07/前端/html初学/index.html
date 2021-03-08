@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>html | 这是一个很酷的事</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">html</h1><a id="logo" href="/.">这是一个很酷的事</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">html</h1><div class="post-meta">Mar 7, 2021<span> | </span><span class="category"><a href="/categories/html/">html</a><a href="/categories/html/前端/">前端</a></span></div><div class="post-content"><h2 id="1-目标"><a href="#1-目标" class="headerlink" title="1.目标"></a>1.目标</h2><p>分析网页的基本组成</p>
+<p>独立开发一个静态网页</p>
+<h2 id="2-html和css在网页中扮演的角色"><a href="#2-html和css在网页中扮演的角色" class="headerlink" title="2. html和css在网页中扮演的角色"></a>2. html和css在网页中扮演的角色</h2><p>网页的基本构成：html + css + javaScript</p>
+<p>html在网页中的作用：定义页面结构，定义有什么</p>
+<p>css在网页中的作用：修饰页面结构和样式</p>
+<p>javaScript在网页中的作用：定义一些网页中的交互</p>
+<p>怎么执行html和css的代码：浏览器执行</p>
+<p>浏览器：外壳 +内核</p>
+<p>有独立内核的浏览器：IE(trident)、chrome(webkit/blink)、sarari(webkit)、firefox(gecko)、opera(presto/blink)</p>
+<h2 id="3-开发环境"><a href="#3-开发环境" class="headerlink" title="3.开发环境"></a>3.开发环境</h2><p>vscode</p>
+<h2 id="4-术语"><a href="#4-术语" class="headerlink" title="4.术语"></a>4.术语</h2><p>web:互联网，用户看到的页面</p>
+<p>w3c:万维网联盟(非营利性组织)、制定web技术领域标准的组织</p>
+<p>MDN：mozilla development network (开发者社区)</p>
+<h2 id="5-html语法"><a href="#5-html语法" class="headerlink" title="5.html语法"></a>5.html语法</h2><p>html中的最小单位：element(元素、标签)</p>
+<p>元素由哪几部分组成：起始标签(begin tag) + 元素内容(可选) + 元素属性(可选部分) + 结束标签(end tag)</p>
+<p>元素属性：全局属性 + 局部属性(某个元素特有的属性)</p>
+<p>注释：描述你的代码的作用</p>
+<h2 id="6-html中的语义化"><a href="#6-html中的语义化" class="headerlink" title="6.html中的语义化"></a>6.html中的语义化</h2><p>什么是语义化：每个html元素都有其具体的含义(标题、段落、超链接、图片)</p>
+<p>为什么需要语义化：</p>
+<p>​    利于seo(搜索引擎优化)(每隔一段时间，搜索引擎会在互联网中抓取页面的源代码)</p>
+<p>​    方便浏览器去理解网页的结构(解释)</p>
+<h2 id="7-html中的文本元素"><a href="#7-html中的文本元素" class="headerlink" title="7.html中的文本元素"></a>7.html中的文本元素</h2><p>标题元素: h1~ h6</p>
+<p>段落元素：p</p>
+<p>span元素：没有任何语义；仅作为设置样式使用</p>
+<p>pre元素(预格式化文本元素)：空白折叠(源代码中连续的空白字符(空格、换行、制表(tab缩进)))会被折叠成一个空格</p>
+<h2 id="8-a元素常见的使用方式"><a href="#8-a元素常见的使用方式" class="headerlink" title="8.a元素常见的使用方式"></a>8.a元素常见的使用方式</h2><p>作用：</p>
+<p>​    超链接：从这个页面跳转到另一个页面的路径</p>
+<p>​    锚点：用于跳转到页面的指定位置</p>
+<h2 id="9-如何书写一个正确的路径"><a href="#9-如何书写一个正确的路径" class="headerlink" title="9.如何书写一个正确的路径"></a>9.如何书写一个正确的路径</h2><p>路径：</p>
+<p>​    根据资源的类型判断，一般站外资源用绝对路径，站内资源用相对路径</p>
+<p>绝对路径：</p>
+<p>​    书写格式：协议名://主机名:端口/路径</p>
+<p>​    中文会被编码成unicode格式</p>
+<p>​    协议：http、https、file</p>
+<p>​    主机名：域名、IP地址</p>
+<p>​    端口：http会省略80、https会省略443</p>
+<p>​    <a href="https://www.baidu.com" target="_blank" rel="noopener">https://www.baidu.com</a></p>
+<p>​    file://Users/aa/Documents/\u4f60\u597d\u4e16\u754c.html</p>
+<p>相对路径：</p>
+<p>​    ./ 代表当前目录</p>
+<p>​    ../代表上一级目录</p>
+<h2 id="10-img标签及常见属性"><a href="#10-img标签及常见属性" class="headerlink" title="10.img标签及常见属性"></a>10.img标签及常见属性</h2><p>常用属性</p>
+<p>​    src : 图片路径</p>
+<p>​    alt: 图片加载失败或加载时显示的文字</p>
+<p>​    title: 悬浮在图片上面显示的文字</p>
+<p>点击图片跳转</p>
+<p>​    通过嵌套a标签</p>
+<h2 id="11-html中的列表元素"><a href="#11-html中的列表元素" class="headerlink" title="11. html中的列表元素"></a>11. html中的列表元素</h2><p>列表：</p>
+<p>​    有序列表(order list)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ol</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​    无序列表(unorder list)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​    定义列表(defined list)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dl</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dt</span>&gt;</span>人<span class="tag">&lt;/<span class="name">dt</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dd</span>&gt;</span>一种动物<span class="tag">&lt;/<span class="name">dd</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dl</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="12-html中用于布局的元素"><a href="#12-html中用于布局的元素" class="headerlink" title="12.html中用于布局的元素"></a>12.html中用于布局的元素</h2><p>没有任何语义，纯粹是用于布局的元素</p>
+<p>html 4 : div</p>
+<p>html 5: header footer article …</p>
+<h2 id="13-html表格元素"><a href="#13-html表格元素" class="headerlink" title="13.html表格元素"></a>13.html表格元素</h2><p>表格的基本结构</p>
+<p>​    由一行或者多行的单元格数据组成</p>
+<p>在html中怎么表示：</p>
+<p>​    table表示表格元素</p>
+<p>​    tr表示一行行的数据</p>
+<p>​        th表示数据中的表头部分</p>
+<p>​        td表示的正常的数据</p>
+<p>对表格数据进行分组</p>
+<p>​    thead元素包着表头部分</p>
+<p>​    tbody包着表格数据部分</p>
+<p>​    tfoot包着表格尾部部分</p>
+<p>table元素里常用的属性</p>
+<p>​    border(边框)</p>
+<p>​    cellspacing(单元格间距)</p>
+<p>​    cellpadding(单元格)</p>
+<p>​    colspan(用于合并列)</p>
+<p>​    rowspan(用于合并行)</p>
+<h2 id="14-表单元素"><a href="#14-表单元素" class="headerlink" title="14.表单元素"></a>14.表单元素</h2><p>使用场景：</p>
+<p>​    需要提交一些信息到服务端的时候(前后端联调过程中)</p>
+<p>核心元素：</p>
+<p>​    input(核心元素)</p>
+<p>​    label(提高交互体验的)</p>
+<p>​    select(下拉框)</p>
+<p>​    textarea(文本域)</p>
+<p>​    button(按钮)</p>
+<p>​    form</p>
+</div><div class="tags"><a href="/tags/前端/">前端</a><a href="/tags/html/">html</a></div><div class="post-nav"><a class="pre" href="/2021/03/09/spring/spring data mongo的子对象id问题/">spring data mongo的子对象id问题</a><a class="next" href="/2021/03/07/前端/css初学/">css初学</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/arthas/">arthas</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/cmder/">cmder</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/css/html/">html</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/css/html/前端/">前端</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/前端/">前端</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/前端/">前端</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/markdown/">markdown</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/maven/">maven</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/sql/">sql</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/shiro/">shiro</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/spring/ioc/">ioc</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring-cloud/">spring_cloud</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/负载均衡/">负载均衡</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/转载/">转载</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/chown/" style="font-size: 15px;">chown</a> <a href="/tags/maven/" style="font-size: 15px;">maven</a> <a href="/tags/mvnw/" style="font-size: 15px;">mvnw</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/负载均衡/" style="font-size: 15px;">负载均衡</a> <a href="/tags/shiro/" style="font-size: 15px;">shiro</a> <a href="/tags/arthas/" style="font-size: 15px;">arthas</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/CAS/" style="font-size: 15px;">CAS</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/cat/" style="font-size: 15px;">cat</a> <a href="/tags/markdown/" style="font-size: 15px;">markdown</a> <a href="/tags/tail/" style="font-size: 15px;">tail</a> <a href="/tags/nginx/" style="font-size: 15px;">nginx</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/ioc/" style="font-size: 15px;">ioc</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring_cloud</a> <a href="/tags/spring-cloud-eureka/" style="font-size: 15px;">spring_cloud_eureka</a> <a href="/tags/spring-data-mongo/" style="font-size: 15px;">spring data mongo</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/html/" style="font-size: 15px;">html</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/spring/spring data mongo的子对象id问题/">spring data mongo的子对象id问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/07/前端/html初学/">html</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/07/前端/css初学/">css初学</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/07/前端/html+css练习/">html+css练习</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/08/19/git/git stash 不怕打扰，临时修改bug/">git stash</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/15/spring_cloud/spring_cloud_eureka下线与上线/">spring_cloud_eureka下线与上线</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/08/mysql/mysql常用sql/">mysql常用sql</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/linux/linux的chown/">linux的chown命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/12/spring_cloud/spring_cloud_eureka删除无效服务/">spring_cloud_eureka删除无效服务</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/07/git/git团队开发禁用内容/">git团队开发禁用内容</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">这是一个很酷的事.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho. <br></a><a rel="nofollow" target="_Blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"> 京ICP备18028493号</a><div style="text-align:center"><img src="/img/网站图案编号图标.png" style="display:inline-block;"> <p style="display:inline-block;color:#939393;">京公网安备 11010502035713号</p>	</div></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
