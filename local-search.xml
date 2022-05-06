@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>mysql记录不存在插入存在修改</title>
+    <link href="/2022/05/06/mysql/%E8%AE%B0%E5%BD%95%E4%B8%8D%E5%AD%98%E5%9C%A8%E6%8F%92%E5%85%A5%E5%AD%98%E5%9C%A8%E4%BF%AE%E6%94%B9/"/>
+    <url>/2022/05/06/mysql/%E8%AE%B0%E5%BD%95%E4%B8%8D%E5%AD%98%E5%9C%A8%E6%8F%92%E5%85%A5%E5%AD%98%E5%9C%A8%E4%BF%AE%E6%94%B9/</url>
+    
+    <content type="html"><![CDATA[<h2 id="引发"><a href="#引发" class="headerlink" title="引发"></a>引发</h2><p>因为项目中使用select for update引发的死锁问题。</p><h2 id="select-for-update为什么会出现死锁"><a href="#select-for-update为什么会出现死锁" class="headerlink" title="select for update为什么会出现死锁"></a>select for update为什么会出现死锁</h2><p>select for update语句是当前读。会有加锁操作。</p><p>mysql加锁规则：</p><p>原则 1：加锁的基本单位是 next-key lock。希望你还记得，next-key lock 是前开后闭区间。</p><p>原则 2：查找过程中访问到的对象才会加锁。</p><p>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。只有记录存在时才会优化，不存在时会按普通索引处理。</p><p>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</p><p>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</p><p>next-key lock 是 间隙锁（Gap lock） + 行锁(record lock)</p><p>行锁与行锁之间有冲突关系，比如加了id&#x3D;1的行写锁，别一个想加行写锁时就需要阻塞。</p><p>间隙锁之间没有冲突关系，比如加了[x,-supernum] ，别一个也可以加。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间是不冲突的。</p><p>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作。</p><p>按照以上描述,  程序实现了以下逻辑：</p><figure class="highlight sql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><pre><code class="hljs sql"><br><span class="hljs-keyword">begin</span>;<br><span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> t <span class="hljs-keyword">where</span> id<span class="hljs-operator">=</span>N <span class="hljs-keyword">for</span> <span class="hljs-keyword">update</span>;<br><br><span class="hljs-comment">/*如果行不存在*/</span><br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> t <span class="hljs-keyword">values</span>(N,N,N);<br><span class="hljs-comment">/*如果行存在*/</span><br><span class="hljs-keyword">update</span> t <span class="hljs-keyword">set</span> d<span class="hljs-operator">=</span>N <span class="hljs-keyword">set</span> id<span class="hljs-operator">=</span>N;<br><br><span class="hljs-keyword">commit</span>;<br></code></pre></td></tr></table></figure><p>当where 条件里是 id &#x3D; n 或者 普通索引的d&#x3D;n 记录不存在时，按照优化1 和 优化2都会退化为间隙锁。因为间隙锁特性所以select for update都可以成功，但是insert时就会出现死锁。</p><h2 id="如何解决记录不存在插入存在修改这个逻辑"><a href="#如何解决记录不存在插入存在修改这个逻辑" class="headerlink" title="如何解决记录不存在插入存在修改这个逻辑"></a>如何解决记录不存在插入存在修改这个逻辑</h2><p>两个方向：</p><p>​1.mysql</p><p>​2.程序代码</p><p>Mysql:</p><p>方法1：</p><p>1.试着插入记录</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> sys_a(name, age, code) <br><br><span class="hljs-comment">-- 默认值</span><br><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;test1&#x27;</span>, <span class="hljs-number">12</span>, <span class="hljs-string">&#x27;m6&#x27;</span><span class="hljs-keyword">from</span> dual <br><span class="hljs-comment">-- 原来的值</span><br><span class="hljs-keyword">where</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> (<span class="hljs-keyword">select</span> name, age, code <span class="hljs-keyword">from</span> sys_a <span class="hljs-keyword">where</span> code <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;m6&#x27;</span>);<br></code></pre></td></tr></table></figure><p>2.一直执行修改</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">update</span> sys_a <span class="hljs-keyword">set</span> age <span class="hljs-operator">=</span> age <span class="hljs-operator">+</span> <span class="hljs-number">1</span> <span class="hljs-keyword">where</span> code <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;m6&#x27;</span><br></code></pre></td></tr></table></figure><p>缺点：</p><p>​要写两条语句。</p><p>​每次都执行两条语句</p><p>方法2：replace into</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">replace <span class="hljs-keyword">into</span> sys_a(name, age, code) <span class="hljs-keyword">values</span>(<span class="hljs-string">&#x27;test1&#x27;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&#x27;m8&#x27;</span>)<br></code></pre></td></tr></table></figure><p>replace into相当于，先检测该记录是否存在(根据表上的唯一键)，如果存在，先delete，然后再insert。 这个方法有一个很大的问题，如果记录存在，每次执行完，主键自增id就变了（相当于重新insert了一条），对于有复杂关联的业务场景，如果主表的id变了，其它子表没做好同步，会死得很难看。– 不建议使用该方法！</p><p>方法3：on duplicate key</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> sys_a(name, age, code)  <span class="hljs-keyword">values</span>(<span class="hljs-string">&#x27;test1&#x27;</span>, <span class="hljs-number">12</span>, <span class="hljs-string">&#x27;m6&#x27;</span>) <br><span class="hljs-keyword">on</span> duplicate key <br><span class="hljs-keyword">update</span> age <span class="hljs-operator">=</span> age <span class="hljs-operator">+</span> <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure><p>insert into … on duplicate key update 这个语义的逻辑是，插入一行数据，如果碰到唯一键约束，就执行后面的更新语句。</p><p>注意，如果有多个列违反了唯一性约束，就会按照索引的顺序，修改跟第一个索引冲突的行。</p><p>需要注意的是，执行这条语句的 affected rows 返回的是 2，很容易造成误解。实际上，真正更新的只有一行，只是在代码实现上，insert 和 update 都认为自己成功了，update 计数加了 1， insert 计数也加了 1。</p><p>其中方法2与方法3都需要惟一索引。</p><p>程序代码上：</p><p>使用java的同步锁。</p><p>使用三方法的分布式锁。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>mysql</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mysql</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>node安装+hexo执行+布署网页</title>
     <link href="/2022/05/06/hexo/node%E5%AE%89%E8%A3%85+hexo%E6%89%A7%E8%A1%8C+%E5%B8%83%E7%BD%B2%E7%BD%91%E9%A1%B5/"/>
     <url>/2022/05/06/hexo/node%E5%AE%89%E8%A3%85+hexo%E6%89%A7%E8%A1%8C+%E5%B8%83%E7%BD%B2%E7%BD%91%E9%A1%B5/</url>
@@ -52,32 +77,6 @@
       <tag>mysql</tag>
       
     </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title></title>
-    <link href="/2022/04/25/mysql/%E8%AE%B0%E5%BD%95%E4%B8%8D%E5%AD%98%E5%9C%A8%E6%8F%92%E5%85%A5%E5%AD%98%E5%9C%A8%E4%BF%AE%E6%94%B9/"/>
-    <url>/2022/04/25/mysql/%E8%AE%B0%E5%BD%95%E4%B8%8D%E5%AD%98%E5%9C%A8%E6%8F%92%E5%85%A5%E5%AD%98%E5%9C%A8%E4%BF%AE%E6%94%B9/</url>
-    
-    <content type="html"><![CDATA[<h2 id="引发"><a href="#引发" class="headerlink" title="引发"></a>引发</h2><p>因为项目中使用select for update引发的死锁问题。</p><h2 id="select-for-update为什么会出现死锁"><a href="#select-for-update为什么会出现死锁" class="headerlink" title="select for update为什么会出现死锁"></a>select for update为什么会出现死锁</h2><p>select for update语句是当前读。会有加锁操作。</p><p>mysql加锁规则：</p><p>原则 1：加锁的基本单位是 next-key lock。希望你还记得，next-key lock 是前开后闭区间。</p><p>原则 2：查找过程中访问到的对象才会加锁。</p><p>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。只有记录存在时才会优化，不存在时会按普通索引处理。</p><p>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</p><p>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</p><p>next-key lock 是 间隙锁（Gap lock） + 行锁(record lock)</p><p>行锁与行锁之间有冲突关系，比如加了id&#x3D;1的行写锁，别一个想加行写锁时就需要阻塞。</p><p>间隙锁之间没有冲突关系，比如加了[x,-supernum] ，别一个也可以加。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间是不冲突的。</p><p>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作。</p><p>按照以上描述,  程序实现了以下逻辑：</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span>N <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*如果行不存在*/</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(N,N,N);</span><br><span class="line"><span class="comment">/*如果行存在*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span>N <span class="keyword">set</span> id<span class="operator">=</span>N;</span><br><span class="line"></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure><p>当where 条件里是 id &#x3D; n 或者 普通索引的d&#x3D;n 记录不存在时，按照优化1 和 优化2都会退化为间隙锁。因为间隙锁特性所以select for update都可以成功，但是insert时就会出现死锁。</p><h2 id="如何解决记录不存在插入存在修改这个逻辑"><a href="#如何解决记录不存在插入存在修改这个逻辑" class="headerlink" title="如何解决记录不存在插入存在修改这个逻辑"></a>如何解决记录不存在插入存在修改这个逻辑</h2><p>两个方向：</p><p>​1.mysql</p><p>​2.程序代码</p><p>Mysql:</p><p>方法1：</p><p>1.试着插入记录</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> sys_a(name, age, code) </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 默认值</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;test1&#x27;</span>, <span class="number">12</span>, <span class="string">&#x27;m6&#x27;</span><span class="keyword">from</span> dual </span><br><span class="line"><span class="comment">-- 原来的值</span></span><br><span class="line"><span class="keyword">where</span> <span class="keyword">not</span> <span class="keyword">exists</span> (<span class="keyword">select</span> name, age, code <span class="keyword">from</span> sys_a <span class="keyword">where</span> code <span class="operator">=</span> <span class="string">&#x27;m6&#x27;</span>);</span><br></pre></td></tr></table></figure><p>2.一直执行修改</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> sys_a <span class="keyword">set</span> age <span class="operator">=</span> age <span class="operator">+</span> <span class="number">1</span> <span class="keyword">where</span> code <span class="operator">=</span> <span class="string">&#x27;m6&#x27;</span></span><br></pre></td></tr></table></figure><p>缺点：</p><p>​要写两条语句。</p><p>​每次都执行两条语句</p><p>方法2：replace into</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replace <span class="keyword">into</span> sys_a(name, age, code) <span class="keyword">values</span>(<span class="string">&#x27;test1&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;m8&#x27;</span>)</span><br></pre></td></tr></table></figure><p>replace into相当于，先检测该记录是否存在(根据表上的唯一键)，如果存在，先delete，然后再insert。 这个方法有一个很大的问题，如果记录存在，每次执行完，主键自增id就变了（相当于重新insert了一条），对于有复杂关联的业务场景，如果主表的id变了，其它子表没做好同步，会死得很难看。– 不建议使用该方法！</p><p>方法3：on duplicate key</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> sys_a(name, age, code)  <span class="keyword">values</span>(<span class="string">&#x27;test1&#x27;</span>, <span class="number">12</span>, <span class="string">&#x27;m6&#x27;</span>) </span><br><span class="line"><span class="keyword">on</span> duplicate key </span><br><span class="line"><span class="keyword">update</span> age <span class="operator">=</span> age <span class="operator">+</span> <span class="number">1</span></span><br></pre></td></tr></table></figure><p>insert into … on duplicate key update 这个语义的逻辑是，插入一行数据，如果碰到唯一键约束，就执行后面的更新语句。</p><p>注意，如果有多个列违反了唯一性约束，就会按照索引的顺序，修改跟第一个索引冲突的行。</p><p>需要注意的是，执行这条语句的 affected rows 返回的是 2，很容易造成误解。实际上，真正更新的只有一行，只是在代码实现上，insert 和 update 都认为自己成功了，update 计数加了 1， insert 计数也加了 1。</p><p>其中方法2与方法3都需要惟一索引。</p><p>程序代码上：</p><p>使用java的同步锁。</p><p>使用三方法的分布式锁。</p>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title></title>
-    <link href="/2022/04/25/%E9%81%87%E5%88%B0%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/"/>
-    <url>/2022/04/25/%E9%81%87%E5%88%B0%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    
-    <content type="html"><![CDATA[<h3 id="1-多个类加器加载的类静态类与对象都不是同一个对象"><a href="#1-多个类加器加载的类静态类与对象都不是同一个对象" class="headerlink" title="1.多个类加器加载的类静态类与对象都不是同一个对象"></a>1.多个类加器加载的类静态类与对象都不是同一个对象</h3><p>我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender），</p><p>钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，发现不是同一个对象。SyncCallbackAppender 与 钉钉service不是同一个类加载器加载的。</p><p>发现是使用的spring dev tools ，这时类加载器为restartClassLoader类，去掉dev tools包即可。</p>]]></content>
-    
-    
     
   </entry>
   
@@ -1470,6 +1469,31 @@
     <tags>
       
       <tag>markdown</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>遇到过的问题</title>
+    <link href="/2019/07/23/%E9%81%87%E5%88%B0%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <url>/2019/07/23/%E9%81%87%E5%88%B0%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    
+    <content type="html"><![CDATA[<h3 id="1-多个类加器加载的类静态类与对象都不是同一个对象"><a href="#1-多个类加器加载的类静态类与对象都不是同一个对象" class="headerlink" title="1.多个类加器加载的类静态类与对象都不是同一个对象"></a>1.多个类加器加载的类静态类与对象都不是同一个对象</h3><p>我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender），</p><p>钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，发现不是同一个对象。SyncCallbackAppender 与 钉钉service不是同一个类加载器加载的。</p><p>发现是使用的spring dev tools ，这时类加载器为restartClassLoader类，去掉dev tools包即可。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>问题</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>问题</tag>
       
     </tags>
     
