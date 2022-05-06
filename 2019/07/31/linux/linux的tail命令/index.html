@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="##1.名称 tail  名词：尾巴 形容词：尾部的 意思：输出文件的最后一部分 2.语法tail [OPTION]… [FILE]… 3.描述打印指定文件的最后10行到标准输出。 给大于1个文件时，输出会给每个文件一个头。 如何没有文件，或者当文件为-时，读取标准输入。 4.参数4.1 -C-c, –bytes&#x3D;K 输出最后k bytes;或者用-c +k到从第k bytes开始的内容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux的tail命令">
+<meta property="og:url" content="http://hanqichuan.com/2019/07/31/linux/linux%E7%9A%84tail%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="##1.名称 tail  名词：尾巴 形容词：尾部的 意思：输出文件的最后一部分 2.语法tail [OPTION]… [FILE]… 3.描述打印指定文件的最后10行到标准输出。 给大于1个文件时，输出会给每个文件一个头。 如何没有文件，或者当文件为-时，读取标准输入。 4.参数4.1 -C-c, –bytes&#x3D;K 输出最后k bytes;或者用-c +k到从第k bytes开始的内容">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-31T03:06:34.000Z">
+<meta property="article:modified_time" content="2022-04-25T07:58:01.587Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="tail">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>linux的tail命令 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="linux的tail命令">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-07-31 11:06" pubdate>
+        2019年7月31日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      undefined 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      NaN 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">linux的tail命令</h1>
+            
+            <div class="markdown-body">
+              <p>##1.名称</p>
+<p>tail </p>
+<p>名词：尾巴</p>
+<p>形容词：尾部的</p>
+<p>意思：输出文件的最后一部分</p>
+<h2 id="2-语法"><a href="#2-语法" class="headerlink" title="2.语法"></a>2.语法</h2><p>tail [OPTION]… [FILE]…</p>
+<h2 id="3-描述"><a href="#3-描述" class="headerlink" title="3.描述"></a>3.描述</h2><p>打印指定文件的最后10行到标准输出。</p>
+<p>给大于1个文件时，输出会给每个文件一个头。</p>
+<p>如何没有文件，或者当文件为-时，读取标准输入。</p>
+<h2 id="4-参数"><a href="#4-参数" class="headerlink" title="4.参数"></a>4.参数</h2><h3 id="4-1-C"><a href="#4-1-C" class="headerlink" title="4.1 -C"></a>4.1 -C</h3><p>-c, –bytes&#x3D;K</p>
+<p>输出最后k bytes;或者用-c +k到从第k bytes开始的内容</p>
+<p>tail -c 100 package.json</p>
+<p>tail -c +10 package.json</p>
+<p>tail –bytes&#x3D;10 package.json</p>
+<p>tail –bytes&#x3D;+10 package.json</p>
+<h3 id="4-2-f"><a href="#4-2-f" class="headerlink" title="4.2 -f"></a>4.2 -f</h3><p>-f, –follow[&#x3D;{name|descriptor}]</p>
+<p>随着文件的增长，输出附加数据;</p>
+<p>–follow&#x3D;descriptor (默认)，根据文件描述符进行追踪，当文件改名或被删除，追踪停止。</p>
+<p><strong>–follow</strong>&#x3D;name ， 根据文件名进行追踪，其是否被删除或被其他程序重新创建  </p>
+<h3 id="4-3-F"><a href="#4-3-F" class="headerlink" title="4.3 -F"></a>4.3 -F</h3><p>等同于 –follow&#x3D;name –retry</p>
+<h3 id="4-4-n"><a href="#4-4-n" class="headerlink" title="4.4 -n"></a>4.4 -n</h3><p>-n, –lines&#x3D;K</p>
+<p>输出最后k行，而不是最后10行。</p>
+<p>或者用-n +k,从第k行开始输出。</p>
+<p>tail -n 20 xxx.log</p>
+<p>tail -n +20 xxx.log</p>
+<h3 id="4-5-–max-unchanged-stats-x3D-N"><a href="#4-5-–max-unchanged-stats-x3D-N" class="headerlink" title="4.5 –max-unchanged-stats&#x3D;N"></a>4.5 –max-unchanged-stats&#x3D;N</h3><p>–max-unchanged-stats&#x3D;N</p>
+<p>使用–follow&#x3D;name,重新打开一个没有打开的文件。</p>
+<p>在N次迭代(默认为5次)之后更改大小，查看是否已断开链接或重命名(这是旋转日志文件的常见情况);对于支持文件更改通(inotify)，这个选项很少用</p>
+<h3 id="4-6-–pid"><a href="#4-6-–pid" class="headerlink" title="4.6 –pid"></a>4.6 –pid</h3><p>–pid&#x3D;PID</p>
+<p>与-f合用，PID表示进程ID,PID死掉之后结束</p>
+<p>tail -f xxx.log –pid&#x3D;xxx</p>
+<h3 id="4-7-q"><a href="#4-7-q" class="headerlink" title="4.7  -q"></a>4.7  -q</h3><p>-q, –quiet, –silent</p>
+<p>永远不要输出标题给出文件名</p>
+<p>tail -f -q x1.log x2.log</p>
+<h3 id="4-8-–retry"><a href="#4-8-–retry" class="headerlink" title="4.8 –retry"></a>4.8 –retry</h3><p>如果无法访问文件，请继续尝试打开该文件</p>
+<p>tail -f –retry xx.log</p>
+<h3 id="4-9-s"><a href="#4-9-s" class="headerlink" title="4.9 -s"></a>4.9 -s</h3><p>-s, –sleep-interval&#x3D;N</p>
+<p>与-f合用，在迭代之间休眠大约N秒(默认1);使用inotify和–pid&#x3D;pid,至少每N秒检查进程pid一次</p>
+<h3 id="4-10-v"><a href="#4-10-v" class="headerlink" title="4.10 -v"></a>4.10 -v</h3><p>-v, –verbose</p>
+<p>总是输出头给出文件名</p>
+<h3 id="4-11-–help"><a href="#4-11-–help" class="headerlink" title="4.11 –help"></a>4.11 –help</h3><p>显示这个帮助并退出</p>
+<h3 id="4-12-–version"><a href="#4-12-–version" class="headerlink" title="4.12 –version"></a>4.12 –version</h3><p>输出版本信息并退出</p>
+<h3 id="4-13-k-单位后缀"><a href="#4-13-k-单位后缀" class="headerlink" title="4.13 k 单位后缀"></a>4.13 k 单位后缀</h3><p>b 512， KB 1000, K 1024, MB 1000 * 1000, M 1024 * 1024, GB 1000 * 1000 * 1000， G 1024 * 1024 * 1024</p>
+<p>以此类推 T, P, E, Z, Y</p>
+<h3 id="4-14-查看完整文档"><a href="#4-14-查看完整文档" class="headerlink" title="4.14 查看完整文档"></a>4.14 查看完整文档</h3><p>info coreutils ‘tail invocation’</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/linux/">linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/tail/">tail</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/07/31/linux/linux%E7%9A%84cat%E5%91%BD%E4%BB%A4/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux的cat命令</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/23/markdown%E6%96%87%E4%BB%B6%E4%BD%BF%E7%94%A8%E5%9B%BE%E7%89%87/">
+                        <span class="hidden-mobile">markdown文件使用图片</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
