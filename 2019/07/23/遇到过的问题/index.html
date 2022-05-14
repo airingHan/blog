@@ -16,15 +16,15 @@
   <meta name="author" content="韩启川">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1.多个类加器加载的类静态类与对象都不是同一个对象我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender）， 钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，">
+    <meta name="description" content="多个类加器加载的类静态类与对象都不是同一个对象我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender）， 钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，发现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="遇到过的问题">
 <meta property="og:url" content="http://hanqichuan.com/2019/07/23/%E9%81%87%E5%88%B0%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="这是一个很酷的事">
-<meta property="og:description" content="1.多个类加器加载的类静态类与对象都不是同一个对象我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender）， 钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，">
+<meta property="og:description" content="多个类加器加载的类静态类与对象都不是同一个对象我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender）， 钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，发现">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
-<meta property="article:modified_time" content="2022-05-06T07:14:59.419Z">
+<meta property="article:modified_time" content="2022-05-10T09:53:28.381Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="问题">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      314 字
+      886 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      8 分钟
     </span>
   
 
@@ -238,9 +238,17 @@
             <h1 style="display: none">遇到过的问题</h1>
             
             <div class="markdown-body">
-              <h3 id="1-多个类加器加载的类静态类与对象都不是同一个对象"><a href="#1-多个类加器加载的类静态类与对象都不是同一个对象" class="headerlink" title="1.多个类加器加载的类静态类与对象都不是同一个对象"></a>1.多个类加器加载的类静态类与对象都不是同一个对象</h3><p>我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender），</p>
+              <h3 id="多个类加器加载的类静态类与对象都不是同一个对象"><a href="#多个类加器加载的类静态类与对象都不是同一个对象" class="headerlink" title="多个类加器加载的类静态类与对象都不是同一个对象"></a>多个类加器加载的类静态类与对象都不是同一个对象</h3><p>我们要做一个拦截error日志的钉钉报警，使用的框架为springboot+log4j2,想要使用自定义Appender（SyncCallbackAppender），</p>
 <p>钉钉service需要读取配置文件，发送钉钉消息，这时钉钉service不能注入进SyncCallbackAppender；使用生产者消费者需要一个容器，消费者一直无法获取这个容器，发现不是同一个对象。SyncCallbackAppender 与 钉钉service不是同一个类加载器加载的。</p>
 <p>发现是使用的spring dev tools ，这时类加载器为restartClassLoader类，去掉dev tools包即可。</p>
+<h3 id="第三方服务出现问题引发系统不可用"><a href="#第三方服务出现问题引发系统不可用" class="headerlink" title="第三方服务出现问题引发系统不可用"></a>第三方服务出现问题引发系统不可用</h3><p>情况介绍：客户端   —》   我们服务器(netty)   -&gt;  第三方服务器</p>
+<p>客户端与我们服务器使用socket连接，请求完后关闭。</p>
+<p>我们服务器使用netty接收请求。服务器使用的阿里云服务器。</p>
+<p>我们服务器跟第三方服务器使用socket通信。</p>
+<p>首先出现客户端连接不上服务器情况。接收到反馈后排查。跟运维或负责人要服务器的监控情况。发现CPU、内存、带宽、磁盘等都无异常。</p>
+<p>因为是连接问题，去服务器看，tcp的连接情况。出现大量的socket的close_wait。以为是客户端为关闭socket造成。但是http请求没问题。进一步排查。使用jstack命下载当时的堆栈。使用在线工具fastThread分析，发现RUNNABLE threads 的线程为netty线程。并且都是同一方法，因为netty默认开启的接收和处理的线程数都是可用核心*2。说明这些线程都被占用了。定位到程序里跟第三方服务器使用socket通信时未使超时时间，使socket无线等待。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Socket</span> <span class="hljs-variable">socket</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Socket</span>();<br>socket.connect(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InetSocketAddress</span>(ipAddress, port), <span class="hljs-number">1000</span>);<span class="hljs-comment">//设置连接请求超时时间1 s</span><br>socket.setSoTimeout(<span class="hljs-number">30000</span>);<span class="hljs-comment">//设置读操作超时时间30 s</span><br></code></pre></td></tr></table></figure>
+
 
             </div>
             <hr>

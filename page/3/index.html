@@ -191,6 +191,133 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/02/09/spring/spring_boot%E9%85%8D%E7%BD%AE%E5%BC%95%E7%94%A8yml/" target="_self">
+          spring boot配置引用yml
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/09/spring/spring_boot%E9%85%8D%E7%BD%AE%E5%BC%95%E7%94%A8yml/" target="_self">
+          
+          引用spring boot 项目有以下配置文档： application.yml application-druid.yml application-redis.yml 当需要在springboot中引用其他的yml文件时，需要在application.yml里配置: 123spring:  profiles:    include: druid,redis
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-09 16:11" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-boot/">spring boot</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-boot/">spring boot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc5.0%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          动态创建月维度表及sharding-jdbc单库分表实现
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc5.0%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          
+          单库分表一张表数据达到一定级别后，查询、插入、修改、DDL等效率降低，需要优化。这时可以使用单库分表，进行数据的拆分。 主要解决单表数据量过大的问题。 未解决：CPU、内存、带宽等单库的资源限制。 sharding-jdbc固定actual-data-nodes问题，需要动态生成表，采用定时任务实现创建配置文件：application-shardingjdbc.yml 123# 分表的表名用于定时
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-09 11:28" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/sharding-jdbc/">sharding-jdbc</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          动态创建月维度表及sharding-jdbc单库分表实现
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          
+          单库分表一张表数据达到一定级别后，查询、插入、修改、DDL等效率降低，需要优化。这时可以使用单库分表，进行数据的拆分。 主要解决单表数据量过大的问题。 未解决：CPU、内存、带宽等单库的资源限制。 sharding-jdbc固定actual-data-nodes问题，需要动态生成表，采用定时任务实现创建配置文件：application-shardingjdbc.yml 123# 分表的表名用于定时
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-09 11:28" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/sharding-jdbc/">sharding-jdbc</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/02/08/java/log%E7%9A%84mdc%E7%94%9F%E6%88%90traceId/" target="_self">
           log的mdc生成traceId
         </a>
@@ -516,160 +643,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-          maven引用的过期的jar包问题
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-          
-          1.问题因为项目里引用了过期的jar包，阿里云仓库及很多仓库都没有了，也就是下载不下来了，私服也没有，但是别人那里有这个包，这时maven打包一直下载不了这包，如何解决？ 2.解决方案方案一 把这个jar安装到本地仓库mvn install:install-file -Dfile&#x3D;”D:\artemis-http-client-1.0.0.jar” -DgroupId&#x3D;com.
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-10-12 17:16" pubdate>
-              2021-10-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/maven/">maven</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/maven/">maven</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
-          小滴课堂首页版心banner
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
-          
-          一.思路及布局版心分为：banner区、课程区 二.编写1.html编写 12345678910111213141516&lt;div class&#x3D;&quot;content&quot;&gt;    &lt;div class&#x3D;&quot;banner clearfix&quot;&gt;        &lt;ul class&#x3D;&quot;l-category fl&quot;&gt;
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-26 11:29" pubdate>
-              2021-04-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/23/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B0%BE%E9%83%A8/" target="_self">
-          小滴课堂首页尾部
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/23/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B0%BE%E9%83%A8/" target="_self">
-          
-          一.思路及布局尾部：分为图标区、连接区、备案区 二.编写1.html编写 12345678910111213141516171819&lt;div class&#x3D;&quot;_container&quot;&gt;    &lt;div class&#x3D;&quot;_social&quot;&gt;        &lt;a href&#x3D;&quot;javascript:void(0)&quot;&gt;
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-23 11:46" pubdate>
-              2021-04-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#board">9</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

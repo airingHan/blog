@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="原始命令打jar包简述：jar包（文件）就是 Java Archive File（Java档案[归档]文件），是 Java 的一种文件格式，可将多个文件组合成一个文件。一个JAR文件由一系列采用Zip压缩格式的文件构成，同时还有一张“清单（Manifest）”，对所有这些文件进行了描述。JDK提供的许多类，也是以jar包的形式提供的。jar包用于部署和封装库、组件和插件程序，并可被像编译器和 JV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java原始命令打jar包及idea打jar包">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/12/java/java%E5%8E%9F%E5%A7%8B%E5%91%BD%E4%BB%A4%E6%89%93jar%E5%8C%85%E5%8F%8Aidea%E6%89%93jar%E5%8C%85/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="原始命令打jar包简述：jar包（文件）就是 Java Archive File（Java档案[归档]文件），是 Java 的一种文件格式，可将多个文件组合成一个文件。一个JAR文件由一系列采用Zip压缩格式的文件构成，同时还有一张“清单（Manifest）”，对所有这些文件进行了描述。JDK提供的许多类，也是以jar包的形式提供的。jar包用于部署和封装库、组件和插件程序，并可被像编译器和 JV">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-12T06:34:00.000Z">
+<meta property="article:modified_time" content="2022-05-12T11:55:56.174Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>java原始命令打jar包及idea打jar包 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="java原始命令打jar包及idea打jar包">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-12 14:34" pubdate>
+        2022年5月12日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      43 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">java原始命令打jar包及idea打jar包</h1>
+            
+            <div class="markdown-body">
+              <h2 id="原始命令打jar包"><a href="#原始命令打jar包" class="headerlink" title="原始命令打jar包"></a>原始命令打jar包</h2><h3 id="简述："><a href="#简述：" class="headerlink" title="简述："></a>简述：</h3><p>jar包（文件）就是 Java Archive File（Java档案[归档]文件），是 Java 的一种文件格式，可将多个文件组合成一个文件。一个JAR文件由一系列采用Zip压缩格式的文件构成，同时还有一张“清单（Manifest）”，对所有这些文件进行了描述。JDK提供的许多类，也是以jar包的形式提供的。<br>jar包用于部署和封装库、组件和插件程序，并可被像编译器和 JVM 这样的工具直接使用。jar文件中有一个特定目录——META-INF，其中包含特殊的文件——MANIFEST.MF，用来定义扩展与档案打包相关数据信息，运行时向JVM提供应用程序的有关数据信息。</p>
+<p>清单（Manifest）文件格式规则：</p>
+<p>1.文件中的内容以键值对的形式出现，键值对之间采用”冒号和空格”进行分隔(注意：冒号后的空格必须有，不然格式有错误).</p>
+<p>2.每行最多72个字符，换行继续必须以空格开头 。</p>
+<p>3.Class-Path指定引用jar包的目录。调用多个jar时，每一个用空格（由一个或多个空格）隔开，不是逗号或分号，一行写不下（超过72个字符），从第二行开始，每行开头要至少一个空格。如：</p>
+<p>Class-Path: lib&#x2F;tools.jar lib&#x2F;guava-r09.jar lib&#x2F;guice-2.0.jar </p>
+<p> lib&#x2F;jakarta.commons.lang-2.2.jar</p>
+<ol start="4">
+<li>文件的最后必需要空行，而且必须顶格。</li>
+</ol>
+<p>官网说明：<a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/18/docs/specs/jar/jar.html">https://docs.oracle.com/en/java/javase/18/docs/specs/jar/jar.html</a></p>
+<p>jar 命令的一些说明：jar -h</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">用法: jar [OPTION...] [ [--release VERSION] [-C <span class="hljs-built_in">dir</span>] files] ...<br>jar 创建类和资源的档案, 并且可以处理档案中的<br>单个类或资源或者从档案中还原单个类或资源。<br><br> 示例:<br> <span class="hljs-comment"># 创建包含两个类文件的名为 classes.jar 的档案:</span><br> jar --create --file classes.jar Foo.class Bar.class<br> <span class="hljs-comment"># 使用现有的清单创建档案, 其中包含 foo/ 中的所有文件:</span><br> jar --create --file classes.jar --manifest mymanifest -C foo/ .<br> <span class="hljs-comment"># 创建模块化 jar 档案, 其中模块描述符位于</span><br> <span class="hljs-comment"># classes/module-info.class:</span><br> jar --create --file foo.jar --main-class com.foo.Main --module-version 1.0<br>     -C foo/ classes resources<br> <span class="hljs-comment"># 将现有的非模块化 jar 更新为模块化 jar:</span><br> jar --update --file foo.jar --main-class com.foo.Main --module-version 1.0<br>     -C foo/ module-info.class<br> <span class="hljs-comment"># 创建包含多个发行版的 jar, 并将一些文件放在 META-INF/versions/9 目录中:</span><br> jar --create --file mr.jar -C foo classes --release 9 -C foo9 classes<br><br>要缩短或简化 jar 命令, 可以在单独的文本文件中指定参数,<br>并使用 @ 符号作为前缀将此文件传递给 jar 命令。<br><br> 示例:<br> <span class="hljs-comment"># 从文件 classes.list 读取附加选项和类文件列表</span><br> jar --create --file my.jar @classes.list<br><br><br> 主操作模式:<br><br>  -c, --create               创建档案<br>  -i, --generate-index=FILE  为指定的 jar 档案生成<br>                             索引信息<br>  -t, --list                 列出档案的目录<br>  -u, --update               更新现有 jar 档案<br>  -x, --extract              从档案中提取指定的 (或全部) 文件<br>  -d, --describe-module      输出模块描述符或自动模块名称<br><br> 在任意模式下有效的操作修饰符:<br><br>  -C DIR                     更改为指定的目录并包含<br>                             以下文件<br>  -f, --file=FILE            档案文件名。省略时, 基于操作<br>                             使用 stdin 或 stdout<br>      --release VERSION      将下面的所有文件都放在<br>                             jar 的版本化目录中 (即 META-INF/versions/VERSION/)<br>  -v, --verbose              在标准输出中生成详细输出<br><br> 在创建和更新模式下有效的操作修饰符:<br><br>  -e, --main-class=CLASSNAME 捆绑到模块化或可执行 <br>                             jar 档案的独立应用程序<br>                             的应用程序入口点<br>  -m, --manifest=FILE        包含指定清单文件中的<br>                             清单信息<br>  -M, --no-manifest          不为条目创建清单文件<br>      --module-version=VERSION    创建模块化 jar 或更新<br>                             非模块化 jar 时的模块版本<br>      --hash-modules=PATTERN 计算和记录模块的散列, <br>                             这些模块按指定模式匹配并直接或<br>                             间接依赖于所创建的模块化 jar 或<br>                             所更新的非模块化 jar<br>  -p, --module-path          模块被依赖对象的位置, 用于生成<br>                             散列<br><br> 只在创建, 更新和生成索引模式下有效的操作修饰符:<br><br>  -0, --no-compress          仅存储; 不使用 ZIP 压缩<br><br> 其他选项:<br><br>  -?, -h, --<span class="hljs-built_in">help</span>[:compat]    提供此帮助，也可以选择性地提供兼容性帮助<br>      --help-extra           提供额外选项的帮助<br>      --version              输出程序版本<br><br> 如果模块描述符 <span class="hljs-string">&#x27;module-info.class&#x27;</span> 位于指定目录的<br> 根目录中, 或者位于 jar 档案本身的根目录中, 则<br> 该档案是一个模块化 jar。以下操作只在创建模块化 jar,<br> 或更新现有的非模块化 jar 时有效: <span class="hljs-string">&#x27;--module-version&#x27;</span>,<br> <span class="hljs-string">&#x27;--hash-modules&#x27;</span> 和 <span class="hljs-string">&#x27;--module-path&#x27;</span>。<br><br> 如果为长选项提供了必需参数或可选参数, 则它们对于<br> 任何对应的短选项也是必需或可选的。<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>创建文件夹test-jar</p>
+<p>在test-jar下创建lib文件夹并把fastjson-1.2.78.jar放到lib目录下。</p>
+<p>创建User.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> &#123;<br>    String id;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">User</span><span class="hljs-params">(String id)</span> &#123;<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getId</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setId</span><span class="hljs-params">(String id)</span> &#123;<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>创建Main.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> com.alibaba.fastjson.JSONObject;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Main</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        System.out.println(JSONObject.toJSONString(<span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">&quot;testUser&quot;</span>)));<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>java -c Main.java</p>
+<p>Java -c User.java</p>
+<p>新建一个文件myapplication.mf</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">Manifest-Version: <span class="hljs-number">1.0</span><br>Created-By: <span class="hljs-number">11.0</span><span class="hljs-number">.15</span> (Azul Systems, Inc.)<br>Main-Class: Main<br>Class-Path: lib/fastjson-<span class="hljs-number">1.2</span><span class="hljs-number">.78</span>.jar<br></code></pre></td></tr></table></figure>
+
+<p>新建一个文件夹out,并把Main.class、user.class和lib文件复制到out文件夹下</p>
+<p>打包：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> test-jar/<br>jar --create --verbose --file test-jar.jar --manifest myapplication.mf -C ./out/ .<br></code></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">java -jar test-jar.jar<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用idea打包"><a href="#使用idea打包" class="headerlink" title="使用idea打包"></a>使用idea打包</h2><p>英文：</p>
+<p>​	File  -&gt; Project Structure -&gt; artifacts -&gt; +  -&gt; jar -&gt; from modules -&gt;选主类和第一个单选按钮 -&gt;确定后会生成Manifest文件</p>
+<p>生成：</p>
+<p>​	菜单栏build   -&gt; build artifacts -&gt;build</p>
+<p>执行：</p>
+<p>​	java -jar test-jar.jar</p>
+<p>中文：</p>
+<p>​	文件  -&gt; 项目结构  -&gt;  工件  -&gt; + -&gt; jar - &gt; 来自具有依赖项的模块  -&gt; 主类  +  提取到目标jar  -&gt; 确定后会生成Manifest文件</p>
+<p>生成：</p>
+<p>​	构建  -&gt;   构建工件  -&gt; 构建</p>
+<h2 id="使用maven打jar包"><a href="#使用maven打jar包" class="headerlink" title="使用maven打jar包"></a>使用maven打jar包</h2><h3 id="方法1"><a href="#方法1" class="headerlink" title="方法1:"></a>方法1:</h3><p>1.在pom.xml中添加如下配置；</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>              <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>              <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>              <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.5.5<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>              <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>                  <span class="hljs-tag">&lt;<span class="hljs-name">archive</span>&gt;</span><br>                      <span class="hljs-tag">&lt;<span class="hljs-name">manifest</span>&gt;</span><br>                          <span class="hljs-tag">&lt;<span class="hljs-name">mainClass</span>&gt;</span>EchoServer<span class="hljs-tag">&lt;/<span class="hljs-name">mainClass</span>&gt;</span><br>                      <span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span><br>                  <span class="hljs-tag">&lt;/<span class="hljs-name">archive</span>&gt;</span><br>                  <span class="hljs-tag">&lt;<span class="hljs-name">descriptorRefs</span>&gt;</span><br>                      <span class="hljs-tag">&lt;<span class="hljs-name">descriptorRef</span>&gt;</span>jar-with-dependencies<span class="hljs-tag">&lt;/<span class="hljs-name">descriptorRef</span>&gt;</span><br>                  <span class="hljs-tag">&lt;/<span class="hljs-name">descriptorRefs</span>&gt;</span><br>              <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br>          <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br>      <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>2.点击maven project（右边栏）-&gt;选择Plugins-&gt;选择assembly-&gt;点击assembly:assembly</p>
+<p>3.执行 java -jar test-netty-1.0-SNAPSHOT-jar-with-dependencies.jar</p>
+<h3 id="方法2："><a href="#方法2：" class="headerlink" title="方法2："></a>方法2：</h3><p>1.在pom.xml中添加如下配置；</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-shade-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.2.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">phase</span>&gt;</span>package<span class="hljs-tag">&lt;/<span class="hljs-name">phase</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>shade<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">transformers</span>&gt;</span><br>                            <span class="hljs-tag">&lt;<span class="hljs-name">transformer</span> <span class="hljs-attr">implementation</span>=<span class="hljs-string">&quot;org.apache.maven.plugins.shade.resource.ManifestResourceTransformer&quot;</span>&gt;</span><br>                                <span class="hljs-tag">&lt;<span class="hljs-name">mainClass</span>&gt;</span>EchoServer<span class="hljs-tag">&lt;/<span class="hljs-name">mainClass</span>&gt;</span><br>                            <span class="hljs-tag">&lt;/<span class="hljs-name">transformer</span>&gt;</span><br>                        <span class="hljs-tag">&lt;/<span class="hljs-name">transformers</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>maven clean   并且 maven package</li>
+<li>java -jar test-netty-1.0-SNAPSHOT.jar</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/java/">java</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/11/java/java%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80/">
+                        <span class="hidden-mobile">java获取本机IP地址</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
