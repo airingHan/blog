@@ -191,6 +191,55 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/05/07/linux/linux%E5%AE%89%E8%A3%85nginx/" target="_self">
+          linux安装nginx
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/07/linux/linux%E5%AE%89%E8%A3%85nginx/" target="_self">
+          
+          下载http:&#x2F;&#x2F;nginx.org&#x2F; 下载： 1wget http:&#x2F;&#x2F;nginx.org&#x2F;download&#x2F;nginx-1.20.2.tar.gz  解压： 1tar -xvzf nginx-1.20.2.tar.gz  安装linux系统需要安装的组件：gcc、 openssl-devel、 pcre-devel、 zlib-devel 可以使用yum查看是否已经安装： 1yum list
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-07 09:29" pubdate>
+              2022-05-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/linux/">linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">linux</a>
+            
+              <a href="/tags/nginx/">nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/05/07/linux/linux%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85/" target="_self">
           linux查看软件是否安装
         </a>
@@ -571,15 +620,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/04/22/linux/nginx%E5%9B%9B%E5%B1%82%E8%B4%9F%E8%BD%BD%E9%85%8D%E7%BD%AE/" target="_self">
-          nginx四层负载
+        <a href="/2022/04/25/java/session%E5%85%B1%E4%BA%AB/" target="_self">
+          session共享
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/04/22/linux/nginx%E5%9B%9B%E5%B1%82%E8%B4%9F%E8%BD%BD%E9%85%8D%E7%BD%AE/" target="_self">
+        <a href="/2022/04/25/java/session%E5%85%B1%E4%BA%AB/" target="_self">
           
-          前置服务器上已经有nginx。 查看是否有ngx_stream_proxy_module1.&#x2F;nginx -V  with后有ngx_stream_proxy_module，说明已安装。 configure arguments: 为以前的编译时的参数 安装ngx_stream_proxy_module 1234# 1 .&#x2F;configure --with-stream + 加上原来的模块# 2ma
+          session共享问题的由来session共享是因为架构演变而出现的问题。 项目由初期直接使用一台tomcat做为web服务器，这时是没有session问题。 项目到nginx做动静分离，还是一台tomcat做为web服务器，这时是没有session问题。 项目到nginx做负载均衡，后端是多台tomcat时，还使用tomcat的session，这时就会出现session问题。 session共享
         </a>
       </p>
 
@@ -587,8 +636,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-04-22 10:40" pubdate>
-              2022-04-22
+            <time datetime="2022-04-25 15:58" pubdate>
+              2022-04-25
             </time>
           </div>
         
@@ -596,7 +645,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/nginx/">nginx</a>
+              <a href="/categories/java/">java</a>
             
           </div>
         
@@ -604,54 +653,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/nginx/">nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/04/19/java/20%E4%B8%87%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA/" target="_self">
-          20万数据导出
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/04/19/java/20%E4%B8%87%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA/" target="_self">
-          
-          参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_33719619&#x2F;article&#x2F;details&#x2F;88983710 https:&#x2F;&#x2F;www.csdn.net&#x2F;tags&#x2F;MtjacgxsMTM1NC1ibG9n.html https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_40127376&#x2F;article&#x2F;details&#x2F;124032521 方向考虑涉及到的软件及中间件等。 我这是个小项
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-04-19 20:44" pubdate>
-              2022-04-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/xlsx/">xlsx</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/xlsx/">xlsx</a>
+              <a href="/tags/java/">java</a>
             
           </div>
         
