@@ -19,7 +19,7 @@
     <meta name="description" content="1.shiro架构简介查找进入shiro官网http:&#x2F;&#x2F;shiro.apache.org&#x2F; 点击 Get Started 点击Architecture 2.什么是Apache ShiroApache Shiro是一个功能强大且灵活的开源安全框架，可以清晰地处理身份验证，授权，企业会话管理和加密。 Apache Shiro的首要目标是易于使用和理解。安全有时可能非常复杂，甚至是痛苦的，但事实并非如">
 <meta property="og:type" content="article">
 <meta property="og:title" content="shiro入门理解">
-<meta property="og:url" content="http://hanqichuan.com/2019/07/23/shiro%E5%85%A5%E9%97%A8%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:url" content="http://hanqichuan.com/2019/07/23/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/shiro%E5%85%A5%E9%97%A8%E7%90%86%E8%A7%A3/index.html">
 <meta property="og:site_name" content="这是一个很酷的事">
 <meta property="og:description" content="1.shiro架构简介查找进入shiro官网http:&#x2F;&#x2F;shiro.apache.org&#x2F; 点击 Get Started 点击Architecture 2.什么是Apache ShiroApache Shiro是一个功能强大且灵活的开源安全框架，可以清晰地处理身份验证，授权，企业会话管理和加密。 Apache Shiro的首要目标是易于使用和理解。安全有时可能非常复杂，甚至是痛苦的，但事实并非如">
 <meta property="og:locale" content="zh_CN">
@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://hanqichuan.com/.com//ShiroBasicArchitecture.png">
 <meta property="og:image" content="http://hanqichuan.com/.com//ShiroArchitecture.png">
 <meta property="article:published_time" content="2019-07-23T01:12:00.000Z">
-<meta property="article:modified_time" content="2022-05-09T07:20:36.180Z">
+<meta property="article:modified_time" content="2022-05-17T09:19:53.982Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="shiro">
 <meta name="twitter:card" content="summary_large_image">
@@ -201,7 +201,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.1k 字
+      5k 字
     </span>
   
 
@@ -262,8 +262,7 @@
 <li>无需登录即可为用户关联启用“记住我”服务<br>……<br>以及更多 - 全部集成到一个易于使用的内聚API中。</li>
 </ul>
 <p>Shiro尝试为所有应用程序环境实现这些目标 - 从最简单的命令行应用程序到最大的企业应用程序，而不会强制依赖其他第三方框架，容器或应用程序服务器。当然，该项目旨在尽可能地融入这些环境，但它可以在任何环境中开箱即用。</p>
-<p>##3.Apache Shiro功能</p>
-<p>Apache Shiro是一个具有许多功能的综合应用程序安全框架。下图显示了Shiro关注其能量的位置，此参考手册将以类似方式组织：</p>
+<h2 id="3-Apache-Shiro功能"><a href="#3-Apache-Shiro功能" class="headerlink" title="3.Apache Shiro功能"></a>3.Apache Shiro功能</h2><p>Apache Shiro是一个具有许多功能的综合应用程序安全框架。下图显示了Shiro关注其能量的位置，此参考手册将以类似方式组织：</p>
 <p><img src="/.com//ShiroFeatures.png" srcset="/img/loading.gif" lazyload alt="ShiroFeatures"></p>
 <p>Shiro针对Shiro开发团队所称的“应用程序安全的四大基石” - 身份验证，授权，会话管理和加密：</p>
 <ul>
@@ -300,8 +299,7 @@
 <p>与其他内部组件一样，Shiro <code>SecurityManager</code>管理如何使用Realms获取要表示为<code>Subject</code>实例的安全性和身份数据。</p>
 </li>
 </ul>
-<p>##6.Apache Shiro的详细的架构</p>
-<p>下图显示了Shiro的核心架构概念，后面是每个概述的简短摘要：</p>
+<h2 id="6-Apache-Shiro的详细的架构"><a href="#6-Apache-Shiro的详细的架构" class="headerlink" title="6.Apache Shiro的详细的架构"></a>6.Apache Shiro的详细的架构</h2><p>下图显示了Shiro的核心架构概念，后面是每个概述的简短摘要：</p>
 <p><img src="/.com//ShiroArchitecture.png" srcset="/img/loading.gif" lazyload alt="ShiroArchitecture"></p>
 <ul>
 <li><strong>Subject</strong>（<a target="_blank" rel="noopener" href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/subject/Subject.html"><code>org.apache.shiro.subject.Subject</code></a>）<br>当前与软件交互的实体（用户，第三方服务，cron作业等）的特定于安全性的“视图”。</li>
@@ -319,8 +317,7 @@
 <li><strong>密码学</strong>（<a target="_blank" rel="noopener" href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/crypto/package-summary.html">org.apache.shiro.crypto。*</a>）<br>密码学是企业安全框架的自然补充。Shiro的<code>crypto</code>软件包包含易于使用和理解的密码密码，哈希（aka摘要）和不同编解码器实现的表示。该软件包中的所有类都经过精心设计，易于使用且易于理解。使用Java本机加密支持的任何人都知道它可能是一个具有挑战性的驯服动物。Shiro的加密API简化了复杂的Java机制，使密码学易于用于普通的凡人。</li>
 <li><strong>领域</strong>（<a target="_blank" rel="noopener" href="http://shiro.apache.org/static/current/apidocs/org/apache/shiro/realm/Realm.html">org.apache.shiro.realm.Realm</a>）<br>如上所述，Realms充当Shiro与应用程序安全数据之间的“桥接”或“连接器”。当实际与安全相关数据（如用户帐户）进行交互以执行身份验证（登录）和授权（访问控制）时，Shiro会从为应用程序配置的一个或多个领域中查找许多这些内容。您可以根据<code>Realms</code>需要配置任意数量（通常每个数据源一个），Shiro将根据需要进行身份验证和授权协调。</li>
 </ul>
-<p>##7.Apache Shiro的SecurityManager</p>
-<p>因为Shiro的API鼓励采用一种<code>Subject</code>中心编程方法，所以大多数应用程序开发人员很少（如果有的话）<code>SecurityManager</code>直接与之交互（框架开发人员有时可能会发现它很有用）。即便如此，了解<code>SecurityManager</code>功能仍然很重要，尤其是在为应用程序配置功能时。</p>
+<h2 id="7-Apache-Shiro的SecurityManager"><a href="#7-Apache-Shiro的SecurityManager" class="headerlink" title="7.Apache Shiro的SecurityManager"></a>7.Apache Shiro的SecurityManager</h2><p>因为Shiro的API鼓励采用一种<code>Subject</code>中心编程方法，所以大多数应用程序开发人员很少（如果有的话）<code>SecurityManager</code>直接与之交互（框架开发人员有时可能会发现它很有用）。即便如此，了解<code>SecurityManager</code>功能仍然很重要，尤其是在为应用程序配置功能时。</p>
 <p>SecurityManager的设计:</p>
 <p>如前所述，应用程序<code>SecurityManager</code>执行安全操作并管理<em>所有</em>应用程序用户的状态。在Shiro的默认<code>SecurityManager</code>实现中，这包括：</p>
 <ul>

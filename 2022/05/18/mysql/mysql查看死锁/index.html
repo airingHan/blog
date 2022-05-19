@@ -16,19 +16,39 @@
   <meta name="author" content="韩启川">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="归档">
-<meta property="og:url" content="http://hanqichuan.com/archives/2018/index.html">
+    <meta name="description" content="查看死锁查看innodb的状态 1show engine innodb status;  这里可以看到mysql检测到的死锁。 查看正在进行中的事务 1SELECT * FROM information_schema.INNODB_TRX;  查看正在锁的事务 1SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;  查看等待锁的事务 1SELECT * F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql查看死锁">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/18/mysql/mysql%E6%9F%A5%E7%9C%8B%E6%AD%BB%E9%94%81/index.html">
 <meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="查看死锁查看innodb的状态 1show engine innodb status;  这里可以看到mysql检测到的死锁。 查看正在进行中的事务 1SELECT * FROM information_schema.INNODB_TRX;  查看正在锁的事务 1SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;  查看等待锁的事务 1SELECT * F">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-18T06:31:12.000Z">
+<meta property="article:modified_time" content="2022-05-18T06:36:44.827Z">
 <meta property="article:author" content="韩启川">
+<meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>归档 - 这是一个很酷的事</title>
+  <title>mysql查看死锁 - 这是一个很酷的事</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -55,7 +75,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -156,9 +176,43 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="归档">
+            <span class="h2" id="subtitle" title="mysql查看死锁">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-18 14:31" pubdate>
+        2022年5月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      328 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      3 分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -171,52 +225,107 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 88 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2018</p>
-    
-    <a href="/2018/12/21/linux/linux%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BDjdk/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">linux安装与卸载jdk</span>
-      <time style="float: right;">12-21</time>
-    </a>
-  
-    
-    <a href="/2018/05/07/hexo/hexo%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">hexo生成静态博客</span>
-      <time style="float: right;">05-07</time>
-    </a>
-  
-    
-    <a href="/2018/03/23/maven/Maven%20%E7%B4%A2%E5%BC%95/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">maven</span>
-      <time style="float: right;">03-23</time>
-    </a>
-  
-</div>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">mysql查看死锁</h1>
+            
+            <div class="markdown-body">
+              <h2 id="查看死锁"><a href="#查看死锁" class="headerlink" title="查看死锁"></a>查看死锁</h2><p>查看innodb的状态</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> engine innodb status;<br></code></pre></td></tr></table></figure>
+
+<p>这里可以看到mysql检测到的死锁。</p>
+<p>查看正在进行中的事务</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> information_schema.INNODB_TRX;<br></code></pre></td></tr></table></figure>
+
+<p>查看正在锁的事务</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCKS;<br></code></pre></td></tr></table></figure>
+
+<p>查看等待锁的事务</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> INFORMATION_SCHEMA.INNODB_LOCK_WAITS;<br></code></pre></td></tr></table></figure>
+
+<p>查看正在用的表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">OPEN</span> TABLES <span class="hljs-keyword">where</span> In_use <span class="hljs-operator">&gt;</span> <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+
+<p>查看过程列表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> processlist;<br><span class="hljs-comment">-- 或者</span><br><span class="hljs-keyword">select</span><span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> information_schema.processlist;<br></code></pre></td></tr></table></figure>
 
 
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/mysql/">mysql</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/18/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/shiro%E5%AE%9E%E8%B7%B5/">
+                        <span class="hidden-mobile">shiro实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -326,6 +435,19 @@
   
 
 
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
 
 
 
