@@ -1,0 +1,536 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="如何看源码及原理分析原理及源码查看是相辅相成。只能了解原理才能更好的了解源码；只有相应的了解源码才能知道是怎么原理实现。 原理： ​	自已设计一个。配合源码查看，验证框架设计者是怎么设计的。 源码： ​	只要知道入口。使用时分几步。分别查看。 logback简单使用加入依赖 1234567891011121314151617&lt;dependencies&gt;    &lt;dependenc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="logback源码及原理分析">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/28/java/logback%E6%BA%90%E7%A0%81%E5%8F%8A%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="如何看源码及原理分析原理及源码查看是相辅相成。只能了解原理才能更好的了解源码；只有相应的了解源码才能知道是怎么原理实现。 原理： ​	自已设计一个。配合源码查看，验证框架设计者是怎么设计的。 源码： ​	只要知道入口。使用时分几步。分别查看。 logback简单使用加入依赖 1234567891011121314151617&lt;dependencies&gt;    &lt;dependenc">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-28T06:28:00.000Z">
+<meta property="article:modified_time" content="2022-05-28T12:16:55.768Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>logback源码及原理分析 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="logback源码及原理分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-28 14:28" pubdate>
+        2022年5月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      11k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      88 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">logback源码及原理分析</h1>
+            
+            <div class="markdown-body">
+              <h2 id="如何看源码及原理分析"><a href="#如何看源码及原理分析" class="headerlink" title="如何看源码及原理分析"></a>如何看源码及原理分析</h2><p>原理及源码查看是相辅相成。只能了解原理才能更好的了解源码；只有相应的了解源码才能知道是怎么原理实现。</p>
+<p>原理：</p>
+<p>​	自已设计一个。配合源码查看，验证框架设计者是怎么设计的。</p>
+<p>源码：</p>
+<p>​	只要知道入口。使用时分几步。分别查看。</p>
+<h2 id="logback简单使用"><a href="#logback简单使用" class="headerlink" title="logback简单使用"></a>logback简单使用</h2><p>加入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.slf4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>slf4j-api<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.7.25<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>ch.qos.logback<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>logback-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.1.11<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>ch.qos.logback<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>logback-classic<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.1.11<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(Test.class);<br>        logger.debug(<span class="hljs-string">&quot;Hello world.&quot;</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这时运行会在控制台打印日志。</p>
+<p>程序在IO上会有标准输入、标准输出、错误输出。</p>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>logback.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;FILE&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.FileAppender&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">file</span>&gt;</span>myApp.log<span class="hljs-tag">&lt;/<span class="hljs-name">file</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">pattern</span>&gt;</span>%msg%n<span class="hljs-tag">&lt;/<span class="hljs-name">pattern</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">root</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">appender-ref</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;FILE&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>如果添加这个文件到资源目录下，会把日志写入myApp.log文件。</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>从使用上来看。如果没有配置文件，框架会使用默认配置。有配置文件加载配置文件。根据提供的LoggerFactory类获取Logger,Logger调用方法打印日志。</p>
+<p>LoggerFactory 看名字就是一个工厂类。又是一个入口类。这个类肯定会有默认配置和加配置文件的功能。生成Logger。</p>
+<p>Logger是提供打印日志的方法。</p>
+<h3 id="加载配置文件源码"><a href="#加载配置文件源码" class="headerlink" title="加载配置文件源码"></a>加载配置文件源码</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Logger logger = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">LoggerFactory</span>.</span></span>get<span class="hljs-constructor">Logger(Test.<span class="hljs-params">class</span>)</span>;<br>Logger logger = get<span class="hljs-constructor">Logger(<span class="hljs-params">clazz</span>.<span class="hljs-params">getName</span>()</span>);<br>ILoggerFactory iLoggerFactory = get<span class="hljs-constructor">ILoggerFactory()</span>;<br>perform<span class="hljs-constructor">Initialization()</span>;<br>bind<span class="hljs-literal">()</span>;<br>staticLoggerBinderPathSet = find<span class="hljs-constructor">PossibleStaticLoggerBinderPathSet()</span>;  #这时会找到org/slf4j/impl/<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">StaticLoggerBinder</span>.</span></span><span class="hljs-keyword">class</span><br><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">StaticLoggerBinder</span>.</span></span>get<span class="hljs-constructor">Singleton()</span>;<br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SINGLETON</span>.</span></span>init<span class="hljs-literal">()</span>;<br><span class="hljs-keyword">new</span> <span class="hljs-constructor">ContextInitializer(<span class="hljs-params">defaultLoggerContext</span>)</span>.auto<span class="hljs-constructor">Config()</span>; # 看到autoConfig了应该就到目标了。<br><br>URL url = find<span class="hljs-constructor">URLOfDefaultConfigurationFile(<span class="hljs-params">true</span>)</span>;<br><br># 看系统参数logback.configurationFile 是否有设置<br>URL url = find<span class="hljs-constructor">ConfigFileURLFromSystemProperties(<span class="hljs-params">myClassLoader</span>, <span class="hljs-params">updateStatus</span>)</span>;<br><br># logback.groovy 配置文件<br>url = get<span class="hljs-constructor">Resource(GROOVY_AUTOCONFIG_FILE, <span class="hljs-params">myClassLoader</span>, <span class="hljs-params">updateStatus</span>)</span>;<br># logback-test.xml 配置文件<br>url = get<span class="hljs-constructor">Resource(TEST_AUTOCONFIG_FILE, <span class="hljs-params">myClassLoader</span>, <span class="hljs-params">updateStatus</span>)</span>;<br># logback.xml 配置文件<br>return get<span class="hljs-constructor">Resource(AUTOCONFIG_FILE, <span class="hljs-params">myClassLoader</span>, <span class="hljs-params">updateStatus</span>)</span>;<br><br>最后url 是null时说明没有配置文件<br><br>BasicConfigurator basicConfigurator = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BasicConfigurator()</span>;<br>basicConfigurator.set<span class="hljs-constructor">Context(<span class="hljs-params">loggerContext</span>)</span>;<br>basicConfigurator.configure(loggerContext);<br>#进入configure方法<br>这里配置了控制台输出的Appender、Encoder、Layout<br></code></pre></td></tr></table></figure>
+
+<p>这时就有Appender、Encoder、Layout要知道是啥</p>
+<p>Appender是输出到哪去。</p>
+<p>Encoder是输出的编码。</p>
+<p>Layout是打印日志的格式。</p>
+<h3 id="Logger上下文"><a href="#Logger上下文" class="headerlink" title="Logger上下文"></a>Logger上下文</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">contextSelectorBinder.get<span class="hljs-constructor">ContextSelector()</span><br>return contextSelectorBinder.get<span class="hljs-constructor">ContextSelector()</span>.get<span class="hljs-constructor">LoggerContext()</span>;<br>ch.qos.logback.classic.LoggerContext<br></code></pre></td></tr></table></figure>
+
+<h3 id="Logger"><a href="#Logger" class="headerlink" title="Logger"></a>Logger</h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">return iLoggerFactory.get<span class="hljs-constructor">Logger(<span class="hljs-params">name</span>)</span>;<br>LoggerContext类<br>childLogger = logger.create<span class="hljs-constructor">ChildByName(<span class="hljs-params">childName</span>)</span>;<br>childLogger = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Logger(<span class="hljs-params">childName</span>, <span class="hljs-params">this</span>, <span class="hljs-params">this</span>.<span class="hljs-params">loggerContext</span>)</span>;<br>loggerCache.put(childName, childLogger);<br></code></pre></td></tr></table></figure>
+
+<p>logger的结构为:  比如有一个com.test.a的类，这时会生成如下logger的父子结构</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs avrasm">root<br>	<span class="hljs-keyword">com</span><br>		<span class="hljs-keyword">com</span>.test<br>			<span class="hljs-keyword">com</span>.test.a<br></code></pre></td></tr></table></figure>
+
+<h3 id="打印日志源码"><a href="#打印日志源码" class="headerlink" title="打印日志源码"></a>打印日志源码</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs csharp">logger.debug(<span class="hljs-string">&quot;Hello world.&quot;</span>);<br>filterAndLog_0_Or3Plus(FQCN, <span class="hljs-literal">null</span>, Level.DEBUG, msg, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);<br>buildLoggingEventAndAppend(localFQCN, marker, level, msg, <span class="hljs-keyword">params</span>, t);<br>LoggingEvent le = <span class="hljs-keyword">new</span> LoggingEvent(localFQCN, <span class="hljs-keyword">this</span>, level, msg, t, <span class="hljs-keyword">params</span>);<br>callAppenders(le);<br>writes += l.appendLoopOnAppenders(<span class="hljs-keyword">event</span>);<br><span class="hljs-keyword">return</span> aai.appendLoopOnAppenders(<span class="hljs-keyword">event</span>);<br>final Appender&lt;E&gt;[] appenderArray = appenderList.asTypedArray();<br>appenderArray[i].doAppend(e);<br><span class="hljs-meta"># 这时会调用具体的Appender的实现类</span><br><span class="hljs-keyword">this</span>.append(eventObject);<br>UnsynchronizedAppenderBase.doAppend(E eventObject) <br><span class="hljs-keyword">this</span>.append(eventObject);<br>OutputStreamAppender.subAppend(E <span class="hljs-keyword">event</span>)<br><span class="hljs-keyword">lock</span>.<span class="hljs-keyword">lock</span>();<br><span class="hljs-keyword">try</span> &#123;<br>	writeOut(<span class="hljs-keyword">event</span>);<br>&#125; <span class="hljs-keyword">finally</span> &#123;<br>	<span class="hljs-keyword">lock</span>.unlock();<br>&#125;<br><span class="hljs-keyword">this</span>.encoder.doEncode(<span class="hljs-keyword">event</span>);<br>String txt = layout.doLayout(<span class="hljs-keyword">event</span>);<br>outputStream.write(convertToBytes(txt));<br><span class="hljs-keyword">if</span> (immediateFlush)<br>	outputStream.flush();<br><br>System.<span class="hljs-keyword">out</span>.write(b);<br></code></pre></td></tr></table></figure>
+
+<p>这时发现consoleAppender使用ReentrantLock， system.out.write。</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>Logger</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">ch<span class="hljs-selector-class">.qos</span><span class="hljs-selector-class">.logback</span><span class="hljs-selector-class">.classic</span>.Logger<br></code></pre></td></tr></table></figure>
+
+<p>Appender  在root的logger中AppenderAttachableImpl aai</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">Appender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>	UnsynchronizedAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>		AsyncAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>			#异步写日志<br>    	AsyncAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic)<br>    OutputStreamAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>    	# 同步写控制台<br>    	ConsoleAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>    	# 同步写文件<br>    	FileAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>    		# 滚动同步写文件<br>    		RollingFileAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>rolling)<br>    DBAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span><span class="hljs-built_in">db</span>)<br>    	DBAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span><span class="hljs-built_in">db</span>)<br>	AppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core)<br>    NOPAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>helpers)<br>    AbstractServerSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net<span class="hljs-number">.</span>server)<br>    	SSLServerSocketAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net<span class="hljs-number">.</span>server)<br>    		SSLServerSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net<span class="hljs-number">.</span>server)<br>    	ServerSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net<span class="hljs-number">.</span>server)<br>    JMSAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net)<br>    	JMSTopicAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br>    	JMSQueueAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br>    SyslogAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net)<br>    	SyslogAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br>    SMTPAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net)<br>    	SMTPAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br>    SiftingAppenderBase (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>sift)<br>    	SiftingAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>sift)<br>    CyclicBufferAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>read)<br>    ListAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>read)<br>    AbstractSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net)<br>    	AbstractSSLSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>core<span class="hljs-number">.</span>net)<br>    		SSLSocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br>    	SocketAppender (<span class="hljs-number">ch</span><span class="hljs-number">.</span>qos<span class="hljs-number">.</span>logback<span class="hljs-number">.</span>classic<span class="hljs-number">.</span>net)<br></code></pre></td></tr></table></figure>
+
+<p>常用的 ConsoleAppender、FileAppender、RollingFileAppender、AsyncAppender</p>
+<p>Encoder</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs scss">Encoder (ch.qos.logback.core.encoder)<br>	EncoderBase (ch.qos.logback.core.encoder)<br>		# 输出不变只加换行符<br>    EchoEncoder (ch.qos.logback.core.encoder)<br>    # 布局包装<br>    LayoutWrappingEncoder (ch.qos.logback.core.encoder)<br>    	PatternLayoutEncoderBase (ch.qos.logback.core.pattern)<br>    		# 图案布局<br>    		PatternLayoutEncoder (ch.qos.logback.classic.encoder)<br>    ObjectStreamEncoder (ch.qos.logback.core.encoder)<br></code></pre></td></tr></table></figure>
+
+<p>一般使用LayoutWrappingEncoder、PatternLayoutEncoder</p>
+<p>Layout</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs scss">Layout (ch.qos.logback.core)<br>  LayoutBase (ch.qos.logback.core)<br>  	# xml布局<br>    XMLLayout (ch.qos.logback.classic.log4j)<br>    # 固定格式的布局  %d&#123;HH:mm:ss.SSS&#125; <span class="hljs-selector-attr">[%thread]</span> %-<span class="hljs-number">5</span>level %logger&#123;<span class="hljs-number">36</span>&#125; - %msg%n<br>    TTLLLayout (ch.qos.logback.classic.layout)<br>    HTMLLayoutBase (ch.qos.logback.core.html)<br>      # <span class="hljs-selector-tag">html</span>布局<br>    	HTMLLayout (ch.qos.logback.classic.html)<br>    EchoLayout (ch.qos.logback.core.layout)<br>    PatternLayoutBase (ch.qos.logback.core.pattern)<br>    	# 使用模式字符串配置的灵活布局。<br>    	PatternLayout (ch.qos.logback.classic)<br></code></pre></td></tr></table></figure>
+
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>  多个appender<br>  <span class="hljs-tag">&lt;<span class="hljs-name">appender</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br>  多个logger<br>  <span class="hljs-tag">&lt;<span class="hljs-name">logger</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">logger</span>&gt;</span><br>  一个root<br>  <span class="hljs-tag">&lt;<span class="hljs-name">root</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 日志存放路径 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;log.path&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;/Users/qichuanhan/logs&quot;</span> /&gt;</span><br>    <span class="hljs-comment">&lt;!-- 日志输出格式 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;log.pattern&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;%d&#123;HH:mm:ss.SSS&#125; -[%X&#123;traceId&#125;]- [%thread] %-5level %logger&#123;20&#125; - [%method,%line] - %msg%n&quot;</span> /&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 控制台输出 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;console&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">pattern</span>&gt;</span>$&#123;log.pattern&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">pattern</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 系统日志输出 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;file_info&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">file</span>&gt;</span>$&#123;log.path&#125;/my-info.log<span class="hljs-tag">&lt;/<span class="hljs-name">file</span>&gt;</span><br>        <span class="hljs-comment">&lt;!-- 循环政策：基于时间创建日志文件 --&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">rollingPolicy</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 日志文件名格式 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">fileNamePattern</span>&gt;</span>$&#123;log.path&#125;/sys-info.%d&#123;yyyy-MM-dd&#125;.log<span class="hljs-tag">&lt;/<span class="hljs-name">fileNamePattern</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 日志最大的历史 60天 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">maxHistory</span>&gt;</span>60<span class="hljs-tag">&lt;/<span class="hljs-name">maxHistory</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">rollingPolicy</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">pattern</span>&gt;</span>$&#123;log.pattern&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">pattern</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">filter</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.classic.filter.LevelFilter&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 过滤的级别 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">level</span>&gt;</span>INFO<span class="hljs-tag">&lt;/<span class="hljs-name">level</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 匹配时的操作：接收（记录） --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">onMatch</span>&gt;</span>ACCEPT<span class="hljs-tag">&lt;/<span class="hljs-name">onMatch</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 不匹配时的操作：拒绝（不记录） --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">onMismatch</span>&gt;</span>DENY<span class="hljs-tag">&lt;/<span class="hljs-name">onMismatch</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;file_error&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">file</span>&gt;</span>$&#123;log.path&#125;/my-error.log<span class="hljs-tag">&lt;/<span class="hljs-name">file</span>&gt;</span><br>        <span class="hljs-comment">&lt;!-- 循环政策：基于时间创建日志文件 --&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">rollingPolicy</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 日志文件名格式 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">fileNamePattern</span>&gt;</span>$&#123;log.path&#125;/sys-error.%d&#123;yyyy-MM-dd&#125;.log<span class="hljs-tag">&lt;/<span class="hljs-name">fileNamePattern</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 日志最大的历史 60天 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">maxHistory</span>&gt;</span>60<span class="hljs-tag">&lt;/<span class="hljs-name">maxHistory</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">rollingPolicy</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">pattern</span>&gt;</span>$&#123;log.pattern&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">pattern</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">filter</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.classic.filter.LevelFilter&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 过滤的级别 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">level</span>&gt;</span>ERROR<span class="hljs-tag">&lt;/<span class="hljs-name">level</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 匹配时的操作：接收（记录） --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">onMatch</span>&gt;</span>ACCEPT<span class="hljs-tag">&lt;/<span class="hljs-name">onMatch</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 不匹配时的操作：拒绝（不记录） --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">onMismatch</span>&gt;</span>DENY<span class="hljs-tag">&lt;/<span class="hljs-name">onMismatch</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">root</span> <span class="hljs-attr">level</span>=<span class="hljs-string">&quot;info&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">appender-ref</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;console&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">appender-ref</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;file_info&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">appender-ref</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;file_error&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="AsyncAppender"><a href="#AsyncAppender" class="headerlink" title="AsyncAppender"></a>AsyncAppender</h3><p>消费者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Worker</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span> &#123;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            AsyncAppenderBase&lt;E&gt; parent = AsyncAppenderBase.<span class="hljs-built_in">this</span>;<br>            AppenderAttachableImpl&lt;E&gt; aai = parent.aai;<br><br>            <span class="hljs-comment">// loop while the parent is started</span><br>            <span class="hljs-keyword">while</span> (parent.isStarted()) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">E</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> parent.blockingQueue.take();<br>                    aai.appendLoopOnAppenders(e);<br>                &#125; <span class="hljs-keyword">catch</span> (InterruptedException ie) &#123;<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>            &#125;<br><br>            addInfo(<span class="hljs-string">&quot;Worker thread will flush remaining events before exiting. &quot;</span>);<br><br>            <span class="hljs-keyword">for</span> (E e : parent.blockingQueue) &#123;<br>                aai.appendLoopOnAppenders(e);<br>                parent.blockingQueue.remove(e);<br>            &#125;<br><br>            aai.detachAndStopAllAppenders();<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">BlockingQueue&lt;E&gt; blockingQueue;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">DEFAULT_QUEUE_SIZE</span> <span class="hljs-operator">=</span> <span class="hljs-number">256</span>;<br></code></pre></td></tr></table></figure>
+
+<p>生产者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java">UnsynchronizedAppenderBase.doAppend(E eventObject);<br><span class="hljs-built_in">this</span>.append(eventObject);<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">append</span><span class="hljs-params">(E eventObject)</span> &#123;<br>  <span class="hljs-keyword">if</span> (isQueueBelowDiscardingThreshold() &amp;&amp; isDiscardable(eventObject)) &#123;<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br>  preprocess(eventObject);<br>  put(eventObject);<br>&#125;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">put</span><span class="hljs-params">(E eventObject)</span> &#123;<br>  <span class="hljs-keyword">if</span> (neverBlock) &#123;<br>    blockingQueue.offer(eventObject);<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      blockingQueue.put(eventObject);<br>    &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>      <span class="hljs-comment">// Interruption of current thread when in doAppend method should not be consumed</span><br>      <span class="hljs-comment">// by AsyncAppender</span><br>      Thread.currentThread().interrupt();<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/java/">java</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/30/spring/spring_boot_logback%E8%AF%A6%E8%A7%A3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring_boot_logback详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/23/linux/linux%E6%9F%A5%E7%9C%8BCPU%E6%88%96%E5%86%85%E5%AD%98%E5%A4%9A%E7%9A%84%E8%BF%9B%E7%A8%8B/">
+                        <span class="hidden-mobile">linux查看CPU或内存多的进程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

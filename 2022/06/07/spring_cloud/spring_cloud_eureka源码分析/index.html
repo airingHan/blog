@@ -1,0 +1,795 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="服务端入口从使用上来说： 需要在pom.xml中添加eureka-server的依赖。 根据spring boot的自动配置机制。 在eureka-server的jar包中spring.factories中包含org.springframework.cloud.netflix.eureka.server.EurekaServerAutoConfiguration 查看类： 1@Conditiona">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring_cloud_eureka源码分析">
+<meta property="og:url" content="http://hanqichuan.com/2022/06/07/spring_cloud/spring_cloud_eureka%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="服务端入口从使用上来说： 需要在pom.xml中添加eureka-server的依赖。 根据spring boot的自动配置机制。 在eureka-server的jar包中spring.factories中包含org.springframework.cloud.netflix.eureka.server.EurekaServerAutoConfiguration 查看类： 1@Conditiona">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//eureka%E4%BD%BF%E7%94%A8%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg">
+<meta property="og:image" content="http://hanqichuan.com/.com//">
+<meta property="og:image" content="http://hanqichuan.com/.com//eureka-client%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg">
+<meta property="og:image" content="http://hanqichuan.com/.com//eureka%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//eureka-server%E5%BF%83%E8%B7%B3%E6%8E%A5%E6%94%B6%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg">
+<meta property="article:published_time" content="2022-06-07T07:16:00.000Z">
+<meta property="article:modified_time" content="2022-06-13T08:37:25.968Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="spring_cloud">
+<meta property="article:tag" content="spring_cloud_eureka">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//eureka%E4%BD%BF%E7%94%A8%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg">
+  
+  
+  <title>spring_cloud_eureka源码分析 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="spring_cloud_eureka源码分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-07 15:16" pubdate>
+        2022年6月7日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      32k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      269 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">spring_cloud_eureka源码分析</h1>
+            
+            <div class="markdown-body">
+              <h2 id="服务端入口"><a href="#服务端入口" class="headerlink" title="服务端入口"></a>服务端入口</h2><p>从使用上来说：</p>
+<p>需要在pom.xml中添加eureka-server的依赖。</p>
+<p>根据spring boot的自动配置机制。</p>
+<p>在eureka-server的jar包中spring.factories中包含org.springframework.cloud.netflix.eureka.server.EurekaServerAutoConfiguration</p>
+<p>查看类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@ConditionalOnBean(<span class="hljs-params">EurekaServerMarkerConfiguration.Marker.<span class="hljs-keyword">class</span></span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>意思是只有EurekaServerMarkerConfiguration.Marker这个实例才生效。</p>
+<p>这就对应：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@EnableEurekaServer</span><br></code></pre></td></tr></table></figure>
+
+<p>注解里</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Import(EurekaServerMarkerConfiguration.class)</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">EurekaServerMarkerConfiguration中有实例Marker的bean<br></code></pre></td></tr></table></figure>
+
+<p>这个Marker是个开关类。就是实例化后才启用eureka-server相关的配置。</p>
+<h2 id="eureka使用架构图"><a href="#eureka使用架构图" class="headerlink" title="eureka使用架构图"></a>eureka使用架构图</h2><p><img src="/.com//eureka%E4%BD%BF%E7%94%A8%E6%9E%B6%E6%9E%84%E5%9B%BE.jpg" srcset="/img/loading.gif" lazyload alt="eureka使用架构图"><img src="/.com//" srcset="/img/loading.gif" lazyload alt="eureka使用架构图"></p>
+<h2 id="客户端入口源码"><a href="#客户端入口源码" class="headerlink" title="客户端入口源码"></a>客户端入口源码</h2><p>Eureka-client的jar包中org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">RefreshableEurekaClientConfiguration类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean(destroyMethod = &quot;shutdown&quot;)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean(value = EurekaClient.class,</span><br><span class="hljs-meta">				search = SearchStrategy.CURRENT)</span><br>		<span class="hljs-meta">@org</span>.springframework.cloud.context.config.annotation.RefreshScope<br>		<span class="hljs-meta">@Lazy</span><br>		<span class="hljs-keyword">public</span> EurekaClient <span class="hljs-title function_">eurekaClient</span><span class="hljs-params">(ApplicationInfoManager manager,</span><br><span class="hljs-params">				EurekaClientConfig config, EurekaInstanceConfig instance,</span><br><span class="hljs-params">				<span class="hljs-meta">@Autowired(required = false)</span> HealthCheckHandler healthCheckHandler)</span> &#123;<br>			<span class="hljs-comment">// If we use the proxy of the ApplicationInfoManager we could run into a</span><br>			<span class="hljs-comment">// problem</span><br>			<span class="hljs-comment">// when shutdown is called on the CloudEurekaClient where the</span><br>			<span class="hljs-comment">// ApplicationInfoManager bean is</span><br>			<span class="hljs-comment">// requested but wont be allowed because we are shutting down. To avoid this</span><br>			<span class="hljs-comment">// we use the</span><br>			<span class="hljs-comment">// object directly.</span><br>			ApplicationInfoManager appManager;<br>			<span class="hljs-keyword">if</span> (AopUtils.isAopProxy(manager)) &#123;<br>				appManager = ProxyUtils.getTargetObject(manager);<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				appManager = manager;<br>			&#125;<br>			<span class="hljs-type">CloudEurekaClient</span> <span class="hljs-variable">cloudEurekaClient</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CloudEurekaClient</span>(appManager,<br>					config, <span class="hljs-built_in">this</span>.optionalArgs, <span class="hljs-built_in">this</span>.context);<br>			cloudEurekaClient.registerHealthCheck(healthCheckHandler);<br>			<span class="hljs-keyword">return</span> cloudEurekaClient;<br>		&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">CloudEurekaClient</span> <span class="hljs-variable">cloudEurekaClient</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CloudEurekaClient</span>(appManager,<br>					config, <span class="hljs-built_in">this</span>.optionalArgs, <span class="hljs-built_in">this</span>.context);<br><span class="hljs-built_in">super</span>(applicationInfoManager, config, args);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Inject</span><br>   DiscoveryClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig config, AbstractDiscoveryClientOptionalArgs args,<br>                   Provider&lt;BackupRegistry&gt; backupRegistryProvider, EndpointRandomizer endpointRandomizer)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">initScheduledTasks();<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">InstanceInfoReplicator类<br></code></pre></td></tr></table></figure>
+
+<p>最终调用注册接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">discoveryClient.register();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> EurekaHttpResponse&lt;Void&gt; <span class="hljs-title function_">register</span><span class="hljs-params">(InstanceInfo info)</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">urlPath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;apps/&quot;</span> + info.getAppName();<br>        <span class="hljs-type">ClientResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">Builder</span> <span class="hljs-variable">resourceBuilder</span> <span class="hljs-operator">=</span> jerseyClient.resource(serviceUrl).path(urlPath).getRequestBuilder();<br>            addExtraHeaders(resourceBuilder);<br>            response = resourceBuilder<br>                    .header(<span class="hljs-string">&quot;Accept-Encoding&quot;</span>, <span class="hljs-string">&quot;gzip&quot;</span>)<br>                    .type(MediaType.APPLICATION_JSON_TYPE)<br>                    .accept(MediaType.APPLICATION_JSON)<br>                    .post(ClientResponse.class, info);<br>            <span class="hljs-keyword">return</span> anEurekaHttpResponse(response.getStatus()).headers(headersOf(response)).build();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>                logger.debug(<span class="hljs-string">&quot;Jersey HTTP POST &#123;&#125;/&#123;&#125; with instance &#123;&#125;; statusCode=&#123;&#125;&quot;</span>, serviceUrl, urlPath, info.getId(),<br>                        response == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;N/A&quot;</span> : response.getStatus());<br>            &#125;<br>            <span class="hljs-keyword">if</span> (response != <span class="hljs-literal">null</span>) &#123;<br>                response.close();<br>            &#125;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这时发现类里大量的使用的线程池执行。</p>
+<p><img src="/.com//eureka-client%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg" srcset="/img/loading.gif" lazyload alt="eureka-client请求流程图"></p>
+<p>注册定时任务是有条件的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">InstanceInfoReplicator类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        discoveryClient.refreshInstanceInfo();<br><br>        <span class="hljs-type">Long</span> <span class="hljs-variable">dirtyTimestamp</span> <span class="hljs-operator">=</span> instanceInfo.isDirtyWithTime();<br>        <span class="hljs-keyword">if</span> (dirtyTimestamp != <span class="hljs-literal">null</span>) &#123;<br>            discoveryClient.register();<br>            instanceInfo.unsetIsDirty(dirtyTimestamp);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Throwable t) &#123;<br>        logger.warn(<span class="hljs-string">&quot;There was a problem with the instance info replicator&quot;</span>, t);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        <span class="hljs-type">Future</span> <span class="hljs-variable">next</span> <span class="hljs-operator">=</span> scheduler.schedule(<span class="hljs-built_in">this</span>, replicationIntervalSeconds, TimeUnit.SECONDS);<br>        scheduledPeriodicRef.set(next);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>就是只有dirtyTimestamp时间戳不等于null时才去注册。就是变成脏的了需要去注册。</p>
+<h3 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h3><p>构建jersey server</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br>	<span class="hljs-keyword">public</span> javax.ws.rs.core.Application <span class="hljs-title function_">jerseyApplication</span><span class="hljs-params">(Environment environment,</span><br><span class="hljs-params">			ResourceLoader resourceLoader)</span><br></code></pre></td></tr></table></figure>
+
+<p>相当于加载了这个类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ApplicationsResource</span><br></code></pre></td></tr></table></figure>
+
+<p>看上图可知，客户端注册调用的是applicationResource的addInstance方法</p>
+<p>服务抽象为InstanceInfo</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">registry.register(info, <span class="hljs-string">&quot;true&quot;</span>.equals(isReplication));<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">InstanceRegistry类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">register</span><span class="hljs-params">(<span class="hljs-keyword">final</span> InstanceInfo info, <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> isReplication)</span> &#123;<br>		handleRegistration(info, resolveInstanceLeaseDuration(info), isReplication);<br>		<span class="hljs-built_in">super</span>.register(info, isReplication);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>super.register(info, isReplication);</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">AbstractInstanceRegistry类<br></code></pre></td></tr></table></figure>
+
+<p>容器：内存存储的服务实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ConcurrentHashMap&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt; registry<br>            = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt;();<br></code></pre></td></tr></table></figure>
+
+<p>AbstractInstanceRegistry类register方法最后一行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">invalidateCache(registrant.getAppName(), registrant.getVIPAddress(), registrant.getSecureVipAddress());<br></code></pre></td></tr></table></figure>
+
+<p>发现 readWriteCacheMap, 这相当于一个缓存,调用了缓存删除</p>
+<h2 id="获取单个接口"><a href="#获取单个接口" class="headerlink" title="获取单个接口"></a>获取单个接口</h2><p>服务器端源码</p>
+<p>同注册，可以获取到applicationResource</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Path(&quot;&#123;appId&#125;&quot;)</span><br><span class="hljs-keyword">public</span> ApplicationResource <span class="hljs-title function_">getApplicationResource</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-meta">@PathParam(&quot;version&quot;)</span> String version,</span><br><span class="hljs-params">        <span class="hljs-meta">@PathParam(&quot;appId&quot;)</span> String appId)</span> &#123;<br>    CurrentRequestVersion.set(Version.toEnum(version));<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApplicationResource</span>(appId, serverConfig, registry);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        CurrentRequestVersion.remove();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">applicationResource.getApplication()<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">ResponseCacheImpl类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> String <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Key key)</span> &#123;<br>        <span class="hljs-keyword">return</span> get(key, shouldUseReadOnlyResponseCache);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java">String <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Key key, <span class="hljs-type">boolean</span> useReadOnlyCache)</span> &#123;<br>    <span class="hljs-type">Value</span> <span class="hljs-variable">payload</span> <span class="hljs-operator">=</span> getValue(key, useReadOnlyCache);<br>    <span class="hljs-keyword">if</span> (payload == <span class="hljs-literal">null</span> || payload.getPayload().equals(EMPTY_PAYLOAD)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> payload.getPayload();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java">Value <span class="hljs-title function_">getValue</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Key key, <span class="hljs-type">boolean</span> useReadOnlyCache)</span> &#123;<br>    <span class="hljs-type">Value</span> <span class="hljs-variable">payload</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">if</span> (useReadOnlyCache) &#123;<br>            <span class="hljs-keyword">final</span> <span class="hljs-type">Value</span> <span class="hljs-variable">currentPayload</span> <span class="hljs-operator">=</span> readOnlyCacheMap.get(key);<br>            <span class="hljs-keyword">if</span> (currentPayload != <span class="hljs-literal">null</span>) &#123;<br>                payload = currentPayload;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                payload = readWriteCacheMap.get(key);<br>                readOnlyCacheMap.put(key, payload);<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            payload = readWriteCacheMap.get(key);<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Throwable t) &#123;<br>        logger.error(<span class="hljs-string">&quot;Cannot get value for key : &#123;&#125;&quot;</span>, key, t);<br>    &#125;<br>    <span class="hljs-keyword">return</span> payload;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>发现是去从缓存中取。readOnlyCacheMap 和  readWriteCacheMap。</p>
+<h3 id="readWriteCacheMap"><a href="#readWriteCacheMap" class="headerlink" title="readWriteCacheMap"></a>readWriteCacheMap</h3><p>初始化：在new ResponseCacheImpl时进行初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">this</span>.readWriteCacheMap =<br>                CacheBuilder.newBuilder().initialCapacity(serverConfig.getInitialCapacityOfResponseCache())<br>                        .expireAfterWrite(serverConfig.getResponseCacheAutoExpirationInSeconds(), TimeUnit.SECONDS)<br>                        .removalListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RemovalListener</span>&lt;Key, Value&gt;() &#123;<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onRemoval</span><span class="hljs-params">(RemovalNotification&lt;Key, Value&gt; notification)</span> &#123;<br>                                <span class="hljs-type">Key</span> <span class="hljs-variable">removedKey</span> <span class="hljs-operator">=</span> notification.getKey();<br>                                <span class="hljs-keyword">if</span> (removedKey.hasRegions()) &#123;<br>                                    <span class="hljs-type">Key</span> <span class="hljs-variable">cloneWithNoRegions</span> <span class="hljs-operator">=</span> removedKey.cloneWithoutRegions();<br>                                    regionSpecificKeys.remove(cloneWithNoRegions, removedKey);<br>                                &#125;<br>                            &#125;<br>                        &#125;)<br>                        .build(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CacheLoader</span>&lt;Key, Value&gt;() &#123;<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> Value <span class="hljs-title function_">load</span><span class="hljs-params">(Key key)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                                <span class="hljs-keyword">if</span> (key.hasRegions()) &#123;<br>                                    <span class="hljs-type">Key</span> <span class="hljs-variable">cloneWithNoRegions</span> <span class="hljs-operator">=</span> key.cloneWithoutRegions();<br>                                    regionSpecificKeys.put(cloneWithNoRegions, key);<br>                                &#125;<br>                                <span class="hljs-type">Value</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span> generatePayload(key);<br>                                <span class="hljs-keyword">return</span> value;<br>                            &#125;<br>                        &#125;);<br></code></pre></td></tr></table></figure>
+
+<p>初始化容量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">CacheBuilder.newBuilder().initialCapacity(serverConfig.getInitialCapacityOfResponseCache())<br></code></pre></td></tr></table></figure>
+
+<p>过期：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">.expireAfterWrite(serverConfig.getResponseCacheAutoExpirationInSeconds(), TimeUnit.SECONDS)<br></code></pre></td></tr></table></figure>
+
+<p>删除监听器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">.removalListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RemovalListener</span>&lt;Key, Value&gt;() &#123;<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onRemoval</span><span class="hljs-params">(RemovalNotification&lt;Key, Value&gt; notification)</span> &#123;<br>                                <span class="hljs-type">Key</span> <span class="hljs-variable">removedKey</span> <span class="hljs-operator">=</span> notification.getKey();<br>                                <span class="hljs-keyword">if</span> (removedKey.hasRegions()) &#123;<br>                                    <span class="hljs-type">Key</span> <span class="hljs-variable">cloneWithNoRegions</span> <span class="hljs-operator">=</span> removedKey.cloneWithoutRegions();<br>                                    regionSpecificKeys.remove(cloneWithNoRegions, removedKey);<br>                                &#125;<br>                            &#125;<br>                        &#125;)<br></code></pre></td></tr></table></figure>
+
+<p>加载：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java">.build(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CacheLoader</span>&lt;Key, Value&gt;() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Value <span class="hljs-title function_">load</span><span class="hljs-params">(Key key)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">if</span> (key.hasRegions()) &#123;<br>            <span class="hljs-type">Key</span> <span class="hljs-variable">cloneWithNoRegions</span> <span class="hljs-operator">=</span> key.cloneWithoutRegions();<br>            regionSpecificKeys.put(cloneWithNoRegions, key);<br>        &#125;<br>        <span class="hljs-type">Value</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span> generatePayload(key);<br>        <span class="hljs-keyword">return</span> value;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Value</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span> generatePayload(key);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">payload = getPayLoad(key, registry.getApplication(key.getName()));<br></code></pre></td></tr></table></figure>
+
+<p>发现如果readWriteCacheMap没有会去 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">ConcurrentHashMap&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt; registry<br>            = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt;();<br></code></pre></td></tr></table></figure>
+
+<p>里取。</p>
+<h3 id="readOnlyCacheMap"><a href="#readOnlyCacheMap" class="headerlink" title="readOnlyCacheMap"></a>readOnlyCacheMap</h3><p>选中readOnlyCacheMap，查找用法。发现readOnlyCacheMap是在ResponseCacheImpl实例化的成员变量初始化的。</p>
+<p>同样查找用法，发现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> TimerTask <span class="hljs-title function_">getCacheUpdateTask</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TimerTask</span>() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>                logger.debug(<span class="hljs-string">&quot;Updating the client cache from response cache&quot;</span>);<br>                <span class="hljs-keyword">for</span> (Key key : readOnlyCacheMap.keySet()) &#123;<br>                    <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>                        logger.debug(<span class="hljs-string">&quot;Updating the client cache from response cache for key : &#123;&#125; &#123;&#125; &#123;&#125; &#123;&#125;&quot;</span>,<br>                                key.getEntityType(), key.getName(), key.getVersion(), key.getType());<br>                    &#125;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        CurrentRequestVersion.set(key.getVersion());<br>                        <span class="hljs-type">Value</span> <span class="hljs-variable">cacheValue</span> <span class="hljs-operator">=</span> readWriteCacheMap.get(key);<br>                        <span class="hljs-type">Value</span> <span class="hljs-variable">currentCacheValue</span> <span class="hljs-operator">=</span> readOnlyCacheMap.get(key);<br>                        <span class="hljs-keyword">if</span> (cacheValue != currentCacheValue) &#123;<br>                            readOnlyCacheMap.put(key, cacheValue);<br>                        &#125;<br>                    &#125; <span class="hljs-keyword">catch</span> (Throwable th) &#123;<br>                        logger.error(<span class="hljs-string">&quot;Error while updating the client cache from response cache for key &#123;&#125;&quot;</span>, key.toStringCompact(), th);<br>                    &#125; <span class="hljs-keyword">finally</span> &#123;<br>                        CurrentRequestVersion.remove();<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面的定时任务也是new ResponseCacheImpl时初始化的定时任务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (shouldUseReadOnlyResponseCache) &#123;<br>    timer.schedule(getCacheUpdateTask(),<br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(((System.currentTimeMillis() / responseCacheUpdateIntervalMs) * responseCacheUpdateIntervalMs)<br>                    + responseCacheUpdateIntervalMs),<br>            responseCacheUpdateIntervalMs);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>间隔responseCacheUpdateIntervalMs时间从readWriteCacheMap同步一次。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/.com//eureka%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98.png" srcset="/img/loading.gif" lazyload alt="eureka服务端三级缓存"></p>
+<p>一级缓存是实时变化的，多个服务的多个实例向eureka-server发送。有并发等问题。</p>
+<p>二级缓存是对一级缓存的冷热key缓存，而且提供了缓存失效的方法。当注册表或者增量列表发生变化时，就会缓存失效。</p>
+<p>三级缓存是对读写缓存的缓存。它主要解决读写缓存频繁失效而导致拉取注册表和增量注册表时，请求直击eureka server 本地缓存注册表的情况。</p>
+<p>因为eureka server本地注册表是一个频繁读写的ConcurrentHashMap，为了减轻它的压力，才引入了读写缓存。</p>
+<p>而读写缓存为了保持和eureka server本地缓存的一次性，在修改本地缓存的同时会让读写缓存失效。</p>
+<p>只读缓存的存在目的：</p>
+<p>1.针对短期重启行为和短期网络波动行为进行一个客户端注册表保护。</p>
+<p>2.在二级缓存被删除时，继续给eureka-client提供服务，不然直接使用二级缓存，会出现client获取无可用服务。</p>
+<h2 id="获取注册表接口"><a href="#获取注册表接口" class="headerlink" title="获取注册表接口"></a>获取注册表接口</h2><h3 id="客户端源码"><a href="#客户端源码" class="headerlink" title="客户端源码"></a>客户端源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">cacheRefreshTask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TimedSupervisorTask</span>(<br>        <span class="hljs-string">&quot;cacheRefresh&quot;</span>,<br>        scheduler,<br>        cacheRefreshExecutor,<br>        registryFetchIntervalSeconds,<br>        TimeUnit.SECONDS,<br>        expBackOffBound,<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">CacheRefreshThread</span>()<br>);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CacheRefreshThread</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Runnable</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        refreshRegistry();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">boolean</span> <span class="hljs-variable">success</span> <span class="hljs-operator">=</span> fetchRegistry(remoteRegionsModified);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">getAndStoreFullRegistry();<br>或者<br>getAndUpdateDelta(applications);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> EurekaHttpResponse&lt;Applications&gt; <span class="hljs-title function_">getApplications</span><span class="hljs-params">(String... regions)</span> &#123;<br>    <span class="hljs-keyword">return</span> getApplicationsInternal(<span class="hljs-string">&quot;apps/&quot;</span>, regions);<br>&#125;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> EurekaHttpResponse&lt;Applications&gt; <span class="hljs-title function_">getDelta</span><span class="hljs-params">(String... regions)</span> &#123;<br>    <span class="hljs-keyword">return</span> getApplicationsInternal(<span class="hljs-string">&quot;apps/delta&quot;</span>, regions);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="服务器端-1"><a href="#服务器端-1" class="headerlink" title="服务器端"></a>服务器端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">ApplicationsResource类<br></code></pre></td></tr></table></figure>
+
+<p>获取全部：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@GET</span><br>    <span class="hljs-keyword">public</span> Response <span class="hljs-title function_">getContainers</span><span class="hljs-params">(<span class="hljs-meta">@PathParam(&quot;version&quot;)</span> String version,</span><br><span class="hljs-params">                                  <span class="hljs-meta">@HeaderParam(HEADER_ACCEPT)</span> String acceptHeader,</span><br><span class="hljs-params">                                  <span class="hljs-meta">@HeaderParam(HEADER_ACCEPT_ENCODING)</span> String acceptEncoding,</span><br><span class="hljs-params">                                  <span class="hljs-meta">@HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT)</span> String eurekaAccept,</span><br><span class="hljs-params">                                  <span class="hljs-meta">@Context</span> UriInfo uriInfo,</span><br><span class="hljs-params">                                  <span class="hljs-meta">@Nullable</span> <span class="hljs-meta">@QueryParam(&quot;regions&quot;)</span> String regionsStr)</span> &#123;<br><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">isRemoteRegionRequested</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span> != regionsStr &amp;&amp; !regionsStr.isEmpty();<br>        String[] regions = <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">if</span> (!isRemoteRegionRequested) &#123;<br>            EurekaMonitors.GET_ALL.increment();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            regions = regionsStr.toLowerCase().split(<span class="hljs-string">&quot;,&quot;</span>);<br>            Arrays.sort(regions); <span class="hljs-comment">// So we don&#x27;t have different caches for same regions queried in different order.</span><br>            EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();<br>        &#125;<br><br>        <span class="hljs-comment">// Check if the server allows the access to the registry. The server can</span><br>        <span class="hljs-comment">// restrict access if it is not</span><br>        <span class="hljs-comment">// ready to serve traffic depending on various reasons.</span><br>        <span class="hljs-keyword">if</span> (!registry.shouldAllowAccess(isRemoteRegionRequested)) &#123;<br>            <span class="hljs-keyword">return</span> Response.status(Status.FORBIDDEN).build();<br>        &#125;<br>        CurrentRequestVersion.set(Version.toEnum(version));<br>        <span class="hljs-type">KeyType</span> <span class="hljs-variable">keyType</span> <span class="hljs-operator">=</span> Key.KeyType.JSON;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">returnMediaType</span> <span class="hljs-operator">=</span> MediaType.APPLICATION_JSON;<br>        <span class="hljs-keyword">if</span> (acceptHeader == <span class="hljs-literal">null</span> || !acceptHeader.contains(HEADER_JSON_VALUE)) &#123;<br>            keyType = Key.KeyType.XML;<br>            returnMediaType = MediaType.APPLICATION_XML;<br>        &#125;<br><br>        <span class="hljs-type">Key</span> <span class="hljs-variable">cacheKey</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Key</span>(Key.EntityType.Application,<br>                ResponseCacheImpl.ALL_APPS,<br>                keyType, CurrentRequestVersion.get(), EurekaAccept.fromString(eurekaAccept), regions<br>        );<br><br>        Response response;<br>        <span class="hljs-keyword">if</span> (acceptEncoding != <span class="hljs-literal">null</span> &amp;&amp; acceptEncoding.contains(HEADER_GZIP_VALUE)) &#123;<br>            response = Response.ok(responseCache.getGZIP(cacheKey))<br>                    .header(HEADER_CONTENT_ENCODING, HEADER_GZIP_VALUE)<br>                    .header(HEADER_CONTENT_TYPE, returnMediaType)<br>                    .build();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            response = Response.ok(responseCache.get(cacheKey))<br>                    .build();<br>        &#125;<br>        CurrentRequestVersion.remove();<br>        <span class="hljs-keyword">return</span> response;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>增量获取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Path(&quot;delta&quot;)</span><br>    <span class="hljs-meta">@GET</span><br>    <span class="hljs-keyword">public</span> Response <span class="hljs-title function_">getContainerDifferential</span><span class="hljs-params">(</span><br><span class="hljs-params">            <span class="hljs-meta">@PathParam(&quot;version&quot;)</span> String version,</span><br><span class="hljs-params">            <span class="hljs-meta">@HeaderParam(HEADER_ACCEPT)</span> String acceptHeader,</span><br><span class="hljs-params">            <span class="hljs-meta">@HeaderParam(HEADER_ACCEPT_ENCODING)</span> String acceptEncoding,</span><br><span class="hljs-params">            <span class="hljs-meta">@HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT)</span> String eurekaAccept,</span><br><span class="hljs-params">            <span class="hljs-meta">@Context</span> UriInfo uriInfo, <span class="hljs-meta">@Nullable</span> <span class="hljs-meta">@QueryParam(&quot;regions&quot;)</span> String regionsStr)</span> &#123;<br><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">isRemoteRegionRequested</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span> != regionsStr &amp;&amp; !regionsStr.isEmpty();<br><br>        <span class="hljs-comment">// If the delta flag is disabled in discovery or if the lease expiration</span><br>        <span class="hljs-comment">// has been disabled, redirect clients to get all instances</span><br>        <span class="hljs-keyword">if</span> ((serverConfig.shouldDisableDelta()) || (!registry.shouldAllowAccess(isRemoteRegionRequested))) &#123;<br>            <span class="hljs-keyword">return</span> Response.status(Status.FORBIDDEN).build();<br>        &#125;<br><br>        String[] regions = <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">if</span> (!isRemoteRegionRequested) &#123;<br>            EurekaMonitors.GET_ALL_DELTA.increment();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            regions = regionsStr.toLowerCase().split(<span class="hljs-string">&quot;,&quot;</span>);<br>            Arrays.sort(regions); <span class="hljs-comment">// So we don&#x27;t have different caches for same regions queried in different order.</span><br>            EurekaMonitors.GET_ALL_DELTA_WITH_REMOTE_REGIONS.increment();<br>        &#125;<br><br>        CurrentRequestVersion.set(Version.toEnum(version));<br>        <span class="hljs-type">KeyType</span> <span class="hljs-variable">keyType</span> <span class="hljs-operator">=</span> Key.KeyType.JSON;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">returnMediaType</span> <span class="hljs-operator">=</span> MediaType.APPLICATION_JSON;<br>        <span class="hljs-keyword">if</span> (acceptHeader == <span class="hljs-literal">null</span> || !acceptHeader.contains(HEADER_JSON_VALUE)) &#123;<br>            keyType = Key.KeyType.XML;<br>            returnMediaType = MediaType.APPLICATION_XML;<br>        &#125;<br><br>        <span class="hljs-type">Key</span> <span class="hljs-variable">cacheKey</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Key</span>(Key.EntityType.Application,<br>                ResponseCacheImpl.ALL_APPS_DELTA,<br>                keyType, CurrentRequestVersion.get(), EurekaAccept.fromString(eurekaAccept), regions<br>        );<br><br>        <span class="hljs-keyword">final</span> Response response;<br><br>        <span class="hljs-keyword">if</span> (acceptEncoding != <span class="hljs-literal">null</span> &amp;&amp; acceptEncoding.contains(HEADER_GZIP_VALUE)) &#123;<br>             response = Response.ok(responseCache.getGZIP(cacheKey))<br>                    .header(HEADER_CONTENT_ENCODING, HEADER_GZIP_VALUE)<br>                    .header(HEADER_CONTENT_TYPE, returnMediaType)<br>                    .build();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            response = Response.ok(responseCache.get(cacheKey)).build();<br>        &#125;<br><br>        CurrentRequestVersion.remove();<br>        <span class="hljs-keyword">return</span> response;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><p>心跳的客户端代码与注册类似，这里就不再看了。他们也是在一起的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">boolean</span> <span class="hljs-title function_">renew</span><span class="hljs-params">()</span> &#123;<br>    EurekaHttpResponse&lt;InstanceInfo&gt; httpResponse;<br>    <span class="hljs-keyword">try</span> &#123;<br>        httpResponse = eurekaTransport.registrationClient.sendHeartBeat(instanceInfo.getAppName(), instanceInfo.getId(), instanceInfo, <span class="hljs-literal">null</span>);<br>        logger.debug(PREFIX + <span class="hljs-string">&quot;&#123;&#125; - Heartbeat status: &#123;&#125;&quot;</span>, appPathIdentifier, httpResponse.getStatusCode());<br>        <span class="hljs-keyword">if</span> (httpResponse.getStatusCode() == Status.NOT_FOUND.getStatusCode()) &#123;<br>            REREGISTER_COUNTER.increment();<br>            logger.info(PREFIX + <span class="hljs-string">&quot;&#123;&#125; - Re-registering apps/&#123;&#125;&quot;</span>, appPathIdentifier, instanceInfo.getAppName());<br>            <span class="hljs-type">long</span> <span class="hljs-variable">timestamp</span> <span class="hljs-operator">=</span> instanceInfo.setIsDirtyWithTime();<br>            <span class="hljs-type">boolean</span> <span class="hljs-variable">success</span> <span class="hljs-operator">=</span> register();<br>            <span class="hljs-keyword">if</span> (success) &#123;<br>                instanceInfo.unsetIsDirty(timestamp);<br>            &#125;<br>            <span class="hljs-keyword">return</span> success;<br>        &#125;<br>        <span class="hljs-keyword">return</span> httpResponse.getStatusCode() == Status.OK.getStatusCode();<br>    &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>        logger.error(PREFIX + <span class="hljs-string">&quot;&#123;&#125; - was unable to send heartbeat!&quot;</span>, appPathIdentifier, e);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>服务器端：</p>
+<p><img src="/.com//eureka-server%E5%BF%83%E8%B7%B3%E6%8E%A5%E6%94%B6%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg" srcset="/img/loading.gif" lazyload alt="eureka-server心跳接收流程图"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">InstanceResource类renewLease方法<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">boolean</span> <span class="hljs-variable">isSuccess</span> <span class="hljs-operator">=</span> registry.renew(app.getName(), id, isFromReplicaNode);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">InstanceRegistry类renew方法<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">return</span> <span class="hljs-built_in">super</span>.renew(appName, serverId, isReplication);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">PeerAwareInstanceRegistryImpl类renew方法<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">renew</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String appName, <span class="hljs-keyword">final</span> String id, <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> isReplication)</span> &#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">super</span>.renew(appName, id, isReplication)) &#123;<br>        replicateToPeers(Action.Heartbeat, appName, id, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, isReplication);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">renew</span><span class="hljs-params">(String appName, String id, <span class="hljs-type">boolean</span> isReplication)</span> &#123;<br>        RENEW.increment(isReplication);<br>        Map&lt;String, Lease&lt;InstanceInfo&gt;&gt; gMap = registry.get(appName);<br>        Lease&lt;InstanceInfo&gt; leaseToRenew = <span class="hljs-literal">null</span>;<br>        <span class="hljs-keyword">if</span> (gMap != <span class="hljs-literal">null</span>) &#123;<br>            leaseToRenew = gMap.get(id);<br>        &#125;<br>        <span class="hljs-keyword">if</span> (leaseToRenew == <span class="hljs-literal">null</span>) &#123;<br>            RENEW_NOT_FOUND.increment(isReplication);<br>            logger.warn(<span class="hljs-string">&quot;DS: Registry: lease doesn&#x27;t exist, registering resource: &#123;&#125; - &#123;&#125;&quot;</span>, appName, id);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-type">InstanceInfo</span> <span class="hljs-variable">instanceInfo</span> <span class="hljs-operator">=</span> leaseToRenew.getHolder();<br>            <span class="hljs-keyword">if</span> (instanceInfo != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-comment">// touchASGCache(instanceInfo.getASGName());</span><br>                <span class="hljs-type">InstanceStatus</span> <span class="hljs-variable">overriddenInstanceStatus</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.getOverriddenInstanceStatus(<br>                        instanceInfo, leaseToRenew, isReplication);<br>                <span class="hljs-keyword">if</span> (overriddenInstanceStatus == InstanceStatus.UNKNOWN) &#123;<br>                    logger.info(<span class="hljs-string">&quot;Instance status UNKNOWN possibly due to deleted override for instance &#123;&#125;&quot;</span><br>                            + <span class="hljs-string">&quot;; re-register required&quot;</span>, instanceInfo.getId());<br>                    RENEW_NOT_FOUND.increment(isReplication);<br>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>                &#125;<br>                <span class="hljs-keyword">if</span> (!instanceInfo.getStatus().equals(overriddenInstanceStatus)) &#123;<br>                    logger.info(<br>                            <span class="hljs-string">&quot;The instance status &#123;&#125; is different from overridden instance status &#123;&#125; for instance &#123;&#125;. &quot;</span><br>                                    + <span class="hljs-string">&quot;Hence setting the status to overridden status&quot;</span>, instanceInfo.getStatus().name(),<br>                                    overriddenInstanceStatus.name(),<br>                                    instanceInfo.getId());<br>                    instanceInfo.setStatusWithoutDirty(overriddenInstanceStatus);<br><br>                &#125;<br>            &#125;<br>            renewsLastMin.increment();<br>            leaseToRenew.renew();<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 最后一分钟续约次数            </span><br>renewsLastMin.increment();<br><span class="hljs-comment">// 租约增加</span><br>            leaseToRenew.renew();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 同步至其他server的方法</span><br>replicateToPeers(Action.Heartbeat, appName, id, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, isReplication);<br></code></pre></td></tr></table></figure>
+
+<h2 id="下线"><a href="#下线" class="headerlink" title="下线"></a>下线</h2><p>客户端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">DiscoveryClient类shutdown方法是在实例销毁前执行的方法<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">unregister();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">EurekaHttpResponse&lt;Void&gt; httpResponse = eurekaTransport.registrationClient.cancel(instanceInfo.getAppName(), instanceInfo.getId());<br></code></pre></td></tr></table></figure>
+
+<p>服务器端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">InstanceResource类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@DELETE</span><br><span class="hljs-keyword">public</span> Response <span class="hljs-title function_">cancelLease</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-meta">@HeaderParam(PeerEurekaNode.HEADER_REPLICATION)</span> String isReplication)</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">isSuccess</span> <span class="hljs-operator">=</span> registry.cancel(app.getName(), id,<br>            <span class="hljs-string">&quot;true&quot;</span>.equals(isReplication));<br><br>        <span class="hljs-keyword">if</span> (isSuccess) &#123;<br>            logger.debug(<span class="hljs-string">&quot;Found (Cancel): &#123;&#125; - &#123;&#125;&quot;</span>, app.getName(), id);<br>            <span class="hljs-keyword">return</span> Response.ok().build();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            logger.info(<span class="hljs-string">&quot;Not Found (Cancel): &#123;&#125; - &#123;&#125;&quot;</span>, app.getName(), id);<br>            <span class="hljs-keyword">return</span> Response.status(Status.NOT_FOUND).build();<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>        logger.error(<span class="hljs-string">&quot;Error (cancel): &#123;&#125; - &#123;&#125;&quot;</span>, app.getName(), id, e);<br>        <span class="hljs-keyword">return</span> Response.serverError().build();<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">internalCancel</span><span class="hljs-params">(String appName, String id, <span class="hljs-type">boolean</span> isReplication)</span> &#123;<br>        read.lock();<br>        <span class="hljs-keyword">try</span> &#123;<br>            CANCEL.increment(isReplication);<br>            Map&lt;String, Lease&lt;InstanceInfo&gt;&gt; gMap = registry.get(appName);<br>            Lease&lt;InstanceInfo&gt; leaseToCancel = <span class="hljs-literal">null</span>;<br>            <span class="hljs-keyword">if</span> (gMap != <span class="hljs-literal">null</span>) &#123;<br>                leaseToCancel = gMap.remove(id);<br>            &#125;<br>            recentCanceledQueue.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Pair</span>&lt;Long, String&gt;(System.currentTimeMillis(), appName + <span class="hljs-string">&quot;(&quot;</span> + id + <span class="hljs-string">&quot;)&quot;</span>));<br>            <span class="hljs-type">InstanceStatus</span> <span class="hljs-variable">instanceStatus</span> <span class="hljs-operator">=</span> overriddenInstanceStatusMap.remove(id);<br>            <span class="hljs-keyword">if</span> (instanceStatus != <span class="hljs-literal">null</span>) &#123;<br>                logger.debug(<span class="hljs-string">&quot;Removed instance id &#123;&#125; from the overridden map which has value &#123;&#125;&quot;</span>, id, instanceStatus.name());<br>            &#125;<br>            <span class="hljs-keyword">if</span> (leaseToCancel == <span class="hljs-literal">null</span>) &#123;<br>                CANCEL_NOT_FOUND.increment(isReplication);<br>                logger.warn(<span class="hljs-string">&quot;DS: Registry: cancel failed because Lease is not registered for: &#123;&#125;/&#123;&#125;&quot;</span>, appName, id);<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                leaseToCancel.cancel();<br>                <span class="hljs-type">InstanceInfo</span> <span class="hljs-variable">instanceInfo</span> <span class="hljs-operator">=</span> leaseToCancel.getHolder();<br>                <span class="hljs-type">String</span> <span class="hljs-variable">vip</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">svip</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>                <span class="hljs-keyword">if</span> (instanceInfo != <span class="hljs-literal">null</span>) &#123;<br>                    instanceInfo.setActionType(ActionType.DELETED);<br>                    recentlyChangedQueue.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RecentlyChangedItem</span>(leaseToCancel));<br>                    instanceInfo.setLastUpdatedTimestamp();<br>                    vip = instanceInfo.getVIPAddress();<br>                    svip = instanceInfo.getSecureVipAddress();<br>                &#125;<br>                invalidateCache(appName, vip, svip);<br>                logger.info(<span class="hljs-string">&quot;Cancelled instance &#123;&#125;/&#123;&#125; (replication=&#123;&#125;)&quot;</span>, appName, id, isReplication);<br>            &#125;<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            read.unlock();<br>        &#125;<br><br>        <span class="hljs-keyword">synchronized</span> (lock) &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.expectedNumberOfClientsSendingRenews &gt; <span class="hljs-number">0</span>) &#123;<br>                <span class="hljs-comment">// Since the client wants to cancel it, reduce the number of clients to send renews.</span><br>                <span class="hljs-built_in">this</span>.expectedNumberOfClientsSendingRenews = <span class="hljs-built_in">this</span>.expectedNumberOfClientsSendingRenews - <span class="hljs-number">1</span>;<br>                updateRenewsPerMinThreshold();<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="客户端如何选择server"><a href="#客户端如何选择server" class="headerlink" title="客户端如何选择server"></a>客户端如何选择server</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">RetryableEurekaHttpClient类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//重试次数 也是 eureka-server的个数</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">DEFAULT_NUMBER_OF_RETRIES</span> <span class="hljs-operator">=</span> <span class="hljs-number">3</span>;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> &lt;R&gt; EurekaHttpResponse&lt;R&gt; <span class="hljs-title function_">execute</span><span class="hljs-params">(RequestExecutor&lt;R&gt; requestExecutor)</span> &#123;<br>        List&lt;EurekaEndpoint&gt; candidateHosts = <span class="hljs-literal">null</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">endpointIdx</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">retry</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; retry &lt; numberOfRetries; retry++) &#123;<br>            <span class="hljs-type">EurekaHttpClient</span> <span class="hljs-variable">currentHttpClient</span> <span class="hljs-operator">=</span> delegate.get();<br>            <span class="hljs-type">EurekaEndpoint</span> <span class="hljs-variable">currentEndpoint</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>            <span class="hljs-keyword">if</span> (currentHttpClient == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">if</span> (candidateHosts == <span class="hljs-literal">null</span>) &#123;<br>                    candidateHosts = getHostCandidates();<br>                    <span class="hljs-keyword">if</span> (candidateHosts.isEmpty()) &#123;<br>                        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransportException</span>(<span class="hljs-string">&quot;There is no known eureka server; cluster server list is empty&quot;</span>);<br>                    &#125;<br>                &#125;<br>                <span class="hljs-keyword">if</span> (endpointIdx &gt;= candidateHosts.size()) &#123;<br>                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransportException</span>(<span class="hljs-string">&quot;Cannot execute request on any known server&quot;</span>);<br>                &#125;<br><br>                currentEndpoint = candidateHosts.get(endpointIdx++);<br>                currentHttpClient = clientFactory.newClient(currentEndpoint);<br>            &#125;<br><br>            <span class="hljs-keyword">try</span> &#123;<br>                EurekaHttpResponse&lt;R&gt; response = requestExecutor.execute(currentHttpClient);<br>                <span class="hljs-keyword">if</span> (serverStatusEvaluator.accept(response.getStatusCode(), requestExecutor.getRequestType())) &#123;<br>                    delegate.set(currentHttpClient);<br>                    <span class="hljs-keyword">if</span> (retry &gt; <span class="hljs-number">0</span>) &#123;<br>                        logger.info(<span class="hljs-string">&quot;Request execution succeeded on retry #&#123;&#125;&quot;</span>, retry);<br>                    &#125;<br>                    <span class="hljs-keyword">return</span> response;<br>                &#125;<br>                logger.warn(<span class="hljs-string">&quot;Request execution failure with status code &#123;&#125;; retrying on another server if available&quot;</span>, response.getStatusCode());<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                logger.warn(<span class="hljs-string">&quot;Request execution failed with message: &#123;&#125;&quot;</span>, e.getMessage());  <span class="hljs-comment">// just log message as the underlying client should log the stacktrace</span><br>            &#125;<br><br>            <span class="hljs-comment">// Connection error or 5xx from the server that must be retried on another server</span><br>            delegate.compareAndSet(currentHttpClient, <span class="hljs-literal">null</span>);<br>            <span class="hljs-keyword">if</span> (currentEndpoint != <span class="hljs-literal">null</span>) &#123;<br>                quarantineSet.add(currentEndpoint);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TransportException</span>(<span class="hljs-string">&quot;Retry limit reached; giving up on completing the request&quot;</span>);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>发现，这个方法是根据重试次数来获取server的地址的。从0开始到3，所以说eureka-server默认是3，如果第一个已经成功了直接return了。</p>
+<h2 id="自我保护"><a href="#自我保护" class="headerlink" title="自我保护"></a>自我保护</h2><h3 id="什么是自我保护机制"><a href="#什么是自我保护机制" class="headerlink" title="什么是自我保护机制"></a>什么是自我保护机制</h3><p>当Eureka Server节点在短时间内丢失过多客户端时（可能发生了网络分区故障，服务实例与Eureka Server之间无法正常通信），那么这个server节点就会进入自我保护模式（eureka.server.enable-self-preservation&#x3D;true，默认开启自我保护模式）。一旦进入该模式，Eureka Server就会保护服务注册表中的信息，不再删除服务注册表中的数据（也就是不会注销任何微服务）。当网络故障恢复后，该Eureka Server节点会自动退出自我保护模式</p>
+<h3 id="开启条件"><a href="#开启条件" class="headerlink" title="开启条件"></a>开启条件</h3><p><strong>Renews threshold</strong>：Eureka Server期望每分钟收到客户端实例续约的阈值</p>
+<p>**Renews (last min)**：Eureka Server最后1分钟收到客户端实例续约的总数</p>
+<p>自我保护模式开启的条件是：<strong>1分钟后，若Renews (last min) &lt; Renews threshold，那么开启自我保护机制</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">AbstractInstanceRegistry类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateRenewsPerMinThreshold</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-built_in">this</span>.numberOfRenewsPerMinThreshold = (<span class="hljs-type">int</span>) (<span class="hljs-built_in">this</span>.expectedNumberOfClientsSendingRenews<br>            * (<span class="hljs-number">60.0</span> / serverConfig.getExpectedClientRenewalIntervalSeconds())<br>            * serverConfig.getRenewalPercentThreshold());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>numberOfRenewsPerMinThreshold就是Dashboard中的Renews threshold<br>expectedNumberOfClientsSendingRenews期望收到客户端续约的总数（实际为服务实例的总数）<br>getExpectedClientRenewalIntervalSeconds()获取客户端续约间隔（秒为单位）的方法，（默认30s）<br>getRenewalPercentThreshold()获取自我保护续约百分比阈值因子（默认85%）</p>
+<p>那么：</p>
+<p>Renews threshold &#x3D; 服务实例总数 * (60 &#x2F; 续约间隔) * 自我保护续约百分比阈值因子</p>
+<p>Renews (last min) &#x3D; 服务实例总数 * (60 &#x2F; 续约间隔)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">PeerAwareInstanceRegistryImpl类<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">isLeaseExpirationEnabled</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isSelfPreservationModeEnabled</span>()) &#123;<br>        <span class="hljs-comment">// The self preservation mode is disabled, hence allowing the instances to expire.</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> numberOfRenewsPerMinThreshold &gt; <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-title function_">getNumOfRenewsInLastMin</span>() &gt; numberOfRenewsPerMinThreshold;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>isLeaseExpirationEnabled()</code>是Eureka Server失效剔除时调用，判断是否需要清理。如果自我保护模式没开启，那就可以清理。<strong>如果自我保护模式开启了，且当续约阈值 &gt; 0，上一分钟的续约数 &gt; 阈值，那么可以清理；当上一分钟续约数 &lt; 阈值，那么就不清理</strong></p>
+<h3 id="Renews-threshold重置"><a href="#Renews-threshold重置" class="headerlink" title="Renews threshold重置"></a>Renews threshold重置</h3><p>应用注册时重置、应用下线时重置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">PeerAwareInstanceRegistryImpl.updateRenewsPerMinThreshold();<br></code></pre></td></tr></table></figure>
+
+<p>定时任务重置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">PeerAwareInstanceRegistryImpl.scheduleRenewalThresholdUpdateTask();<br></code></pre></td></tr></table></figure>
+
+<h2 id="应用实例失效剔除"><a href="#应用实例失效剔除" class="headerlink" title="应用实例失效剔除"></a>应用实例失效剔除</h2><p>spring 的生命周期管理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">EurekaServerInitializerConfiguration类实现了SmartLifecycle<br></code></pre></td></tr></table></figure>
+
+<p>spring 会在启动后调用start()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">eurekaServerBootstrap.contextInitialized(<br>						EurekaServerInitializerConfiguration.<span class="hljs-built_in">this</span>.servletContext);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">this</span>.registry.openForTraffic(<span class="hljs-built_in">this</span>.applicationInfoManager, registryCount);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">super</span>.openForTraffic(applicationInfoManager,<br>				count == <span class="hljs-number">0</span> ? <span class="hljs-built_in">this</span>.defaultOpenForTrafficCount : count);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">super</span>.postInit();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">evictionTaskRef.set(<span class="hljs-keyword">new</span> <span class="hljs-title class_">EvictionTask</span>());<br></code></pre></td></tr></table></figure>
+
+<p>这里发现EvictionTask类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">EvictionTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TimerTask</span> &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">AtomicLong</span> <span class="hljs-variable">lastExecutionNanosRef</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicLong</span>(<span class="hljs-number">0l</span>);<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">long</span> <span class="hljs-variable">compensationTimeMs</span> <span class="hljs-operator">=</span> getCompensationTimeMs();<br>                logger.info(<span class="hljs-string">&quot;Running the evict task with compensationTime &#123;&#125;ms&quot;</span>, compensationTimeMs);<br>                evict(compensationTimeMs);<br>            &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>                logger.error(<span class="hljs-string">&quot;Could not run the evict task&quot;</span>, e);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * compute a compensation time defined as the actual time this task was executed since the prev iteration,</span><br><span class="hljs-comment">         * vs the configured amount of time for execution. This is useful for cases where changes in time (due to</span><br><span class="hljs-comment">         * clock skew or gc for example) causes the actual eviction task to execute later than the desired time</span><br><span class="hljs-comment">         * according to the configured cycle.</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-type">long</span> <span class="hljs-title function_">getCompensationTimeMs</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-type">long</span> <span class="hljs-variable">currNanos</span> <span class="hljs-operator">=</span> getCurrentTimeNano();<br>            <span class="hljs-type">long</span> <span class="hljs-variable">lastNanos</span> <span class="hljs-operator">=</span> lastExecutionNanosRef.getAndSet(currNanos);<br>            <span class="hljs-keyword">if</span> (lastNanos == <span class="hljs-number">0l</span>) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-number">0l</span>;<br>            &#125;<br><br>            <span class="hljs-type">long</span> <span class="hljs-variable">elapsedMs</span> <span class="hljs-operator">=</span> TimeUnit.NANOSECONDS.toMillis(currNanos - lastNanos);<br>            <span class="hljs-type">long</span> <span class="hljs-variable">compensationTime</span> <span class="hljs-operator">=</span> elapsedMs - serverConfig.getEvictionIntervalTimerInMs();<br>            <span class="hljs-keyword">return</span> compensationTime &lt;= <span class="hljs-number">0l</span> ? <span class="hljs-number">0l</span> : compensationTime;<br>        &#125;<br><br>        <span class="hljs-type">long</span> <span class="hljs-title function_">getCurrentTimeNano</span><span class="hljs-params">()</span> &#123;  <span class="hljs-comment">// for testing</span><br>            <span class="hljs-keyword">return</span> System.nanoTime();<br>        &#125;<br><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">evict</span><span class="hljs-params">(<span class="hljs-type">long</span> additionalLeaseMs)</span> &#123;<br>        logger.debug(<span class="hljs-string">&quot;Running the evict task&quot;</span>);<br><br>        <span class="hljs-keyword">if</span> (!isLeaseExpirationEnabled()) &#123;<br>            logger.debug(<span class="hljs-string">&quot;DS: lease expiration is currently disabled.&quot;</span>);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-comment">// We collect first all expired items, to evict them in random order. For large eviction sets,</span><br>        <span class="hljs-comment">// if we do not that, we might wipe out whole apps before self preservation kicks in. By randomizing it,</span><br>        <span class="hljs-comment">// the impact should be evenly distributed across all applications.</span><br>        List&lt;Lease&lt;InstanceInfo&gt;&gt; expiredLeases = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (Entry&lt;String, Map&lt;String, Lease&lt;InstanceInfo&gt;&gt;&gt; groupEntry : registry.entrySet()) &#123;<br>            Map&lt;String, Lease&lt;InstanceInfo&gt;&gt; leaseMap = groupEntry.getValue();<br>            <span class="hljs-keyword">if</span> (leaseMap != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">for</span> (Entry&lt;String, Lease&lt;InstanceInfo&gt;&gt; leaseEntry : leaseMap.entrySet()) &#123;<br>                    Lease&lt;InstanceInfo&gt; lease = leaseEntry.getValue();<br>                    <span class="hljs-keyword">if</span> (lease.isExpired(additionalLeaseMs) &amp;&amp; lease.getHolder() != <span class="hljs-literal">null</span>) &#123;<br>                        expiredLeases.add(lease);<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// To compensate for GC pauses or drifting local time, we need to use current registry size as a base for</span><br>        <span class="hljs-comment">// triggering self-preservation. Without that we would wipe out full registry.</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">registrySize</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) getLocalRegistrySize();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">registrySizeThreshold</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (registrySize * serverConfig.getRenewalPercentThreshold());<br>        <span class="hljs-type">int</span> <span class="hljs-variable">evictionLimit</span> <span class="hljs-operator">=</span> registrySize - registrySizeThreshold;<br><br>        <span class="hljs-type">int</span> <span class="hljs-variable">toEvict</span> <span class="hljs-operator">=</span> Math.min(expiredLeases.size(), evictionLimit);<br>        <span class="hljs-keyword">if</span> (toEvict &gt; <span class="hljs-number">0</span>) &#123;<br>            logger.info(<span class="hljs-string">&quot;Evicting &#123;&#125; items (expired=&#123;&#125;, evictionLimit=&#123;&#125;)&quot;</span>, toEvict, expiredLeases.size(), evictionLimit);<br><br>            <span class="hljs-type">Random</span> <span class="hljs-variable">random</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>(System.currentTimeMillis());<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; toEvict; i++) &#123;<br>                <span class="hljs-comment">// Pick a random item (Knuth shuffle algorithm)</span><br>                <span class="hljs-type">int</span> <span class="hljs-variable">next</span> <span class="hljs-operator">=</span> i + random.nextInt(expiredLeases.size() - i);<br>                Collections.swap(expiredLeases, i, next);<br>                Lease&lt;InstanceInfo&gt; lease = expiredLeases.get(i);<br><br>                <span class="hljs-type">String</span> <span class="hljs-variable">appName</span> <span class="hljs-operator">=</span> lease.getHolder().getAppName();<br>                <span class="hljs-type">String</span> <span class="hljs-variable">id</span> <span class="hljs-operator">=</span> lease.getHolder().getId();<br>                EXPIRED.increment();<br>                logger.warn(<span class="hljs-string">&quot;DS: Registry: expired lease for &#123;&#125;/&#123;&#125;&quot;</span>, appName, id);<br>                internalCancel(appName, id, <span class="hljs-literal">false</span>);<br>            &#125;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="eureka服务器间的复制"><a href="#eureka服务器间的复制" class="headerlink" title="eureka服务器间的复制"></a>eureka服务器间的复制</h2><p>spring 的生命周期管理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">EurekaServerInitializerConfiguration类实现了SmartLifecycle<br></code></pre></td></tr></table></figure>
+
+<p>spring 会在启动后调用start()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">eurekaServerBootstrap.contextInitialized(<br>					EurekaServerInitializerConfiguration.<span class="hljs-built_in">this</span>.servletContext);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">initEurekaServerContext();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">int</span> <span class="hljs-variable">registryCount</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.registry.syncUp();<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">syncUp</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// Copy entire entry from neighboring DS node</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; ((i &lt; serverConfig.getRegistrySyncRetries()) &amp;&amp; (count == <span class="hljs-number">0</span>)); i++) &#123;<br>            <span class="hljs-keyword">if</span> (i &gt; <span class="hljs-number">0</span>) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    Thread.sleep(serverConfig.getRegistrySyncRetryWaitMs());<br>                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                    logger.warn(<span class="hljs-string">&quot;Interrupted during registry transfer..&quot;</span>);<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>            &#125;<br>            <span class="hljs-type">Applications</span> <span class="hljs-variable">apps</span> <span class="hljs-operator">=</span> eurekaClient.getApplications();<br>            <span class="hljs-keyword">for</span> (Application app : apps.getRegisteredApplications()) &#123;<br>                <span class="hljs-keyword">for</span> (InstanceInfo instance : app.getInstances()) &#123;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-keyword">if</span> (isRegisterable(instance)) &#123;<br>                            register(instance, instance.getLeaseInfo().getDurationInSecs(), <span class="hljs-literal">true</span>);<br>                            count++;<br>                        &#125;<br>                    &#125; <span class="hljs-keyword">catch</span> (Throwable t) &#123;<br>                        logger.error(<span class="hljs-string">&quot;During DS init copy&quot;</span>, t);<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> count;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>Eureka Server接收到Eureka Client的注册、续约、下线等操作，固定间隔（默认，500毫秒）向Eureka Server集群内其他节点同步</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">replicateToPeers(Action.Register, info.getAppName(), info.getId(), info, <span class="hljs-literal">null</span>, isReplication);<br>replicateToPeers(Action.Cancel, appName, id, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, isReplication);<br>replicateToPeers(Action.Heartbeat, appName, id, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, isReplication);<br>replicateToPeers(Action.StatusUpdate, appName, id, <span class="hljs-literal">null</span>, newStatus, isReplication);<br>replicateToPeers(Action.DeleteStatusOverride, appName, id, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, isReplication);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">replicateInstanceActionsToPeers</span><span class="hljs-params">(Action action, String appName,</span><br><span class="hljs-params">                                                 String id, InstanceInfo info, InstanceStatus newStatus,</span><br><span class="hljs-params">                                                 PeerEurekaNode node)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            InstanceInfo infoFromRegistry;<br>            CurrentRequestVersion.set(Version.V2);<br>            <span class="hljs-keyword">switch</span> (action) &#123;<br>                <span class="hljs-keyword">case</span> Cancel:<br>                    node.cancel(appName, id);<br>                    <span class="hljs-keyword">break</span>;<br>                <span class="hljs-keyword">case</span> Heartbeat:<br>                    <span class="hljs-type">InstanceStatus</span> <span class="hljs-variable">overriddenStatus</span> <span class="hljs-operator">=</span> overriddenInstanceStatusMap.get(id);<br>                    infoFromRegistry = getInstanceByAppAndId(appName, id, <span class="hljs-literal">false</span>);<br>                    node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, <span class="hljs-literal">false</span>);<br>                    <span class="hljs-keyword">break</span>;<br>                <span class="hljs-keyword">case</span> Register:<br>                    node.register(info);<br>                    <span class="hljs-keyword">break</span>;<br>                <span class="hljs-keyword">case</span> StatusUpdate:<br>                    infoFromRegistry = getInstanceByAppAndId(appName, id, <span class="hljs-literal">false</span>);<br>                    node.statusUpdate(appName, id, newStatus, infoFromRegistry);<br>                    <span class="hljs-keyword">break</span>;<br>                <span class="hljs-keyword">case</span> DeleteStatusOverride:<br>                    infoFromRegistry = getInstanceByAppAndId(appName, id, <span class="hljs-literal">false</span>);<br>                    node.deleteStatusOverride(appName, id, infoFromRegistry);<br>                    <span class="hljs-keyword">break</span>;<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (Throwable t) &#123;<br>            logger.error(<span class="hljs-string">&quot;Cannot replicate information to &#123;&#125; for action &#123;&#125;&quot;</span>, node.getServiceUrl(), action.name(), t);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            CurrentRequestVersion.remove();<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>注册、下线、续约等请求处理程序都判断了isReplication的值，该值是来源于Request Header的x-netflix-discovery-replication，Eureka Client的注册请求isReplication为false，接收注册请求的Eureka Server节点会将该注册信息同步到其他Eureka Server节点，同步请求的isReplication为true，表示该注册信息是由其他Eureka Server节点复制过来的，这时候就不会继续往下传递了，避免了复制死循环的问题。</p>
+<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>C  consistency 一致性</p>
+<p>A Availability 可用性</p>
+<p>P Partition Tolerance 分区容错性</p>
+<p>P 在集群系统中是必须的，不然就是单点服务。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Zookeeper</th>
+<th>Eureka</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>设计原则</td>
+<td>CP</td>
+<td>AP</td>
+</tr>
+<tr>
+<td>优点</td>
+<td>数据强一致</td>
+<td>服务高可用</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>网络分区会影响Leader选举，超过阈值后集群不可用</td>
+<td>服务节点间的数据可能不一致；Client-Server间的数据可能不一致；</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>单机房集群，对数据一致性要求较高</td>
+<td>云机房集群，跨越多机房部署；对注册中心服务可用性要求较高</td>
+</tr>
+</tbody></table>
+<h2 id="优化或参数设置"><a href="#优化或参数设置" class="headerlink" title="优化或参数设置"></a>优化或参数设置</h2><h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><p>根据自我保护的源码分析可以根据项目情况设置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span><br>	<span class="hljs-comment"># 自我保护，看服务多少。</span><br>  <span class="hljs-attr">enable-self-preservation:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-comment"># 自我保护阈值</span><br>  <span class="hljs-attr">renewal-percent-threshold:</span> <span class="hljs-number">0.85</span><br>  <span class="hljs-comment"># 剔除服务时间间隔</span><br>  <span class="hljs-attr">eviction-interval-timer-in-ms:</span> <span class="hljs-number">1000</span><br></code></pre></td></tr></table></figure>
+
+<p>根据获取注册表的源码：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">server:</span><br>	<span class="hljs-comment"># 关闭从readOnly读注册表</span><br>  <span class="hljs-attr">use-read-only-response-cache:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-comment"># readWrite 和 readOnly 同步时间间隔。</span><br>  <span class="hljs-attr">response-cache-update-interval-ms:</span> <span class="hljs-number">1000</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h3><p>根据客户端如何选择server的源码：</p>
+<p>客户端可以如下配置</p>
+<p>客户端A</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">eureka:</span><br>  <span class="hljs-attr">client:</span><br>    <span class="hljs-attr">serviceUrl:</span><br>      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8761/eureka/,http://localhost:8762/eureka/</span><br></code></pre></td></tr></table></figure>
+
+<p>客户端B</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">eureka:</span><br>  <span class="hljs-attr">client:</span><br>    <span class="hljs-attr">serviceUrl:</span><br>      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8762/eureka/,http://localhost:8761/eureka/</span><br></code></pre></td></tr></table></figure>
+
+<p>但是没啥必要，看下文，一个server可以支撑多少。</p>
+<p>拉取注册表和心跳等客户端配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">eureka:</span><br>  <span class="hljs-attr">client:</span><br>    <span class="hljs-comment"># 刷新注册表的间隔时间</span><br>    <span class="hljs-attr">registry-fetch-interval-seconds:</span> <span class="hljs-number">5</span><br>    <span class="hljs-attr">serviceUrl:</span><br>      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8761/eureka/,http://localhost:8761/eureka/</span><br>  <span class="hljs-attr">instance:</span><br>    <span class="hljs-comment"># 心跳续约间隔</span><br>    <span class="hljs-attr">lease-renewal-interval-in-seconds:</span> <span class="hljs-number">10</span><br>    <span class="hljs-comment"># 告诉server在接收到实例的最后一次发出的心跳后，需要等待多久才可以将此实例删除,默认90秒</span><br>    <span class="hljs-attr">lease-expiration-duration-in-seconds:</span> <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="知道这些参数后："><a href="#知道这些参数后：" class="headerlink" title="知道这些参数后："></a>知道这些参数后：</h3><p>1.可以减少服务上下线的延时</p>
+<p>2.自我保护的选择：看网络和服务情况是否开启</p>
+<p>3.服务如何上线：先停client服务，再发送下线请求。</p>
+<h2 id="eureka-server可支撑client测算"><a href="#eureka-server可支撑client测算" class="headerlink" title="eureka-server可支撑client测算"></a>eureka-server可支撑client测算</h2><p>现在咱们假设手头有一套大型的分布式系统，一共100个服务，每个服务部署在20台机器上，机器是4核8G的标准配置。</p>
+<p>也就是说，相当于你一共部署了100 * 20 &#x3D; 2000个服务实例，有2000台机器。</p>
+<p>每台机器上的服务实例内部都有一个Eureka Client组件，它会每隔30秒请求一次Eureka Server，拉取变化的注册表。</p>
+<p>此外，每个服务实例上的Eureka Client都会每隔30秒发送一次心跳请求给Eureka Server。</p>
+<p>那么大家算算，Eureka Server作为一个微服务注册中心，每秒钟要被请求多少次？一天要被请求多少次？</p>
+<p>​	按标准的算法，每个服务实例每分钟请求2次拉取注册表，每分钟请求2次发送心跳</p>
+<p>​	这样一个服务实例每分钟会请求4次，2000个服务实例每分钟请求8000次</p>
+<p>​	换算到每秒，则是8000 &#x2F; 60 &#x3D; 133次左右，我们就大概估算为Eureka Server每秒会被请求150次</p>
+<p>​	那一天的话，就是8000 * 60 * 24 &#x3D; 1152万，也就是每天千万级访问量</p>
+<p>可以对上面的注册、续约接口进行压测，发现10000万请求，server只用了0.1秒就可以返回。说明server的承受能力。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/spring-cloud/">spring_cloud</a>
+                    
+                      <a class="hover-with-bg" href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring-cloud/">spring_cloud</a>
+                    
+                      <a class="hover-with-bg" href="/tags/spring-cloud-eureka/">spring_cloud_eureka</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/08/java/exception%E4%B8%8D%E6%89%93%E5%8D%B0%E5%A0%86%E6%A0%88%E4%BF%A1%E6%81%AF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">exception不打印堆栈信息</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/06/spring_cloud/spring_cloud_eureka%E5%AE%9E%E8%B7%B5/">
+                        <span class="hidden-mobile">spring_cloud_eureka实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

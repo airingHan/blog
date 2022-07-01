@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="官网https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix  源码 https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix&#x2F;wiki&#x2F;   wiki  Getting Started  入门  How it Works  架构设计  How To Use  如何用   Hystrix 是什么  在分布式环境下，难免出现许多服务之间调用失败的场景， Hystrix 是一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hystrix学习">
+<meta property="og:url" content="http://hanqichuan.com/2022/06/15/spring_cloud/hystrix%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="官网https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix  源码 https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix&#x2F;wiki&#x2F;   wiki  Getting Started  入门  How it Works  架构设计  How To Use  如何用   Hystrix 是什么  在分布式环境下，难免出现许多服务之间调用失败的场景， Hystrix 是一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix01.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix02.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix03.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix04.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix05.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix06.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix07.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix08.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix09.png">
+<meta property="article:published_time" content="2022-06-15T02:03:00.000Z">
+<meta property="article:modified_time" content="2022-06-16T06:45:40.269Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="hystrix">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//hystrix01.png">
+  
+  
+  <title>hystrix学习 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="hystrix学习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-15 10:03" pubdate>
+        2022年6月15日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      37k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      312 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">hystrix学习</h1>
+            
+            <div class="markdown-body">
+              <h1 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h1><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix">https://github.com/Netflix/Hystrix</a>  源码</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/">https://github.com/Netflix/Hystrix/wiki/</a>   wiki</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/Getting-Started">Getting Started</a>  入门</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works">How it Works</a>  架构设计</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-To-Use">How To Use</a>  如何用</p>
+</li>
+</ul>
+<h1 id="Hystrix-是什么"><a href="#Hystrix-是什么" class="headerlink" title="Hystrix 是什么"></a>Hystrix 是什么</h1><p>  在分布式环境下，难免出现许多服务之间调用失败的场景， Hystrix 是一个通过添加延迟容忍和容错逻辑帮助您控制这些分布式服务之间交互的库。 Hystrix 通过隔离服务之间的访问点来实现应用之间连锁故障（因下游服务失败，导致上游服务不可用），出现故障提供备选方案来提高应用整体的可用性。</p>
+<p>  举例：抢购活动中，由于库存服务超时或者崩掉，可以通过提示抢购失败，请稍后重试等预防抢购应用不可用</p>
+<h1 id="Hystrix-用来做什么"><a href="#Hystrix-用来做什么" class="headerlink" title="Hystrix 用来做什么"></a>Hystrix 用来做什么</h1><p> Hystrix 可以做一些事情：</p>
+<ol>
+<li>通过第三方客户端库，为控制延迟和依赖之间调用失败提供保护。</li>
+<li>在复杂的分布式系统中阻止连锁故障</li>
+<li>快速故障恢复</li>
+<li>在可能的情况下，做到服务隔离和优雅降级</li>
+<li>尽可能的实时监控、报警、运维控制</li>
+</ol>
+<h1 id="Hystrix-解决什么问题"><a href="#Hystrix-解决什么问题" class="headerlink" title="Hystrix 解决什么问题"></a>Hystrix 解决什么问题</h1><p>复杂的分布式应用有许多依赖调用，在某一时刻它们之间必然会出现失败，这就是导致应用整体故障的风险。</p>
+<p>   例如，对于一个依赖于 30 个服务的应用程序，每个服务的正常运行时间为 99.99%，下面是您可以预期的结果。</p>
+<p>   99.99 的 30 次方 &#x3D; 99.7% （意味着有 0.3% 的失败）</p>
+<p>   10 亿 * 0.3% &#x3D; 300 万（10 亿次请求会有 300 万次请求失败）</p>
+<p>   即使每个月在很好的正常运行的时间，也会有 2 个小时的停机。通常情况会被这个更糟糕。</p>
+<p>当所有请求都很正常的情况下，请求流就会像下图一样：</p>
+<p><img src="/.com//hystrix01.png" srcset="/img/loading.gif" lazyload alt="hystrix01"></p>
+<p>当很多后端系统有一个不稳定时，就会阻塞整个请求，如下图：</p>
+<p><img src="/.com//hystrix02.png" srcset="/img/loading.gif" lazyload alt="hystrix02"></p>
+<p>在大量请求下，一个后端不理想的依赖都会成为阻塞整个应用请求的潜在风险</p>
+<p>应用中任何一个通过网络或者客户端发出的请求都有可能成为网络请求失败的潜在风险，比请求失败更糟糕的是，应用调用依赖之间的延迟增加，更甚应用中的队列、线程池、其他系统资源造成的连锁故障</p>
+<p><img src="/.com//hystrix03.png" srcset="/img/loading.gif" lazyload alt="hystrix03"></p>
+<p> 当通过第三方客户端进行网络访问，就是一个不清楚实现细节以及随时可能发生改变的黑盒执行，对于每个客户端，网络和资源配置都是不一样的，所以很难监控和更改。</p>
+<p>  更糟糕的是，依赖调用之间，在不被应用显示调用的情况下，执行昂贵和容易出错的网络调用</p>
+<p>  网络连接失败或者降级、服务与服务之间调用失败或者延迟，新库或服务部署改变方式或者性能特性</p>
+<p>所有这些失败和延迟的情况都需要被隔离或者管理，这样就不会因为单个依赖的失败摧毁整个应用和系统。</p>
+<h1 id="Hystrix-设计原则"><a href="#Hystrix-设计原则" class="headerlink" title="Hystrix 设计原则"></a>Hystrix 设计原则</h1><ol>
+<li>防止单个应用耗尽服务器（比如 tomcat）所有可用线程</li>
+<li>丢弃重负载、快速失败代替排队</li>
+<li>为任何情况失败提供保护</li>
+<li>使用隔离技术 (如隔板、泳道和断路器模式) 来限制任何一个依赖的影响</li>
+<li>通过接近实时的度量、监视和警报来优化快速发现故障</li>
+<li>Hystrix 在大部分方面依靠低延迟配置和动态配置优化恢复时间， 允许使用快速返回结果进行实时操作调整</li>
+<li>保护整个依赖客户端执行中的失败，不仅仅是 网络流量中</li>
+</ol>
+<h1 id="Hystrix-如何实现目标"><a href="#Hystrix-如何实现目标" class="headerlink" title="Hystrix 如何实现目标"></a>Hystrix 如何实现目标</h1><ul>
+<li><p>在 HystrixCommand 或 HystrixObservableCommand 对象中封装所有对外部系统 (或 “依赖项”) 的调用，该对象通常在单独的线程中执行 (这是命令模式的示例)</p>
+</li>
+<li><p>Hystrix 有一个默认值，如果调用时长超过这个默认值，认定为超时调用，大部分依赖可以通过配置自定义这个值，因此他们略高于依赖项的 99.5% 的性能</p>
+</li>
+<li><p>为每个依赖维护一个小的线程池 (或信号量); 如果它已满，将立即拒绝为该依赖指定的请求，而不是排队。</p>
+</li>
+<li><p>衡量成功、失败 (客户抛出的异常)、超时和线程拒绝</p>
+</li>
+<li><p>触发断路器，在一段时间内停止所有对某个服务的请求，如果服务的错误百分比超过阈值，则手动或自动停止</p>
+</li>
+<li><p>当一个请求失败、被拒绝、超时或短路时，执行备选逻辑</p>
+</li>
+<li><p>近实时的监控度量和配置的变化</p>
+<p>当您使用 Hystrix 来包装每个基础依赖项时，图中所示的架构会发生变化，如下图所示。每个依赖项都是相互隔离的，当延迟发生时，它可能会被限制在资源中，并且在熔断器中覆盖，当任何类型的故障发生在依赖项中时，它决定了要做出什么响应</p>
+</li>
+</ul>
+<p><img src="/.com//hystrix04.png" srcset="/img/loading.gif" lazyload alt="hystrix04"></p>
+<h1 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h1><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandHelloWorld.java">查看源代码</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.netflix.hystrix<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hystrix-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.5.18<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandHelloWorld01</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandHelloWorld01</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// a real example would do work like a network call here</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello &quot;</span> + name + <span class="hljs-string">&quot;!&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UnitTest</span> &#123;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testSynchronous</span><span class="hljs-params">()</span> &#123; <span class="hljs-comment">//测试同步</span><br>            assertEquals(<span class="hljs-string">&quot;Hello World!&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).execute());<br>            assertEquals(<span class="hljs-string">&quot;Hello Bob!&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;Bob&quot;</span>).execute());<br>        &#125;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testAsynchronous1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123; <span class="hljs-comment">//测试异步</span><br>            assertEquals(<span class="hljs-string">&quot;Hello World!&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).queue().get());<br>            assertEquals(<span class="hljs-string">&quot;Hello Bob!&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;Bob&quot;</span>).queue().get());<br>        &#125;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testAsynchronous2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123; <span class="hljs-comment">//测试异步</span><br><br>            Future&lt;String&gt; fWorld = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).queue();<br>            Future&lt;String&gt; fBob = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;Bob&quot;</span>).queue();<br><br>            assertEquals(<span class="hljs-string">&quot;Hello World!&quot;</span>, fWorld.get());<br>            assertEquals(<span class="hljs-string">&quot;Hello Bob!&quot;</span>, fBob.get());<br>        &#125;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testObservable</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>            Observable&lt;String&gt; fWorld = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).observe();<br>            Observable&lt;String&gt; fBob = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;Bob&quot;</span>).observe();<br><br>            <span class="hljs-comment">// blocking</span><br>            assertEquals(<span class="hljs-string">&quot;Hello World!&quot;</span>, fWorld.toBlocking().single());<br>            assertEquals(<span class="hljs-string">&quot;Hello Bob!&quot;</span>, fBob.toBlocking().single());<br><br>            fWorld.subscribe(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>&lt;String&gt;() &#123;<br><br>                <span class="hljs-meta">@Override</span><br>                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCompleted</span><span class="hljs-params">()</span> &#123;<br>                    <span class="hljs-comment">// 这里可以什么都不做</span><br>                &#125;<br><br>                <span class="hljs-meta">@Override</span><br>                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onError</span><span class="hljs-params">(Throwable e)</span> &#123;<br>                    e.printStackTrace();<br>                &#125;<br><br>                <span class="hljs-meta">@Override</span><br>                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onNext</span><span class="hljs-params">(String v)</span> &#123;<br>                    System.out.println(<span class="hljs-string">&quot;onNext: &quot;</span> + v);<br>                &#125;<br><br>            &#125;);<br>            fBob.subscribe(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;String&gt;() &#123;<br><br>                <span class="hljs-meta">@Override</span><br>                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(String v)</span> &#123;<br>                    System.out.println(<span class="hljs-string">&quot;onNext: &quot;</span> + v);<br>                &#125;<br><br>            &#125;);<br>        &#125;<br>    &#125;<br><br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandHelloWorld</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixObservableCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandHelloWorld</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> Observable&lt;String&gt; <span class="hljs-title function_">construct</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> Observable.create(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Observable</span>.OnSubscribe&lt;String&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(Subscriber&lt;? <span class="hljs-built_in">super</span> String&gt; observer)</span> &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-keyword">if</span> (!observer.isUnsubscribed()) &#123;<br>                        <span class="hljs-comment">// a real example would do work like a network call here</span><br>                        <span class="hljs-comment">// observer.onNext(&quot;hello&quot;);  如果多个值下面observe.toBlocking().toFuture().get()会报错</span><br>                        observer.onNext(name + <span class="hljs-string">&quot;!&quot;</span>);<br>                        observer.onCompleted();<br>                    &#125;<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                    observer.onError(e);<br>                &#125;<br>            &#125;<br>         &#125; ).subscribeOn(Schedulers.io());<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException &#123;<br>        <span class="hljs-type">CommandHelloWorld</span> <span class="hljs-variable">observableCommand</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld</span>(<span class="hljs-string">&quot;World&quot;</span>);<br>        Observable&lt;String&gt; observe = observableCommand.observe();<br>        System.out.println(observe.toBlocking().toFuture().get());<br>        observe.subscribe(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>&lt;String&gt;() &#123;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCompleted</span><span class="hljs-params">()</span> &#123;<br>                <span class="hljs-comment">// 这里可以什么都不做</span><br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onError</span><span class="hljs-params">(Throwable e)</span> &#123;<br>                e.printStackTrace();<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onNext</span><span class="hljs-params">(String v)</span> &#123;<br>                System.out.println(<span class="hljs-string">&quot;onNext: &quot;</span> + v);<br>            &#125;<br><br>        &#125;);<br>        observe.subscribe(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;String&gt;() &#123;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(String v)</span> &#123;<br>                System.out.println(<span class="hljs-string">&quot;onNext: &quot;</span> + v);<br>            &#125;<br><br>        &#125;);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="同步执行"><a href="#同步执行" class="headerlink" title="同步执行"></a>同步执行</h2><p>通过 execute()方法同步调用 HystrixCommand的实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).execute();<br></code></pre></td></tr></table></figure>
+
+<p>HystrixObservableCommand没有execute方法调用，如果清楚通过一个命令产生的 Observable必定仅仅产生一个单一的值，则可以对 Observable应用 RXjava 的操作 .toBlocking().toFuture().get()模拟 execute方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">CommandHelloWorld</span> <span class="hljs-variable">observableCommand</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld</span>(<span class="hljs-string">&quot;World&quot;</span>);<br>Observable&lt;String&gt; observe = observableCommand.observe();<br>System.out.println(observe.toBlocking().toFuture().get());<br></code></pre></td></tr></table></figure>
+
+<h2 id="异步执行"><a href="#异步执行" class="headerlink" title="异步执行"></a>异步执行</h2><p>我们可以通过使用 queue() 方法异步执行 HystrixCommand ，示例如下： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Future&lt;String&gt; fWorld = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).queue();<br></code></pre></td></tr></table></figure>
+
+<p>我们可以通过 Future 获取到命令的结果集</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">String fw=fWorld.get()；<br></code></pre></td></tr></table></figure>
+
+<p>HystrixObservableCommand没有简单的queuefor a等价物HystrixObservableCommand，但是如果您知道Observable这样的命令生成的 必须始终只生成一个值，您可以queue通过将 RxJava 运算符.toBlocking().toFuture()应用于Observable.</p>
+<h2 id="响应式执行"><a href="#响应式执行" class="headerlink" title="响应式执行"></a>响应式执行</h2><p>可以通过一下任意方法监听 HystrixCommand 的结果：</p>
+<ul>
+<li>observe()  : 执行这个命令会返回一个热 Observable 立刻执行 hystrix 的命令 ，因为这个 Observable 通过 ReplaySubject 过滤，咱们不会有丢失订阅之前的任何东西的危险。</li>
+<li>toObservable(): 执行这个命令会返回一个 “冷 “ Observable，直到订阅 Observable 才会开始执行命令和发送结果 。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Observable&lt;String&gt; fWorld = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandHelloWorld01</span>(<span class="hljs-string">&quot;World&quot;</span>).observe();<br></code></pre></td></tr></table></figure>
+
+<p>执行完上面的代码，我们可以通过订阅 Observable 获取到它的值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java">fWorld.subscribe(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;String&gt;() &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(String v)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;onNext: &quot;</span> + v);<br>    &#125;<br><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h1 id="Fallback-降级"><a href="#Fallback-降级" class="headerlink" title="Fallback (降级)"></a>Fallback (降级)</h1><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandHelloFailure.java">查看源代码</a></p>
+<p>我们可以通过增加一个 fallback (回退) 方法在 hystrix 命令实现优雅降级，如果主命令失败，hystrix 可以获取一个默认值或者值集合。我们可能想为更多的可能失败的 hrstrix 命令实现一个回退方法，但是会有以下几种例外：</p>
+<ul>
+<li>执行写操作的命令</li>
+</ul>
+<p>​      如果设计的 hrstrix 命令是执行一个写操作而不是返回一个结果（这个写操作在 HystrixCommand通常返回 void，在 HystrixObservableCommand 返回一个空的可观察者），此场景下执行回退方法没有什么意义，如果写操作失败，服务方应该是希望告知调用方，让调用方再进一步处理。</p>
+<ul>
+<li>批处理系统 &#x2F; 离线分析</li>
+</ul>
+<p>​       如果 Hystrix 命令正在填充一个缓存，或者生成一个报告，或者做任何离线计算。如果发生错误，通常应该将错误告知调用方，让调用方做进一步处理，而不应该发送一个默认的响应。</p>
+<p>​    如果命令执行异常，无论 Hystrix 命令是否有回退方法，hystrix 命令状态、断路器 &#x2F; 度量器都会更新为此条命令失败。</p>
+<h2 id="HystrixCommand"><a href="#HystrixCommand" class="headerlink" title="HystrixCommand"></a>HystrixCommand</h2><p>​    在一个普通的HystrixCommand 中通过重写 getFallback() 方法实现一个回退方法，比如 run() 方法有异常， hystrix 会为所有类型的异常执行回退方法，比如 超时、线程池或信号量拒绝，以及断路器短路。 包含回退方法的示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixHelloWorldFallback</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixHelloWorldFallback</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;模拟异常!&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello Failure &quot;</span> + name + <span class="hljs-string">&quot;!&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">HystrixHelloWorldFallback</span> <span class="hljs-variable">hystrixHelloWorldFallback</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixHelloWorldFallback</span>(<span class="hljs-string">&quot;word&quot;</span>);<br>        System.out.println(hystrixHelloWorldFallback.execute());<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上代码中 run（）方法永远会出现异常，调用者永远接收到的是 getFallback（）方法返回的值，不会接收到异常</p>
+<h2 id="HystrixObservableCommand"><a href="#HystrixObservableCommand" class="headerlink" title="HystrixObservableCommand"></a>HystrixObservableCommand</h2><p> 对于 HystrixObservableCommand，需要通过重写 resumeWithFallback 方法，如果执行失败了，它就会从主观察者接管失败返回第二可观察者。这里需要注意的是，已经发送的一个或多个数据项之后，可观察者可能会失败，所以回退方法不应该假设它会发送观察者看到的唯一值。</p>
+<p>在内部，Hystrix 使用 RxJava 的 onerrorerrorenext 操作符，在发生错误时，在主观察者和回退之间无缝切换。</p>
+<h2 id="错误传播"><a href="#错误传播" class="headerlink" title="错误传播"></a>错误传播</h2><h3 id="HystrixCommand-1"><a href="#HystrixCommand-1" class="headerlink" title="HystrixCommand"></a>HystrixCommand</h3><p>  从 run（）方法抛出的除 HystrixBadRequestException异常外的所有异常，会统计异常次数、触发回退方法和短路逻辑。</p>
+<p>  可以将想抛出的异常包装到 HystrixBadRequestException通过 getCause()方法查询它 ，HystrixBadRequestException适用于报告非法参数或非系统故障的场景，这些错误不应该与失败的指标相违背，也不应该触发回退逻辑。</p>
+<h3 id="HystrixObservableCommand-1"><a href="#HystrixObservableCommand-1" class="headerlink" title="HystrixObservableCommand"></a>HystrixObservableCommand</h3><p>在 a 的情况下HystrixObservableCommand，不可恢复的错误会通过onError来自结果的通知返回Observable，并且回退是通过回退到 Hystrix 通过resumeWithFallback您实现的方法获得的第二个 Observable 来完成的。</p>
+<h3 id="执行异常类型列表"><a href="#执行异常类型列表" class="headerlink" title="执行异常类型列表"></a>执行异常类型列表</h3><table>
+<thead>
+<tr>
+<th>失败类型</th>
+<th>异常类</th>
+<th>异常原因</th>
+<th>是否执行回退</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>失败</td>
+<td>HystrixRuntimeException</td>
+<td>潜在异常（用户控制）</td>
+<td>执行</td>
+</tr>
+<tr>
+<td>超时</td>
+<td>HystrixRuntimeException</td>
+<td>j.u.c.TimeoutException</td>
+<td>执行</td>
+</tr>
+<tr>
+<td>短路</td>
+<td>HystrixRuntimeException</td>
+<td>j.l.RuntimeException</td>
+<td>执行</td>
+</tr>
+<tr>
+<td>线程池异常</td>
+<td>HystrixRuntimeException</td>
+<td>j.u.c.RejectedExecutionException</td>
+<td>执行</td>
+</tr>
+<tr>
+<td>信号量拒绝</td>
+<td>HystrixRuntimeException</td>
+<td>j.l.RuntimeException</td>
+<td>执行</td>
+</tr>
+<tr>
+<td>失败请求</td>
+<td>HystrixBadRequestException</td>
+<td>underlying exception (user-controlled)</td>
+<td>不执行</td>
+</tr>
+</tbody></table>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>HystrixCommand</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixHelloWorldFallback</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixHelloWorldFallback</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;hello&quot;</span>.equals(name)) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;模拟异常!&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixBadRequestException</span>(<span class="hljs-string">&quot;忽略异常!&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello Failure &quot;</span> + name + <span class="hljs-string">&quot;!&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">HystrixHelloWorldFallback</span> <span class="hljs-variable">hystrixHelloWorldFallback</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixHelloWorldFallback</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>        System.out.println(hystrixHelloWorldFallback.execute());<br>        hystrixHelloWorldFallback = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixHelloWorldFallback</span>(<span class="hljs-string">&quot;world&quot;</span>);<br>        System.out.println(hystrixHelloWorldFallback.execute());<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>发现hello 走了降级方法，world没有。</p>
+<h1 id="命令名称"><a href="#命令名称" class="headerlink" title="命令名称"></a>命令名称</h1><p> 默认情况下，命令名称来源于类名。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">getClass().getSimpleName();<br></code></pre></td></tr></table></figure>
+
+<p>如果要显示定义名称的话，可以通过 HystrixCommand 或者 HystrixObservableCommand 的构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixHelloWorldCommand</span><span class="hljs-params">(String name)</span> &#123;<br>    <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;Command Group: Hello World&quot;</span>))<br>            .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;Command Name: Hello World&quot;</span>)));<br>    <span class="hljs-built_in">this</span>.name = name;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p> 为了给每个命令集合保存 Setter 配置，可以缓存 Setter，示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Setter</span> <span class="hljs-variable">cachedSetter</span> <span class="hljs-operator">=</span><br>        Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>))<br>                .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;Cache Setter: Hello World&quot;</span>));<br><span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixHelloWorldCommand</span><span class="hljs-params">(String name)</span> &#123;<br>    <span class="hljs-built_in">super</span>(cachedSetter);<br>    <span class="hljs-built_in">this</span>.name = name;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>HystrixCommandKey 是一个接口，可以作为枚举或者普通类实现。其实它有一个辅助工厂类，示例如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;Command Name: Hello World&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>HystrixCommandKey源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">HystrixCommandKey</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKey</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Factory</span> &#123;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> InternMap&lt;String, HystrixCommandKey.Factory.HystrixCommandKeyDefault&gt; intern = <span class="hljs-keyword">new</span> <span class="hljs-title class_">InternMap</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueConstructor</span>&lt;String, HystrixCommandKey.Factory.HystrixCommandKeyDefault&gt;() &#123;<br>            <span class="hljs-keyword">public</span> HystrixCommandKey.Factory.HystrixCommandKeyDefault <span class="hljs-title function_">create</span><span class="hljs-params">(String key)</span> &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixCommandKey</span>.Factory.HystrixCommandKeyDefault(key);<br>            &#125;<br>        &#125;);<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">Factory</span><span class="hljs-params">()</span> &#123;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HystrixCommandKey <span class="hljs-title function_">asKey</span><span class="hljs-params">(String name)</span> &#123;<br>            <span class="hljs-keyword">return</span> (HystrixCommandKey)intern.interned(name);<br>        &#125;<br><br>        <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getCommandCount</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> intern.size();<br>        &#125;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixCommandKeyDefault</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKeyDefault</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">HystrixCommandKey</span> &#123;<br>            <span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixCommandKeyDefault</span><span class="hljs-params">(String name)</span> &#123;<br>                <span class="hljs-built_in">super</span>(name);<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="命令分组"><a href="#命令分组" class="headerlink" title="命令分组"></a>命令分组</h1><p>Hystrix 使用命令分组将一起的命令进行管理，比如报告、警报、仪表盘或组 &#x2F; 库。默认情况下，Hystrix 使用 HystrixCommandGroupKey来定义命令线程池，除非单独定义线程池。</p>
+<p>HystrixCommandGroupKey是一个接口，可以作为枚举或者普通类实现。其实它有一个辅助工厂类，示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;Command Group: Hello World&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>HystrixCommandGroupKey源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">HystrixCommandGroupKey</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKey</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Factory</span> &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> InternMap&lt;String, HystrixCommandGroupKey.Factory.HystrixCommandGroupDefault&gt; intern = <span class="hljs-keyword">new</span> <span class="hljs-title class_">InternMap</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueConstructor</span>&lt;String, HystrixCommandGroupKey.Factory.HystrixCommandGroupDefault&gt;() &#123;<br>            <span class="hljs-keyword">public</span> HystrixCommandGroupKey.Factory.HystrixCommandGroupDefault <span class="hljs-title function_">create</span><span class="hljs-params">(String key)</span> &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixCommandGroupKey</span>.Factory.HystrixCommandGroupDefault(key);<br>            &#125;<br>        &#125;);<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">Factory</span><span class="hljs-params">()</span> &#123;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HystrixCommandGroupKey <span class="hljs-title function_">asKey</span><span class="hljs-params">(String name)</span> &#123;<br>            <span class="hljs-keyword">return</span> (HystrixCommandGroupKey)intern.interned(name);<br>        &#125;<br><br>        <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getGroupCount</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> intern.size();<br>        &#125;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixCommandGroupDefault</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKeyDefault</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">HystrixCommandGroupKey</span> &#123;<br>            <span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixCommandGroupDefault</span><span class="hljs-params">(String name)</span> &#123;<br>                <span class="hljs-built_in">super</span>(name);<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="命令线程池"><a href="#命令线程池" class="headerlink" title="命令线程池"></a>命令线程池</h1><p> 线程池主要体现是用于监测、指标发布、缓存和其他此类用途的 HystrixThreadPool。 一个 HystrixCommand 与一个单独注入到它的 HystrixThreadPoolKey 所检索到的 HystrixThreadPool 相关联， 或者默认为使用 HystrixCommandGroupKey 的创建一个 。</p>
+<p>如果要显示定义名称的话，可以通过 HystrixCommand或者 HystrixObservableCommand的构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixHelloWorldCommand</span><span class="hljs-params">(String name)</span> &#123;<br>       <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;Command Group: Hello World&quot;</span>))<br>               .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;Command Name: Hello World&quot;</span>))<br>               .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(<span class="hljs-string">&quot;Command ThreadPool: Hello World&quot;</span>)));<br>       <span class="hljs-built_in">this</span>.name = name;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<p>HystrixThreadPoolKey 是一个接口，可以作为枚举或者普通类实现。其实它有一个辅助工厂类，示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">HystrixThreadPoolKey.Factory.asKey(<span class="hljs-string">&quot;Command ThreadPool: Hello World&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>HystrixThreadPoolKey源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">HystrixThreadPoolKey</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKey</span> &#123;<br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Factory</span> &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">Factory</span><span class="hljs-params">()</span> &#123;<br>        &#125;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> InternMap&lt;String, HystrixThreadPoolKey&gt; intern<br>                = <span class="hljs-keyword">new</span> <span class="hljs-title class_">InternMap</span>&lt;String, HystrixThreadPoolKey&gt;(<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">InternMap</span>.ValueConstructor&lt;String, HystrixThreadPoolKey&gt;() &#123;<br>                    <span class="hljs-meta">@Override</span><br>                    <span class="hljs-keyword">public</span> HystrixThreadPoolKey <span class="hljs-title function_">create</span><span class="hljs-params">(String key)</span> &#123;<br>                        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixThreadPoolKeyDefault</span>(key);<br>                    &#125;<br>                &#125;);<br>     <br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HystrixThreadPoolKey <span class="hljs-title function_">asKey</span><span class="hljs-params">(String name)</span> &#123;<br>           <span class="hljs-keyword">return</span> intern.interned(name);<br>        &#125;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixThreadPoolKeyDefault</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixKeyDefault</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">HystrixThreadPoolKey</span> &#123;<br>            <span class="hljs-keyword">public</span> <span class="hljs-title function_">HystrixThreadPoolKeyDefault</span><span class="hljs-params">(String name)</span> &#123;<br>                <span class="hljs-built_in">super</span>(name);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getThreadPoolCount</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> intern.size();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可能使用 HystrixThreadPoolKey 而不仅仅是不同的 HystrixCommandGroupKey 的原因是多个命令可能属于相同的所有权或逻辑功能的 “组”，但是某些命令可能需要彼此隔离。</p>
+<p> 简单示例如下:</p>
+<ul>
+<li>访问视频元数据的两个命令</li>
+<li>两个命令拥有同一个组名称 “VideoMetadata”</li>
+<li>命令 A 与资源 #1 互斥</li>
+<li>命令 B 与资源 #2 互斥</li>
+</ul>
+<p>如果命令 A 的线程池潜在并且饱和，它就不应该阻止命令 B 访问资源，因为他们互相命中不同的后端资源。因此，我们在逻辑上希望这些命令组合在一起，但希望它们以不同的方式隔离，并使用 <code>HystrixThreadPoolKey</code> 来给它们每个线程池提供一个不同的线程池。</p>
+<h1 id="请求缓存"><a href="#请求缓存" class="headerlink" title="请求缓存"></a>请求缓存</h1><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandUsingRequestCache.java">查看源代码</a></p>
+<p>您可以通过在or对象上实现getCacheKey()方法来启用请求缓存，如下所示：HystrixCommand、HystrixObservableCommand</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandUsingRequestCache</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;Boolean&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> value;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title function_">CommandUsingRequestCache</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.value = value;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> Boolean <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">return</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span>= <span class="hljs-number">0</span> || value % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getCacheKey</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> String.valueOf(value);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>由于这取决于请求上下文，我们必须初始化HystrixRequestContext</p>
+<p>在一个简单的单元测试中，您可以这样做：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testWithoutCacheHits</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>        <span class="hljs-keyword">try</span> &#123;<br>            assertTrue(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">2</span>).execute());<br>            assertFalse(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">1</span>).execute());<br>            assertTrue(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">0</span>).execute());<br>            assertTrue(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">58672</span>).execute());<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            context.shutdown();<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>ServletFilter通常，此上下文将通过包装用户请求或其他一些生命周期挂钩来初始化和关闭。</p>
+<p>以下示例显示了命令如何在请求上下文中从缓存中检索其值（以及如何查询对象以了解其值是否来自缓存）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testWithCacheHits</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">CommandUsingRequestCache</span> <span class="hljs-variable">command2a</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">2</span>);<br>            <span class="hljs-type">CommandUsingRequestCache</span> <span class="hljs-variable">command2b</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">2</span>);<br><br>            assertTrue(command2a.execute());<br>            <span class="hljs-comment">// this is the first time we&#x27;ve executed this command with</span><br>            <span class="hljs-comment">// the value of &quot;2&quot; so it should not be from cache</span><br>            assertFalse(command2a.isResponseFromCache());<br><br>            assertTrue(command2b.execute());<br>            <span class="hljs-comment">// this is the second time we&#x27;ve executed this command with</span><br>            <span class="hljs-comment">// the same value so it should return from cache</span><br>            assertTrue(command2b.isResponseFromCache());<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            context.shutdown();<br>        &#125;<br><br>        <span class="hljs-comment">// start a new request context</span><br>        context = HystrixRequestContext.initializeContext();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">CommandUsingRequestCache</span> <span class="hljs-variable">command3b</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandUsingRequestCache</span>(<span class="hljs-number">2</span>);<br>            assertTrue(command3b.execute());<br>            <span class="hljs-comment">// this is a new request context so this </span><br>            <span class="hljs-comment">// should not come from cache</span><br>            assertFalse(command3b.isResponseFromCache());<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            context.shutdown();<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="请求折叠"><a href="#请求折叠" class="headerlink" title="请求折叠"></a>请求折叠</h1><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandCollapserGetValueForKey.java">查看源代码</a></p>
+<p>请求折叠允许将多个请求批处理到单个HystrixCommand实例执行中。</p>
+<p>折叠器可以使用批次大小和自批次创建以来经过的时间作为执行批次的触发器。</p>
+<p>Hystrix 支持 2 种请求折叠样式：请求范围和全局范围。这是在折叠器构造时配置的，默认为请求范围。</p>
+<p>一个请求范围的折叠器收集一个批次 per HystrixRequestContext，而一个全局范围的折叠器跨多个HystrixRequestContexts 收集一个批次。因此，如果您的下游依赖项无法HystrixRequestContext在单个命令调用中处理多个 s，则请求范围的折叠是正确的选择。</p>
+<p>HystrixRequestContext在 Netflix，我们专门使用请求范围的折叠器，因为所有当前系统都是建立在每个命令中使用一个单一的假设之上的。由于批处理仅针对每个请求，因此当命令与同一请求中的不同参数并行发生时，折叠是有效的。</p>
+<p>以下是如何实现请求范围的简单示例HystrixCollapser：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandCollapserGetValueForKey</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCollapser</span>&lt;List&lt;String&gt;, String, Integer&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Integer key;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandCollapserGetValueForKey</span><span class="hljs-params">(Integer key)</span> &#123;<br>        <span class="hljs-built_in">this</span>.key = key;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getRequestArgument</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> key;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> HystrixCommand&lt;List&lt;String&gt;&gt; <span class="hljs-title function_">createCommand</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Collection&lt;CollapsedRequest&lt;String, Integer&gt;&gt; requests)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BatchCommand</span>(requests);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">mapResponseToRequests</span><span class="hljs-params">(List&lt;String&gt; batchResponse, Collection&lt;CollapsedRequest&lt;String, Integer&gt;&gt; requests)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (CollapsedRequest&lt;String, Integer&gt; request : requests) &#123;<br>            request.setResponse(batchResponse.get(count++));<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BatchCommand</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;List&lt;String&gt;&gt; &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Collection&lt;CollapsedRequest&lt;String, Integer&gt;&gt; requests;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">BatchCommand</span><span class="hljs-params">(Collection&lt;CollapsedRequest&lt;String, Integer&gt;&gt; requests)</span> &#123;<br>                <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>))<br>                    .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;GetValueForKey&quot;</span>)));<br>            <span class="hljs-built_in">this</span>.requests = requests;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> List&lt;String&gt; <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            ArrayList&lt;String&gt; response = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;String&gt;();<br>            <span class="hljs-keyword">for</span> (CollapsedRequest&lt;String, Integer&gt; request : requests) &#123;<br>                <span class="hljs-comment">// artificial response for each argument received in the batch</span><br>                response.add(<span class="hljs-string">&quot;ValueForKey: &quot;</span> + request.getArgument());<br>            &#125;<br>            <span class="hljs-keyword">return</span> response;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以下单元测试展示了如何使用折叠器将四个执行自动批处理CommandCollapserGetValueForKey为单个HystrixCommand执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testCollapser</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>    <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>    <span class="hljs-keyword">try</span> &#123;<br>        Future&lt;String&gt; f1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandCollapserGetValueForKey</span>(<span class="hljs-number">1</span>).queue();<br>        Future&lt;String&gt; f2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandCollapserGetValueForKey</span>(<span class="hljs-number">2</span>).queue();<br>        Future&lt;String&gt; f3 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandCollapserGetValueForKey</span>(<span class="hljs-number">3</span>).queue();<br>        Future&lt;String&gt; f4 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandCollapserGetValueForKey</span>(<span class="hljs-number">4</span>).queue();<br><br>        assertEquals(<span class="hljs-string">&quot;ValueForKey: 1&quot;</span>, f1.get());<br>        assertEquals(<span class="hljs-string">&quot;ValueForKey: 2&quot;</span>, f2.get());<br>        assertEquals(<span class="hljs-string">&quot;ValueForKey: 3&quot;</span>, f3.get());<br>        assertEquals(<span class="hljs-string">&quot;ValueForKey: 4&quot;</span>, f4.get());<br><br>        <span class="hljs-comment">// assert that the batch command &#x27;GetValueForKey&#x27; was in fact</span><br>        <span class="hljs-comment">// executed and that it executed only once</span><br>        assertEquals(<span class="hljs-number">1</span>, HystrixRequestLog.getCurrentRequest().getExecutedCommands().size());<br>        HystrixCommand&lt;?&gt; command = HystrixRequestLog.getCurrentRequest().getExecutedCommands().toArray(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixCommand</span>&lt;?&gt;[<span class="hljs-number">1</span>])[<span class="hljs-number">0</span>];<br>        <span class="hljs-comment">// assert the command is the one we&#x27;re expecting</span><br>        assertEquals(<span class="hljs-string">&quot;GetValueForKey&quot;</span>, command.getCommandKey().name());<br>        <span class="hljs-comment">// confirm that it was a COLLAPSED command execution</span><br>        assertTrue(command.getExecutionEvents().contains(HystrixEventType.COLLAPSED));<br>        <span class="hljs-comment">// and that it was successful</span><br>        assertTrue(command.getExecutionEvents().contains(HystrixEventType.SUCCESS));<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        context.shutdown();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="请求上下文设置"><a href="#请求上下文设置" class="headerlink" title="请求上下文设置"></a>请求上下文设置</h1><p>要使用请求范围的功能（请求缓存、请求折叠、请求日志），您必须管理HystrixRequestContext生命周期（或实施替代方案HystrixConcurrencyStrategy）。</p>
+<p>这意味着您必须在请求之前执行以下操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br></code></pre></td></tr></table></figure>
+
+<p>然后在请求结束时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jav">context.shutdown();<br></code></pre></td></tr></table></figure>
+
+<p>在标准的 Java Web 应用程序中，您可以使用 Servlet 过滤器通过实现类似于以下的过滤器来初始化此生命周期：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixRequestContextServletFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Filter</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <br>     <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>        <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>        <span class="hljs-keyword">try</span> &#123;<br>            chain.doFilter(request, response);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            context.shutdown();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>您可以通过向以下内容添加一个部分来为所有传入流量启用过滤器web.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs xml"> <span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">display-name</span>&gt;</span>HystrixRequestContextServletFilter<span class="hljs-tag">&lt;/<span class="hljs-name">display-name</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>HystrixRequestContextServletFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>com.netflix.hystrix.contrib.requestservlet.HystrixRequestContextServletFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>HystrixRequestContextServletFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="常见模式"><a href="#常见模式" class="headerlink" title="常见模式"></a>常见模式</h1><p>以下部分是 和 的常见用途和使用<code>HystrixCommand</code>模式<code>HystrixObservableCommand</code>。</p>
+<h2 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandThatFailsFast.java">查看源代码</a></p>
+<p>最基本的执行是只做一件事情并且没有回退行为。如果发生任何类型的故障，它将抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandThatFailsFast</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> throwException;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandThatFailsFast</span><span class="hljs-params">(<span class="hljs-type">boolean</span> throwException)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.throwException = throwException;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (throwException) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;failure from CommandThatFailsFast&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;success&quot;</span>;<br>        &#125;<br>    &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这些单元测试显示了它的行为方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testSuccess</span><span class="hljs-params">()</span> &#123;<br>    assertEquals(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandThatFailsFast</span>(<span class="hljs-literal">false</span>).execute());<br>&#125;<br><br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testFailure</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandThatFailsFast</span>(<span class="hljs-literal">true</span>).execute();<br>        fail(<span class="hljs-string">&quot;we should have thrown an exception&quot;</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (HystrixRuntimeException e) &#123;<br>        assertEquals(<span class="hljs-string">&quot;failure from CommandThatFailsFast&quot;</span>, e.getCause().getMessage());<br>        e.printStackTrace();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>HystrixObservableCommand相等的</p>
+<p>a 的等效 Fail-Fast 解决方案HystrixObservableCommand将涉及覆盖该resumeWithFallback方法，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Observable&lt;String&gt; <span class="hljs-title function_">resumeWithFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">if</span> (throwException) &#123;<br>        <span class="hljs-keyword">return</span> Observable.error(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Throwable</span>(<span class="hljs-string">&quot;failure from CommandThatFailsFast&quot;</span>));<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> Observable.just(<span class="hljs-string">&quot;success&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="静默失败"><a href="#静默失败" class="headerlink" title="静默失败"></a>静默失败</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandThatFailsSilently.java">查看源代码</a></p>
+<p>静默失败相当于返回空响应或删除功能。可以通过返回null、空 Map、空 List 或其他此类响应来完成。</p>
+<p>您可以通过在实例上实现一个getFallback()方法来做到这一点：HystrixCommand</p>
+<p><img src="/.com//hystrix05.png" srcset="/img/loading.gif" lazyload alt="hystrix05"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandThatFailsSilently</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> throwException;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandThatFailsSilently</span><span class="hljs-params">(<span class="hljs-type">boolean</span> throwException)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.throwException = throwException;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (throwException) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;failure from CommandThatFailsFast&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;success&quot;</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testSuccess</span><span class="hljs-params">()</span> &#123;<br>    assertEquals(<span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandThatFailsSilently</span>(<span class="hljs-literal">false</span>).execute());<br>&#125;<br><br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testFailure</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        assertEquals(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandThatFailsSilently</span>(<span class="hljs-literal">true</span>).execute());<br>    &#125; <span class="hljs-keyword">catch</span> (HystrixRuntimeException e) &#123;<br>        fail(<span class="hljs-string">&quot;we should not get an exception as we fail silently with a fallback&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>另一个返回空列表的实现如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> List&lt;String&gt; <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Collections.emptyList();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>HystrixObservableCommand相等的</p>
+<p>a 的等效 Fail-Silently 解决方案HystrixObservableCommand将涉及覆盖该resumeWithFallback()方法，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Observable&lt;String&gt; <span class="hljs-title function_">resumeWithFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Observable.empty();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="后备：静态"><a href="#后备：静态" class="headerlink" title="后备：静态"></a>后备：静态</h2><p>回退可以返回静态嵌入在代码中的默认值。这不会像“失败静默”通常那样导致功能或服务被删除，而是会导致默认行为发生。</p>
+<p>例如，如果命令根据用户凭据返回真&#x2F;假，但命令执行失败，它可以默认为真：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Boolean <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="后备：存根"><a href="#后备：存根" class="headerlink" title="后备：存根"></a>后备：存根</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandWithStubbedFallback.java">查看源代码</a></p>
+<p>当您的命令返回包含多个字段的复合对象时，您通常使用存根回退，其中一些字段可以从其他请求状态确定，而其他字段设置为默认值。</p>
+<p>您可能会发现适合在这些存根值中使用的状态的示例如下：</p>
+<ul>
+<li>饼干</li>
+<li>请求参数和标头</li>
+<li>在当前服务请求失败之前对先前服务请求的响应</li>
+</ul>
+<p>您的后备可以从请求范围内静态检索存根值，但通常建议在命令实例化时注入它们以供需要时使用，例如以下示例以处理countryCodeFromGeoLookup字段的方式演示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandWithStubbedFallback</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;UserAccount&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> customerId;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String countryCodeFromGeoLookup;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> customerId</span><br><span class="hljs-comment">     *            The customerID to retrieve UserAccount for</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> countryCodeFromGeoLookup</span><br><span class="hljs-comment">     *            The default country code from the HTTP request geo code lookup used for fallback.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title function_">CommandWithStubbedFallback</span><span class="hljs-params">(<span class="hljs-type">int</span> customerId, String countryCodeFromGeoLookup)</span> &#123;<br>        <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>));<br>        <span class="hljs-built_in">this</span>.customerId = customerId;<br>        <span class="hljs-built_in">this</span>.countryCodeFromGeoLookup = countryCodeFromGeoLookup;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> UserAccount <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// fetch UserAccount from remote service</span><br>        <span class="hljs-comment">//        return UserAccountClient.getAccount(customerId);</span><br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;forcing failure for example&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> UserAccount <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * Return stubbed fallback with some static defaults, placeholders,</span><br><span class="hljs-comment">         * and an injected value &#x27;countryCodeFromGeoLookup&#x27; that we&#x27;ll use</span><br><span class="hljs-comment">         * instead of what we would have retrieved from the remote service.</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserAccount</span>(customerId, <span class="hljs-string">&quot;Unknown Name&quot;</span>,<br>                countryCodeFromGeoLookup, <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserAccount</span> &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> customerId;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String countryCode;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> isFeatureXPermitted;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> isFeatureYPermitted;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> isFeatureZPermitted;<br><br>        UserAccount(<span class="hljs-type">int</span> customerId, String name, String countryCode,<br>                <span class="hljs-type">boolean</span> isFeatureXPermitted,<br>                <span class="hljs-type">boolean</span> isFeatureYPermitted,<br>                <span class="hljs-type">boolean</span> isFeatureZPermitted) &#123;<br>            <span class="hljs-built_in">this</span>.customerId = customerId;<br>            <span class="hljs-built_in">this</span>.name = name;<br>            <span class="hljs-built_in">this</span>.countryCode = countryCode;<br>            <span class="hljs-built_in">this</span>.isFeatureXPermitted = isFeatureXPermitted;<br>            <span class="hljs-built_in">this</span>.isFeatureYPermitted = isFeatureYPermitted;<br>            <span class="hljs-built_in">this</span>.isFeatureZPermitted = isFeatureZPermitted;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以下单元测试演示了它的行为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">test</span><span class="hljs-params">()</span> &#123;<br>      <span class="hljs-type">CommandWithStubbedFallback</span> <span class="hljs-variable">command</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandWithStubbedFallback</span>(<span class="hljs-number">1234</span>, <span class="hljs-string">&quot;ca&quot;</span>);<br>      <span class="hljs-type">UserAccount</span> <span class="hljs-variable">account</span> <span class="hljs-operator">=</span> command.execute();<br>      assertTrue(command.isFailedExecution());<br>      assertTrue(command.isResponseFromFallback());<br>      assertEquals(<span class="hljs-number">1234</span>, account.customerId);<br>      assertEquals(<span class="hljs-string">&quot;ca&quot;</span>, account.countryCode);<br>      assertEquals(<span class="hljs-literal">true</span>, account.isFeatureXPermitted);<br>      assertEquals(<span class="hljs-literal">true</span>, account.isFeatureYPermitted);<br>      assertEquals(<span class="hljs-literal">false</span>, account.isFeatureZPermitted);<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p>HystrixObservableCommand相等的</p>
+<p>a 的等效 Stubbed 解决方案HystrixObservableCommand将涉及重写resumeWithFallback方法以返回Observable发出存根响应的 an。与上一个示例等效的版本如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Observable&lt;Boolean&gt; <span class="hljs-title function_">resumeWithFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Observable.just( <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserAccount</span>(customerId, <span class="hljs-string">&quot;Unknown Name&quot;</span>,<br>                                            countryCodeFromGeoLookup, <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>) );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>但是，如果您期望从您Observable的Observable. 这是一个简单的例子来展示你如何完成这个 - 它跟踪从 main 发出的最后一个 item，Observable以便 fallback 知道从哪里拾取以继续序列：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Observable&lt;Integer&gt; <span class="hljs-title function_">construct</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Observable.just(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>            .concatWith(Observable.&lt;Integer&gt; error(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;forced error&quot;</span>)))<br>            .doOnNext(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;Integer&gt;() &#123;<br>                <span class="hljs-meta">@Override</span><br>                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(Integer t1)</span> &#123;<br>                    lastSeen = t1;<br>                &#125;<br>                <br>            &#125;)<br>            .subscribeOn(Schedulers.computation());<br>&#125;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Observable&lt;Integer&gt; <span class="hljs-title function_">resumeWithFallback</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">if</span> (lastSeen &lt; <span class="hljs-number">4</span>) &#123;<br>        <span class="hljs-keyword">return</span> Observable.range(lastSeen + <span class="hljs-number">1</span>, <span class="hljs-number">4</span> - lastSeen);<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> Observable.empty();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="回退：通过网络缓存"><a href="#回退：通过网络缓存" class="headerlink" title="回退：通过网络缓存"></a>回退：通过网络缓存</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandWithFallbackViaNetwork.java">查看源代码</a></p>
+<p>有时，如果后端服务失败，可以从缓存服务（如 memcached）中检索过时的数据版本。</p>
+<p>由于回退将通过网络，这是另一个可能的故障点，因此它也需要用HystrixCommand  or包裹HystrixObservableCommand。</p>
+<p><img src="/.com//hystrix06.png" srcset="/img/loading.gif" lazyload alt="hystrix06"></p>
+<p>在单独的线程池上执行回退命令很重要，否则如果主命令成为潜在命令并填充线程池，如果两个命令共享同一个池，这将阻止回退运行。</p>
+<p>以下代码显示了如何在其方法中CommandWithFallbackViaNetwork执行。FallbackViaNetwork  getFallback()</p>
+<p>请注意，如果回退失败，它<em>还有</em>一个回退，它执行“失败静默”的返回方法null。</p>
+<p>要将命令配置为在与从 派生FallbackViaNetwork的默认线程池不同的线程池上运行，它会注入到构造函数中。RemoteServiceX   HystrixCommandGroupKey HystrixThreadPoolKey.Factory.asKey(“RemoteServiceXFallback”)</p>
+<p>这意味着CommandWithFallbackViaNetwork将在名为的线程池上运行，并将在名为RemoteServiceX的FallbackViaNetwork线程池上运行RemoteServiceXFallback。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandWithFallbackViaNetwork</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title function_">CommandWithFallbackViaNetwork</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;RemoteServiceX&quot;</span>))<br>                .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;GetValueCommand&quot;</span>)));<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">//        RemoteServiceXClient.getValue(id);</span><br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;force failure for example&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FallbackViaNetwork</span>(id).execute();<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FallbackViaNetwork</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">FallbackViaNetwork</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>            <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;RemoteServiceX&quot;</span>))<br>                    .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;GetValueFallbackCommand&quot;</span>))<br>                    <span class="hljs-comment">// use a different threadpool for the fallback command</span><br>                    <span class="hljs-comment">// so saturating the RemoteServiceX pool won&#x27;t prevent</span><br>                    <span class="hljs-comment">// fallbacks from executing</span><br>                    .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(<span class="hljs-string">&quot;RemoteServiceXFallback&quot;</span>)));<br>            <span class="hljs-built_in">this</span>.id = id;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            MemCacheClient.getValue(id);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">// the fallback also failed</span><br>            <span class="hljs-comment">// so this fallback-of-a-fallback will </span><br>            <span class="hljs-comment">// fail silently and return null</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="主要-次要与后备"><a href="#主要-次要与后备" class="headerlink" title="主要 + 次要与后备"></a>主要 + 次要与后备</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandFacadeWithPrimarySecondary.java">查看源代码</a></p>
+<p>一些系统具有双模式行为——主要和次要，或主要和故障转移。</p>
+<p>有时，辅助或故障转移被视为故障状态，仅用于回退；在这些场景中，它与上述“通过网络缓存”的模式相同。</p>
+<p>但是，如果切换到辅助系统很常见，例如推出新代码的正常部分（有时这是有状态系统处理代码推送的一部分），那么每次使用辅助系统时，主系统都会处于故障状态，跳闸断路器和触发警报。</p>
+<p>这不是期望的行为，如果没有其他原因，只是为了避免“狼来了”的疲劳，当真正的问题发生时，会导致警报被忽略。</p>
+<p>因此，在这种情况下，策略是将主要和次要之间的切换视为正常、健康的模式，并在它们面前放置一个外观。</p>
+<p><img src="/.com//hystrix07.png" srcset="/img/loading.gif" lazyload alt="hystrix07"></p>
+<p>主要和次要HystrixCommand实现是线程隔离的，因为它们正在处理网络流量和业务逻辑。它们可能每个都具有非常不同的性能特征（通常辅助系统是静态缓存），因此每个单独命令的另一个好处是它们可以单独调整。</p>
+<p>您不会公开这两个命令，而是将它们隐藏在另一个HystrixCommand信号量隔离的命令后面，该命令实现了关于是调用主要命令还是次要命令的条件逻辑。如果主要和次要都失败，则控制切换到外观命令本身的后备。</p>
+<p>外观HystrixCommand可以使用信号量隔离，因为它所做的所有工作都经过另外两个HystrixCommand已经线程隔离的 s。只要run()外观的方法不执行任何其他网络调用、重试逻辑或其他“容易出错”的事情，就没有必要再有另一层线程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandFacadeWithPrimarySecondary</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-type">DynamicBooleanProperty</span> <span class="hljs-variable">usePrimary</span> <span class="hljs-operator">=</span> DynamicPropertyFactory.getInstance().getBooleanProperty(<span class="hljs-string">&quot;primarySecondary.usePrimary&quot;</span>, <span class="hljs-literal">true</span>);<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandFacadeWithPrimarySecondary</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-built_in">super</span>(Setter<br>                .withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;SystemX&quot;</span>))<br>                .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;PrimarySecondaryCommand&quot;</span>))<br>                .andCommandPropertiesDefaults(<br>                        <span class="hljs-comment">// we want to default to semaphore-isolation since this wraps</span><br>                        <span class="hljs-comment">// 2 others commands that are already thread isolated</span><br>                        HystrixCommandProperties.Setter()<br>                                .withExecutionIsolationStrategy(ExecutionIsolationStrategy.SEMAPHORE)));<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (usePrimary.get()) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PrimaryCommand</span>(id).execute();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SecondaryCommand</span>(id).execute();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getFallback</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;static-fallback-&quot;</span> + id;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getCacheKey</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> String.valueOf(id);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PrimaryCommand</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">PrimaryCommand</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>            <span class="hljs-built_in">super</span>(Setter<br>                    .withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;SystemX&quot;</span>))<br>                    .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;PrimaryCommand&quot;</span>))<br>                    .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(<span class="hljs-string">&quot;PrimaryCommand&quot;</span>))<br>                    .andCommandPropertiesDefaults(<br>                            <span class="hljs-comment">// we default to a 600ms timeout for primary</span><br>                            HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(<span class="hljs-number">600</span>)));<br>            <span class="hljs-built_in">this</span>.id = id;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">// perform expensive &#x27;primary&#x27; service call</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;responseFromPrimary-&quot;</span> + id;<br>        &#125;<br><br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SecondaryCommand</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-title function_">SecondaryCommand</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>            <span class="hljs-built_in">super</span>(Setter<br>                    .withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;SystemX&quot;</span>))<br>                    .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;SecondaryCommand&quot;</span>))<br>                    .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(<span class="hljs-string">&quot;SecondaryCommand&quot;</span>))<br>                    .andCommandPropertiesDefaults(<br>                            <span class="hljs-comment">// we default to a 100ms timeout for secondary</span><br>                            HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(<span class="hljs-number">100</span>)));<br>            <span class="hljs-built_in">this</span>.id = id;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">// perform fast &#x27;secondary&#x27; service call</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;responseFromSecondary-&quot;</span> + id;<br>        &#125;<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UnitTest</span> &#123;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testPrimary</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>            <span class="hljs-keyword">try</span> &#123;<br>                ConfigurationManager.getConfigInstance().setProperty(<span class="hljs-string">&quot;primarySecondary.usePrimary&quot;</span>, <span class="hljs-literal">true</span>);<br>                assertEquals(<span class="hljs-string">&quot;responseFromPrimary-20&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandFacadeWithPrimarySecondary</span>(<span class="hljs-number">20</span>).execute());<br>            &#125; <span class="hljs-keyword">finally</span> &#123;<br>                context.shutdown();<br>                ConfigurationManager.getConfigInstance().clear();<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-meta">@Test</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testSecondary</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>            <span class="hljs-keyword">try</span> &#123;<br>                ConfigurationManager.getConfigInstance().setProperty(<span class="hljs-string">&quot;primarySecondary.usePrimary&quot;</span>, <span class="hljs-literal">false</span>);<br>                assertEquals(<span class="hljs-string">&quot;responseFromSecondary-20&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommandFacadeWithPrimarySecondary</span>(<span class="hljs-number">20</span>).execute());<br>            &#125; <span class="hljs-keyword">finally</span> &#123;<br>                context.shutdown();<br>                ConfigurationManager.getConfigInstance().clear();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="客户端不执行网络访问"><a href="#客户端不执行网络访问" class="headerlink" title="客户端不执行网络访问"></a>客户端不执行网络访问</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandUsingSemaphoreIsolation.java">查看源代码</a></p>
+<p>当你包装不执行网络访问的行为时，但延迟是一个问题或线程开销是不可接受的，你可以将executionIsolationStrategy属性设置为，Hystrix 将使用信号量隔离。ExecutionIsolationStrategy.SEMAPHORE</p>
+<p>下面展示了如何通过代码将此属性设置为命令的默认值（您也可以在运行时通过动态属性覆盖它）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandUsingSemaphoreIsolation</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CommandUsingSemaphoreIsolation</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;ExampleGroup&quot;</span>))<br>                <span class="hljs-comment">// since we&#x27;re doing an in-memory cache lookup we choose SEMAPHORE isolation</span><br>                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()<br>                        .withExecutionIsolationStrategy(ExecutionIsolationStrategy.SEMAPHORE)));<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// a real implementation would retrieve data from in memory data structure</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;ValueFromHashMap_&quot;</span> + id;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="Get-Set-Get-与请求缓存失效"><a href="#Get-Set-Get-与请求缓存失效" class="headerlink" title="Get-Set-Get 与请求缓存失效"></a>Get-Set-Get 与请求缓存失效</h2><p><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/blob/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples/basic/CommandUsingRequestCacheInvalidation.java">查看源代码</a></p>
+<p>如果您正在实现 Get-Set-Get 用例，其中 Get 接收到需要请求缓存的足够流量，但有时 Set 发生在另一个应该使同一请求中的缓存无效的命令上，您可以通过调用HystrixRequestCache.clear().</p>
+<p>这是一个示例实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommandUsingRequestCacheInvalidation</span> &#123;<br><br>    <span class="hljs-comment">/* represents a remote data store */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">String</span> <span class="hljs-variable">prefixStoredOnRemoteDataStore</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;ValueBeforeSet_&quot;</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GetterCommand</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;String&gt; &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">HystrixCommandKey</span> <span class="hljs-variable">GETTER_KEY</span> <span class="hljs-operator">=</span> HystrixCommandKey.Factory.asKey(<span class="hljs-string">&quot;GetterCommand&quot;</span>);<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">GetterCommand</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>            <span class="hljs-built_in">super</span>(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;GetSetGet&quot;</span>))<br>                    .andCommandKey(GETTER_KEY));<br>            <span class="hljs-built_in">this</span>.id = id;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> prefixStoredOnRemoteDataStore + id;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getCacheKey</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> String.valueOf(id);<br>        &#125;<br><br>        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * Allow the cache to be flushed for this object.</span><br><span class="hljs-comment">         * </span><br><span class="hljs-comment">         * <span class="hljs-doctag">@param</span> id</span><br><span class="hljs-comment">         *            argument that would normally be passed to the command</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">flushCache</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>            HystrixRequestCache.getInstance(GETTER_KEY,<br>                    HystrixConcurrencyStrategyDefault.getInstance()).clear(String.valueOf(id));<br>        &#125;<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SetterCommand</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">HystrixCommand</span>&lt;Void&gt; &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> id;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String prefix;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">SetterCommand</span><span class="hljs-params">(<span class="hljs-type">int</span> id, String prefix)</span> &#123;<br>            <span class="hljs-built_in">super</span>(HystrixCommandGroupKey.Factory.asKey(<span class="hljs-string">&quot;GetSetGet&quot;</span>));<br>            <span class="hljs-built_in">this</span>.id = id;<br>            <span class="hljs-built_in">this</span>.prefix = prefix;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> Void <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">// persist the value against the datastore</span><br>            prefixStoredOnRemoteDataStore = prefix;<br>            <span class="hljs-comment">// flush the cache</span><br>            GetterCommand.flushCache(id);<br>            <span class="hljs-comment">// no return value</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>确认行为的单元测试是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java">	<span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getGetSetGet</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">HystrixRequestContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> HystrixRequestContext.initializeContext();<br>        <span class="hljs-keyword">try</span> &#123;<br>            assertEquals(<span class="hljs-string">&quot;ValueBeforeSet_1&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">GetterCommand</span>(<span class="hljs-number">1</span>).execute());<br>            <span class="hljs-type">GetterCommand</span> <span class="hljs-variable">commandAgainstCache</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">GetterCommand</span>(<span class="hljs-number">1</span>);<br>            assertEquals(<span class="hljs-string">&quot;ValueBeforeSet_1&quot;</span>, commandAgainstCache.execute());<br>            <span class="hljs-comment">// confirm it executed against cache the second time</span><br>            assertTrue(commandAgainstCache.isResponseFromCache());<br>            <span class="hljs-comment">// set the new value</span><br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">SetterCommand</span>(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;ValueAfterSet_&quot;</span>).execute();<br>            <span class="hljs-comment">// fetch it again</span><br>            <span class="hljs-type">GetterCommand</span> <span class="hljs-variable">commandAfterSet</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">GetterCommand</span>(<span class="hljs-number">1</span>);<br>            <span class="hljs-comment">// the getter should return with the new prefix, not the value from cache</span><br>            assertFalse(commandAfterSet.isResponseFromCache());<br>            assertEquals(<span class="hljs-string">&quot;ValueAfterSet_1&quot;</span>, commandAfterSet.execute());<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            context.shutdown();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="将库迁移到-Hystrix"><a href="#将库迁移到-Hystrix" class="headerlink" title="将库迁移到 Hystrix"></a>将库迁移到 Hystrix</h2><p>当您迁移现有客户端库以使用 Hystrix 时，您应该将每个“服务方法”替换为HystrixCommand.</p>
+<p>然后，服务方法应该将调用转发到HystrixCommand并且其中没有任何额外的业务逻辑。</p>
+<p>因此，在迁移之前，服务库可能如下所示：</p>
+<p><img src="/.com//hystrix08.png" srcset="/img/loading.gif" lazyload alt="hystrix08"></p>
+<p>迁移后，库的用户将能够HystrixCommand通过委托给 s 的服务外观直接或间接访问HystrixCommands。</p>
+<p><img src="/.com//hystrix09.png" srcset="/img/loading.gif" lazyload alt="hystrix09"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/hystrix/">hystrix</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/hystrix/">hystrix</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/16/spring_cloud/hystrix%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">hystrix怎么做的</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <span class="hidden-mobile">spring_cloud_feign_ribbon_hystrix源码分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

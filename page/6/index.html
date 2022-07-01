@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/html+css%E7%BB%83%E4%B9%A0/" target="_self">
-          html+css练习
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          动态创建月维度表及sharding-jdbc单库分表实现
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/html+css%E7%BB%83%E4%B9%A0/" target="_self">
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
           
-          1.采购单练习(table + css)2.分析页面的基本构造及缩写代码的基本思路真实项目开发 ​	借助UI框架快速开发 勿忘初心 ​	不要丧失了书写原生的css和html的能力 页面分成3个部分 ​	头部 ​	页面主体部分(版心) ​	底部 3.首页布局实现及图标库的使用iconfont 图标库的使用 ​	注册账号 ​	搜索喜欢的图标 ​	加入购物车-》加入项目 ​	在图标管理里选择我的项目 ​
+          单库分表一张表数据达到一定级别后，查询、插入、修改、DDL等效率降低，需要优化。这时可以使用单库分表，进行数据的拆分。 主要解决单表数据量过大的问题。 未解决：CPU、内存、带宽等单库的资源限制。 sharding-jdbc固定actual-data-nodes问题，需要动态生成表，采用定时任务实现创建配置文件：application-shardingjdbc.yml 123# 分表的表名用于定时
         </a>
       </p>
 
@@ -207,8 +207,426 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-07 13:55" pubdate>
-              2021-03-07
+            <time datetime="2022-02-09 11:28" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/sharding-jdbc/">sharding-jdbc</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/08/java/log%E7%9A%84mdc%E7%94%9F%E6%88%90traceId/" target="_self">
+          log的mdc生成traceId
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/08/java/log%E7%9A%84mdc%E7%94%9F%E6%88%90traceId/" target="_self">
+          
+          spring 添加拦截器12345678910111213141516171819202122&#x2F;** * MDC * * 为每个请求添加traceId *&#x2F;@Componentpublic class MDCFilter extends OncePerRequestFilter &amp;#123;    private static final String TRACEID &#x3D; &quot;traceI
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-08 15:33" pubdate>
+              2022-02-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mdc/">mdc</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mdc/">mdc</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/07/mysql/mysql%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F/" target="_self">
+          mysql主备延迟
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/07/mysql/mysql%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F/" target="_self">
+          
+          什么是主备延迟1.主库 A 执行完成一个事务，写入 binlog，我们把这个时刻记为 T1; 2.之后传给备库 B，我们把备库 B 接收完这个 binlog 的时刻记为 T2; 3.备库 B 执行完成这个事务，我们把这个时刻记为 T3 所谓主备延迟，就是同一个事务，在备库执行完成的时间和主库执行完成的时间之间的差值，也就是 T3-T1。 什么情况会导致主备延迟情况一：备库所在机器的性能要比主库所在
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-07 10:53" pubdate>
+              2022-02-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
+          mycat与sharding-sphere对比
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
+          
+          参考文档： https:&#x2F;&#x2F;dbaplus.cn&#x2F;news-11-1854-1.html 1.方案对比mycat是db 代理的分库分表解决方案。 sharding-sphere中sharding-jdbc是对jdbc 代理的分库分表解决方案。 从解决方案&#x2F;架构来看sharding-jdbc更符合分布式架构的设计，直连数据库，没有中间应用，理论性能是最高的（实际性能需要结合具体的代码实现
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-07 09:23" pubdate>
+              2022-02-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
+          elk安装
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
+          
+          1.创建linux用户与组12345678910添加工作组groupadd elastic创建elastic用户useradd -g elastic elastic设置密码passwd elastic修改目录权限chown -R elastic:elastic &#x2F;usr&#x2F;local&#x2F;elk切换用户su elastic  2. 安装elasticsearch 7.6下载解压： 123cd &#x2F;usr&#x2F;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-21 16:23" pubdate>
+              2022-01-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/elk/">elk</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/elk/">elk</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/04/%E5%89%8D%E7%AB%AF/javascript%E5%88%9D%E5%AD%A6/" target="_self">
+          javascript初学
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/04/%E5%89%8D%E7%AB%AF/javascript%E5%88%9D%E5%AD%A6/" target="_self">
+          
+          1.目标掌握javascript的标准ECMAScript（ES） 掌握javascript页面交互 掌握javascript操作DOM（文档对象模型） 掌握javascript操作BOM（浏览器对象模型） 掌握javascript常见面试题 掌握前端与后端的数据交互
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-04 13:55" pubdate>
+              2022-01-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/javascript/">javascript</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
+            
+              <a href="/tags/javascript/">javascript</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/12/17/jenkins/jenkins%E5%AE%89%E8%A3%85/" target="_self">
+          jenkins安装
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/12/17/jenkins/jenkins%E5%AE%89%E8%A3%85/" target="_self">
+          
+          1.下载地址http:&#x2F;&#x2F;mirrors.jenkins-ci.org&#x2F;redhat&#x2F; 2.安装1rpm -ivh jenkins-2.325-1.1.noarch.rpm  出现错误： 12错误：依赖检测失败：        daemonize 被 jenkins-2.325-1.1.noarch 需要 解决错误： 1yum -y install epel-release  1yum -y in
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-12-17 16:05" pubdate>
+              2021-12-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/jenkins/">jenkins</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/jenkins/">jenkins</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/12/17/shell/springboot%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/" target="_self">
+          spring boot启动脚本
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/12/17/shell/springboot%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/" target="_self">
+          
+          12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091929394959697989910010110210
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-12-17 14:11" pubdate>
+              2021-12-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/shell/">shell</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/shell/">shell</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
+          maven引用的过期的jar包问题
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
+          
+          1.问题因为项目里引用了过期的jar包，阿里云仓库及很多仓库都没有了，也就是下载不下来了，私服也没有，但是别人那里有这个包，这时maven打包一直下载不了这包，如何解决？ 2.解决方案方案一 把这个jar安装到本地仓库mvn install:install-file -Dfile&#x3D;”D:\artemis-http-client-1.0.0.jar” -DgroupId&#x3D;com.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-12 17:16" pubdate>
+              2021-10-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/maven/">maven</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/maven/">maven</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
+          小滴课堂首页版心banner
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
+          
+          一.思路及布局版心分为：banner区、课程区 二.编写1.html编写 12345678910111213141516&lt;div class&#x3D;&quot;content&quot;&gt;    &lt;div class&#x3D;&quot;banner clearfix&quot;&gt;        &lt;ul class&#x3D;&quot;l-category fl&quot;&gt;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-04-26 11:29" pubdate>
+              2021-04-26
             </time>
           </div>
         
@@ -236,452 +654,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/html%E5%88%9D%E5%AD%A6/" target="_self">
-          html初学
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/html%E5%88%9D%E5%AD%A6/" target="_self">
-          
-          1.目标分析网页的基本组成 独立开发一个静态网页 2. html和css在网页中扮演的角色网页的基本构成：html + css + javaScript html在网页中的作用：定义页面结构，定义有什么 css在网页中的作用：修饰页面结构和样式 javaScript在网页中的作用：定义一些网页中的交互 怎么执行html和css的代码：浏览器执行 浏览器：外壳 +内核 有独立内核的浏览器：IE(tr
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-07 13:55" pubdate>
-              2021-03-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/html%E5%85%A5%E9%97%A8/">html入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/css%E5%88%9D%E5%AD%A6/" target="_self">
-          css初学
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/03/07/%E5%89%8D%E7%AB%AF/css%E5%88%9D%E5%AD%A6/" target="_self">
-          
-          1.css 基本规则css全称：层叠样式表(Cascading Style Sheets) 选择器：告诉浏览器要设置样式的html元素 声明块：用于设置样式 viewport：移动设备上的viewport就是设备的屏幕上能用来显示我们的网页的那一块区域，开发移动端页面时一定要加上 2.css的几种写法及推荐写法写法： ​	内部样式表：写在style标签里面的 ​	内联样式表：写在元素的style属
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-07 13:55" pubdate>
-              2021-03-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/css%E5%85%A5%E9%97%A8/">css入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/08/19/git/git%20stash%20%E4%B8%8D%E6%80%95%E6%89%93%E6%89%B0%EF%BC%8C%E4%B8%B4%E6%97%B6%E4%BF%AE%E6%94%B9bug/" target="_self">
-          git stash
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/08/19/git/git%20stash%20%E4%B8%8D%E6%80%95%E6%89%93%E6%89%B0%EF%BC%8C%E4%B8%B4%E6%97%B6%E4%BF%AE%E6%94%B9bug/" target="_self">
-          
-          1.你在开发时，本地代码有修改，但是不能提交，有个紧急任务，怎么办git stash 2.git stash保存当前工作进度，将工作区和暂存区恢复到修改之前。 3.git stash save message作用同上，message为此次进度保存的说明。 4.git stash list显示保存的工作进度列表，编号越小代表保存进度的时间越近。 5.git stash pop stash@{num}
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-08-19 14:11" pubdate>
-              2020-08-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/git/">git</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/git/">git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/07/15/spring_cloud/spring_cloud_eureka%E4%B8%8B%E7%BA%BF%E4%B8%8E%E4%B8%8A%E7%BA%BF/" target="_self">
-          spring_cloud_eureka下线与上线
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/07/15/spring_cloud/spring_cloud_eureka%E4%B8%8B%E7%BA%BF%E4%B8%8E%E4%B8%8A%E7%BA%BF/" target="_self">
-          
-          手动删除spring_cloud_eureka的服务节点1.强制下线可以通过调用stateUpdate接口，更改实例的状态为OUT_OF_SERVICE 。 调用接口：&#x2F;eureka&#x2F;apps&#x2F;appID&#x2F;instanceID&#x2F;status?value&#x3D;OUT_OF_SERVICE 调用方式：PUT 2.手动上线请求接口：&#x2F;eu
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-07-15 10:01" pubdate>
-              2020-07-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-cloud/">spring_cloud</a>
-            
-              <a href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-cloud/">spring_cloud</a>
-            
-              <a href="/tags/spring-cloud-eureka/">spring_cloud_eureka</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/06/08/mysql/mysql%E5%B8%B8%E7%94%A8sql/" target="_self">
-          mysql常用sql
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/06/08/mysql/mysql%E5%B8%B8%E7%94%A8sql/" target="_self">
-          
-          常用命令登录命令 1mysql -h$ip -P$port -u$user -p  查看mysql版本号 1select version();   按客户端 IP 分组，看哪个客户端的链接数最多 1234567891011121314SELECT	client_ip,	count(client_ip) AS client_numFROM	(		SELECT			substring_index(HO
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-06-08 13:40" pubdate>
-              2020-06-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/mysql/">mysql</a>
-            
-              <a href="/categories/mysql/sql/">sql</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/mysql/">mysql</a>
-            
-              <a href="/tags/sql/">sql</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/05/12/linux/linux%E7%9A%84chown/" target="_self">
-          linux的chown命令
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/05/12/linux/linux%E7%9A%84chown/" target="_self">
-          
-          ##1.名称 chown 意思：改变文件属主; 改变属主; 命令; 更改文件拥有者; 改变文件所有权 2.语法chown [选项]… [所有者] [:[组]] 文件… chown [选项]… –reference&#x3D;参考文件 文件… 3.描述改变文件属主 4.参数4.1 -c类似于verbose，但只有在进行更改时才报告 4.2 -f忽略错误信息 4.3 -R-R, –recursive递
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-05-12 10:15" pubdate>
-              2020-05-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-              <a href="/tags/chown/">chown</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/05/12/spring_cloud/spring_cloud_eureka%E5%88%A0%E9%99%A4%E6%97%A0%E6%95%88%E6%9C%8D%E5%8A%A1/" target="_self">
-          spring_cloud_eureka删除无效服务
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/05/12/spring_cloud/spring_cloud_eureka%E5%88%A0%E9%99%A4%E6%97%A0%E6%95%88%E6%9C%8D%E5%8A%A1/" target="_self">
-          
-          手动删除spring_cloud_eureka的服务节点1.查看spring_cloud_eureka的管理页面http:&#x2F;&#x2F;用户名:密码@ip:port 2.删除服务节点Request Method &#x3D; DELETEhttp:&#x2F;&#x2F;用户名:密码@ip:port&#x2F;eureka&#x2F;apps&#x2F;服务名&#x2F;注册名
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-05-12 10:01" pubdate>
-              2020-05-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-cloud/">spring_cloud</a>
-            
-              <a href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-cloud/">spring_cloud</a>
-            
-              <a href="/tags/spring-cloud-eureka/">spring_cloud_eureka</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/04/07/git/git%20commit/" target="_self">
-          git commit
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/04/07/git/git%20commit/" target="_self">
-          
-          1. 怎么修改最新commit的message?git commit –amend 修改message并保存
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-04-07 15:52" pubdate>
-              2020-04-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/git/">git</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/git/">git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/04/07/git/git%20rebase/" target="_self">
-          git rebase
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/04/07/git/git%20rebase/" target="_self">
-          
-          git rebase会修改commitId 1. 怎么修改老旧commit的message?git rebase -i  [基于哪个commitId] reword 使用这个commit,但是修改message 2.怎么把连续的多个commit整理成1个？git rebase -i [基于哪个commitId] squash 使用这个commit,但是合到上一个commit上 3.怎么把间隔的几个
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-04-07 15:52" pubdate>
-              2020-04-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/git/">git</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/git/">git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/5/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><a class="extend next" rel="next" href="/page/7/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/5/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/#board">12</a><a class="extend next" rel="next" href="/page/7/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

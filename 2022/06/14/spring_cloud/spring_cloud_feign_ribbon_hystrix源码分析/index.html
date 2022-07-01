@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="流程图 @EnableFeignClients开启Feign功能使用时都是在spring boot 启动类加上@EnableFeignClients注解。 123@Import(FeignClientsRegistrar.class)public @interface EnableFeignClients &amp;#123;&amp;#125;  注解上有FeignClientsRegistrar类 Feign">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring_cloud_feign_ribbon_hystrix源码分析">
+<meta property="og:url" content="http://hanqichuan.com/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="流程图 @EnableFeignClients开启Feign功能使用时都是在spring boot 启动类加上@EnableFeignClients注解。 123@Import(FeignClientsRegistrar.class)public @interface EnableFeignClients &amp;#123;&amp;#125;  注解上有FeignClientsRegistrar类 Feign">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//openfeign%E6%B5%81%E7%A8%8B%E5%9B%BE.jpeg">
+<meta property="article:published_time" content="2022-06-14T07:12:00.000Z">
+<meta property="article:modified_time" content="2022-06-22T09:11:59.495Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="spring_cloud">
+<meta property="article:tag" content="feign">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//openfeign%E6%B5%81%E7%A8%8B%E5%9B%BE.jpeg">
+  
+  
+  <title>spring_cloud_feign_ribbon_hystrix源码分析 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="spring_cloud_feign_ribbon_hystrix源码分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-14 15:12" pubdate>
+        2022年6月14日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      25k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      208 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">spring_cloud_feign_ribbon_hystrix源码分析</h1>
+            
+            <div class="markdown-body">
+              <h1 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h1><p><img src="/.com//openfeign%E6%B5%81%E7%A8%8B%E5%9B%BE.jpeg" srcset="/img/loading.gif" lazyload alt="openfeign流程图"></p>
+<h1 id="EnableFeignClients开启Feign功能"><a href="#EnableFeignClients开启Feign功能" class="headerlink" title="@EnableFeignClients开启Feign功能"></a>@EnableFeignClients开启Feign功能</h1><p>使用时都是在spring boot 启动类加上@EnableFeignClients注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Import(FeignClientsRegistrar.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> EnableFeignClients &#123;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注解上有FeignClientsRegistrar类</p>
+<p>FeignClientsRegistrar实现了ImportBeanDefinitionRegistrar接口</p>
+<p>spring 启动时会调用registerBeanDefinitions方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerBeanDefinitions</span><span class="hljs-params">(AnnotationMetadata metadata,</span><br><span class="hljs-params">		BeanDefinitionRegistry registry)</span> &#123;<br>   <span class="hljs-comment">//注册@EnableFeignClients上定义的defaultConfiguration默认配置类</span><br>	registerDefaultConfiguration(metadata, registry);<br>   <span class="hljs-comment">//扫描所有的@FeignClient注解</span><br>	registerFeignClients(metadata, registry);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="注册默认配置类"><a href="#注册默认配置类" class="headerlink" title="注册默认配置类"></a>注册默认配置类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientsRegistrar<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerDefaultConfiguration</span><span class="hljs-params">(AnnotationMetadata metadata,</span><br><span class="hljs-params">		BeanDefinitionRegistry registry)</span> &#123;<br>    <span class="hljs-comment">//获取@EnableFeignClients配置的信息</span><br>	Map&lt;String, Object&gt; defaultAttrs = metadata<br>			.getAnnotationAttributes(EnableFeignClients.class.getName(), <span class="hljs-literal">true</span>);<br>    <span class="hljs-comment">//判断是否配置了defaultConfiguration</span><br>	<span class="hljs-keyword">if</span> (defaultAttrs != <span class="hljs-literal">null</span> &amp;&amp; defaultAttrs.containsKey(<span class="hljs-string">&quot;defaultConfiguration&quot;</span>)) &#123;<br>		String name;<br>        <span class="hljs-comment">//判断配置在defaultConfiguration是否为内部类，拼接对应的类名</span><br>		<span class="hljs-keyword">if</span> (metadata.hasEnclosingClass()) &#123;<br>			name = <span class="hljs-string">&quot;default.&quot;</span> + metadata.getEnclosingClassName();<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			name = <span class="hljs-string">&quot;default.&quot;</span> + metadata.getClassName();<br>		&#125;<br>        <span class="hljs-comment">//跟进去</span><br>		registerClientConfiguration(registry, name,<br>				defaultAttrs.get(<span class="hljs-string">&quot;defaultConfiguration&quot;</span>));<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientsRegistrar<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerClientConfiguration</span><span class="hljs-params">(BeanDefinitionRegistry registry, Object name,</span><br><span class="hljs-params">		Object configuration)</span> &#123;<br>	<span class="hljs-type">BeanDefinitionBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> BeanDefinitionBuilder<br>			.genericBeanDefinition(FeignClientSpecification.class);<br>	builder.addConstructorArgValue(name);<br>	builder.addConstructorArgValue(configuration);<br>    <span class="hljs-comment">//将@EnableFeignClients中的配置信息注册到容器中</span><br>	registry.registerBeanDefinition(<br>			name + <span class="hljs-string">&quot;.&quot;</span> + FeignClientSpecification.class.getSimpleName(),<br>			builder.getBeanDefinition());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="扫描-FeignClient注解"><a href="#扫描-FeignClient注解" class="headerlink" title="扫描@FeignClient注解"></a>扫描@FeignClient注解</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientsRegistrar<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerFeignClients</span><span class="hljs-params">(AnnotationMetadata metadata,</span><br><span class="hljs-params">		BeanDefinitionRegistry registry)</span> &#123;<br>    <span class="hljs-comment">//获取类路径扫描器</span><br>	<span class="hljs-type">ClassPathScanningCandidateComponentProvider</span> <span class="hljs-variable">scanner</span> <span class="hljs-operator">=</span> getScanner();<br>    <span class="hljs-comment">//设置资源加载器</span><br>	scanner.setResourceLoader(<span class="hljs-built_in">this</span>.resourceLoader);<br>	Set&lt;String&gt; basePackages;<br>    <span class="hljs-comment">//获取@EnableFeignClients的注解信息</span><br>	Map&lt;String, Object&gt; attrs = metadata<br>			.getAnnotationAttributes(EnableFeignClients.class.getName());<br>    <span class="hljs-comment">//创建@FeignClient类型的过滤器</span><br>	<span class="hljs-type">AnnotationTypeFilter</span> <span class="hljs-variable">annotationTypeFilter</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationTypeFilter</span>(<br>			FeignClient.class);<br>	<span class="hljs-keyword">final</span> Class&lt;?&gt;[] clients = attrs == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span><br>			: (Class&lt;?&gt;[]) attrs.get(<span class="hljs-string">&quot;clients&quot;</span>);<br>	<span class="hljs-keyword">if</span> (clients == <span class="hljs-literal">null</span> || clients.length == <span class="hljs-number">0</span>) &#123;<br>		scanner.addIncludeFilter(annotationTypeFilter);<br>        <span class="hljs-comment">//获取包路径</span><br>		basePackages = getBasePackages(metadata);<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-keyword">for</span> (Class&lt;?&gt; clazz : clients) &#123;<br>				candidateComponents.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotatedGenericBeanDefinition</span>(clazz));<br>			&#125;<br>	&#125;<br>    <span class="hljs-comment">//遍历包路径</span><br>	<span class="hljs-keyword">for</span> (String basePackage : basePackages) &#123;<br>        <span class="hljs-comment">//获取该包路径下带@FeignClient的BD信息</span><br>		Set&lt;BeanDefinition&gt; candidateComponents = scanner<br>				.findCandidateComponents(basePackage);<br>		<span class="hljs-keyword">for</span> (BeanDefinition candidateComponent : candidateComponents) &#123;<br>			<span class="hljs-keyword">if</span> (candidateComponent <span class="hljs-keyword">instanceof</span> AnnotatedBeanDefinition) &#123;<br>				<span class="hljs-type">AnnotatedBeanDefinition</span> <span class="hljs-variable">beanDefinition</span> <span class="hljs-operator">=</span> (AnnotatedBeanDefinition) candidateComponent;<br>				<span class="hljs-type">AnnotationMetadata</span> <span class="hljs-variable">annotationMetadata</span> <span class="hljs-operator">=</span> beanDefinition.getMetadata();<br>				Assert.isTrue(annotationMetadata.isInterface(),<br>						<span class="hljs-string">&quot;@FeignClient can only be specified on an interface&quot;</span>);<br>                <span class="hljs-comment">//获取@FeignClient的注解信息</span><br>				Map&lt;String, Object&gt; attributes = annotationMetadata<br>						.getAnnotationAttributes(<br>								FeignClient.class.getCanonicalName());<br>                <span class="hljs-comment">//获取@FeignClient上配置的名称，优先级为contextId&gt;value&gt;name&gt;serviceId</span><br>				<span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> getClientName(attributes);<br>                <span class="hljs-comment">//注册@FeignClient的配置信息</span><br>				registerClientConfiguration(registry, name,<br>						attributes.get(<span class="hljs-string">&quot;configuration&quot;</span>));<br>                <span class="hljs-comment">//注册加了@FeignClient的类到容器中</span><br>				registerFeignClient(registry, annotationMetadata, attributes);<br>			&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientsRegistrar<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerFeignClient</span><span class="hljs-params">(BeanDefinitionRegistry registry,</span><br><span class="hljs-params">		AnnotationMetadata annotationMetadata, Map&lt;String, Object&gt; attributes)</span> &#123;<br>    <span class="hljs-comment">//返回添加了@FeignClient注解的Class的全限定名，  包名.类名</span><br>	<span class="hljs-type">String</span> <span class="hljs-variable">className</span> <span class="hljs-operator">=</span> annotationMetadata.getClassName();<br>    <span class="hljs-comment">//FeignClientFactoryBean是一个FactoryBean，用它来创建具体的FeignClient</span><br>	<span class="hljs-type">BeanDefinitionBuilder</span> <span class="hljs-variable">definition</span> <span class="hljs-operator">=</span> BeanDefinitionBuilder<br>			.genericBeanDefinition(FeignClientFactoryBean.class);<br>	validate(attributes);<br>    <span class="hljs-comment">//向FeignClientFactoryBean添加@FeignClient中配置的一些注解信息</span><br>	definition.addPropertyValue(<span class="hljs-string">&quot;url&quot;</span>, getUrl(attributes));<br>	definition.addPropertyValue(<span class="hljs-string">&quot;path&quot;</span>, getPath(attributes));<br>	<span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> getName(attributes);<br>	definition.addPropertyValue(<span class="hljs-string">&quot;name&quot;</span>, name);<br>	<span class="hljs-type">String</span> <span class="hljs-variable">contextId</span> <span class="hljs-operator">=</span> getContextId(attributes);<br>	definition.addPropertyValue(<span class="hljs-string">&quot;contextId&quot;</span>, contextId);<br>	definition.addPropertyValue(<span class="hljs-string">&quot;type&quot;</span>, className);<br>	definition.addPropertyValue(<span class="hljs-string">&quot;decode404&quot;</span>, attributes.get(<span class="hljs-string">&quot;decode404&quot;</span>));<br>	definition.addPropertyValue(<span class="hljs-string">&quot;fallback&quot;</span>, attributes.get(<span class="hljs-string">&quot;fallback&quot;</span>));<br>	definition.addPropertyValue(<span class="hljs-string">&quot;fallbackFactory&quot;</span>, attributes.get(<span class="hljs-string">&quot;fallbackFactory&quot;</span>));<br>	definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);<br>	<span class="hljs-type">String</span> <span class="hljs-variable">alias</span> <span class="hljs-operator">=</span> contextId + <span class="hljs-string">&quot;FeignClient&quot;</span>;<br>	<span class="hljs-type">AbstractBeanDefinition</span> <span class="hljs-variable">beanDefinition</span> <span class="hljs-operator">=</span> definition.getBeanDefinition();<br>	<span class="hljs-type">boolean</span> <span class="hljs-variable">primary</span> <span class="hljs-operator">=</span> (Boolean) attributes.get(<span class="hljs-string">&quot;primary&quot;</span>);<br>	beanDefinition.setPrimary(primary);<br>	<span class="hljs-type">String</span> <span class="hljs-variable">qualifier</span> <span class="hljs-operator">=</span> getQualifier(attributes);<br>	<span class="hljs-keyword">if</span> (StringUtils.hasText(qualifier)) &#123;<br>		alias = qualifier;<br>	&#125;<br>	<span class="hljs-type">BeanDefinitionHolder</span> <span class="hljs-variable">holder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BeanDefinitionHolder</span>(beanDefinition, className,<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[] &#123; alias &#125;);<br>    <span class="hljs-comment">//将FeignClientFactoryBean注册到容器中</span><br>	BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这一步完成后，所有的加了@FeignClient的类就会被解析成FeignClientFactoryBean类型的BeanDefinition加入到容器中，FeignClientFactoryBean包含了@FeignClient上配置的信息，以及保存了当前添加@FeignClient注解的Class名称。之后就是Spring容器在refresh()内会去实例化该FeignClient，而FeignClientFactoryBean是FactoryBean类型，所以会调用它的getObject()进行实例化。</p>
+<h1 id="FeignClient实例化"><a href="#FeignClient实例化" class="headerlink" title="FeignClient实例化"></a>FeignClient实例化</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">getObject</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>	<span class="hljs-keyword">return</span> getTarget();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br>&lt;T&gt; T <span class="hljs-title function_">getTarget</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-comment">//获取FeignContext，在FeignAutoConfiguration自动装配进来</span><br>	<span class="hljs-type">FeignContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.applicationContext.getBean(FeignContext.class);<br>    <span class="hljs-comment">//创建builder对象，用来生成Feign</span><br>	Feign.<span class="hljs-type">Builder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> feign(context);<br>    <span class="hljs-comment">//如果没有在@FeignClient配置了url，说明要负载均衡</span><br>	<span class="hljs-keyword">if</span> (!StringUtils.hasText(<span class="hljs-built_in">this</span>.url)) &#123;<br>       	<span class="hljs-comment">//构造url</span><br>		<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.name.startsWith(<span class="hljs-string">&quot;http&quot;</span>)) &#123;<br>			<span class="hljs-built_in">this</span>.url = <span class="hljs-string">&quot;http://&quot;</span> + <span class="hljs-built_in">this</span>.name;<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-built_in">this</span>.url = <span class="hljs-built_in">this</span>.name;<br>		&#125;<br>        <span class="hljs-comment">//http://服务名</span><br>		<span class="hljs-built_in">this</span>.url += cleanPath();<br>        <span class="hljs-comment">//创建负载均衡代理类</span><br>		<span class="hljs-keyword">return</span> (T) loadBalance(builder, context,<br>				<span class="hljs-keyword">new</span> <span class="hljs-title class_">HardCodedTarget</span>&lt;&gt;(<span class="hljs-built_in">this</span>.type, <span class="hljs-built_in">this</span>.name, <span class="hljs-built_in">this</span>.url));<br>	&#125;<br>    <br>    <span class="hljs-comment">//说明url存在，使用硬编码的方式</span><br>	<span class="hljs-keyword">if</span> (StringUtils.hasText(<span class="hljs-built_in">this</span>.url) &amp;&amp; !<span class="hljs-built_in">this</span>.url.startsWith(<span class="hljs-string">&quot;http&quot;</span>)) &#123;<br>        <span class="hljs-comment">//直接拼接url</span><br>		<span class="hljs-built_in">this</span>.url = <span class="hljs-string">&quot;http://&quot;</span> + <span class="hljs-built_in">this</span>.url;<br>	&#125;<br>	<span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.url + cleanPath();<br>    <span class="hljs-comment">//获取客户端对象</span><br>	<span class="hljs-type">Client</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> getOptional(context, Client.class);<br>	<span class="hljs-keyword">if</span> (client != <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-comment">//Ribbon客户端对象LoadBalancerFeignClient</span><br>		<span class="hljs-keyword">if</span> (client <span class="hljs-keyword">instanceof</span> LoadBalancerFeignClient) &#123;<br>			client = ((LoadBalancerFeignClient) client).getDelegate();<br>		&#125;<br>		builder.client(client);<br>	&#125;<br>    <span class="hljs-comment">//在FeignAutoConfiguration自动装配进来</span><br>	<span class="hljs-type">Targeter</span> <span class="hljs-variable">targeter</span> <span class="hljs-operator">=</span> get(context, Targeter.class);<br>    <span class="hljs-comment">//生成动态代理对象</span><br>	<span class="hljs-keyword">return</span> (T) targeter.target(<span class="hljs-built_in">this</span>, builder, context,<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">HardCodedTarget</span>&lt;&gt;(<span class="hljs-built_in">this</span>.type, <span class="hljs-built_in">this</span>.name, url));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>FeignContext在哪注入到spring容器的呢？在FeignAutoConfiguration中</p>
+<h2 id="FeignAutoConfiguration自动装配"><a href="#FeignAutoConfiguration自动装配" class="headerlink" title="FeignAutoConfiguration自动装配"></a>FeignAutoConfiguration自动装配</h2><figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xl"><span class="hljs-function"><span class="hljs-title">spring</span>-cloud-starter-openfeign pom.xml  -&gt;</span> <span class="hljs-function"><span class="hljs-title">spring</span>-cloud-openfeign-core -&gt;</span> <span class="hljs-function"><span class="hljs-title">spring</span>.factories -&gt;</span> org.springframework.cloud.openfeign.FeignAutoConfiguration<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@ConditionalOnClass(Feign.class)</span><br><span class="hljs-meta">@EnableConfigurationProperties(&#123; FeignClientProperties.class,</span><br><span class="hljs-meta">		FeignHttpClientProperties.class &#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FeignAutoConfiguration</span> &#123;<br>	<br>    <span class="hljs-comment">//FeignContext，内部保存了创建FeignClient所需的组件</span><br>	<span class="hljs-meta">@Bean</span><br>	<span class="hljs-keyword">public</span> FeignContext <span class="hljs-title function_">feignContext</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-type">FeignContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FeignContext</span>();<br>		context.setConfigurations(<span class="hljs-built_in">this</span>.configurations);<br>		<span class="hljs-keyword">return</span> context;<br>	&#125;<br><br>    <span class="hljs-comment">//以下是两个相对的条件</span><br>	<span class="hljs-meta">@Configuration</span><br>	<span class="hljs-meta">@ConditionalOnClass(name = &quot;feign.hystrix.HystrixFeign&quot;)</span><span class="hljs-comment">//引入hystrix</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HystrixFeignTargeterConfiguration</span> &#123;<br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-keyword">public</span> Targeter <span class="hljs-title function_">feignTargeter</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">//创建Hystrix类型</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixTargeter</span>();<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-meta">@Configuration</span><br>	<span class="hljs-meta">@ConditionalOnMissingClass(&quot;feign.hystrix.HystrixFeign&quot;)</span><span class="hljs-comment">//未引入hystrix</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DefaultFeignTargeterConfiguration</span> &#123;<br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-keyword">public</span> Targeter <span class="hljs-title function_">feignTargeter</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">//创建默认类型</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultTargeter</span>();<br>		&#125;<br><br>	&#125;<br>    <br>    <span class="hljs-comment">//下面还有HttpClient,Okhttp的配置</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>FeignAutoConfiguration配置类会自动装配一些用来创建FeignClient实例的Bean信息。</p>
+<h2 id="创建生成Feign的Builder对象"><a href="#创建生成Feign的Builder对象" class="headerlink" title="创建生成Feign的Builder对象"></a>创建生成Feign的Builder对象</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean#getTarget() <br><span class="hljs-comment">//创建builder对象，用来生成Feign</span><br>Feign.<span class="hljs-type">Builder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> feign(context);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br><span class="hljs-keyword">protected</span> Feign.Builder <span class="hljs-title function_">feign</span><span class="hljs-params">(FeignContext context)</span> &#123;<br>	<span class="hljs-type">FeignLoggerFactory</span> <span class="hljs-variable">loggerFactory</span> <span class="hljs-operator">=</span> get(context, FeignLoggerFactory.class);<br>	<span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> loggerFactory.create(<span class="hljs-built_in">this</span>.type);<br>    <span class="hljs-comment">//设置Logger、Encoder、Decoder等组件</span><br>	Feign.<span class="hljs-type">Builder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> get(context, Feign.Builder.class)<br>			.logger(logger)<br>			.encoder(get(context, Encoder.class))<br>			.decoder(get(context, Decoder.class))<br>			.contract(get(context, Contract.class));<br>    <span class="hljs-comment">//配置builder</span><br>	configureFeign(context, builder);<br>	<span class="hljs-keyword">return</span> builder;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configureFeign</span><span class="hljs-params">(FeignContext context, Feign.Builder builder)</span> &#123;<br>	<span class="hljs-type">FeignClientProperties</span> <span class="hljs-variable">properties</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.applicationContext<br>			.getBean(FeignClientProperties.class);<br>    <span class="hljs-comment">//从.properties配置文件中加载配置</span><br>	<span class="hljs-keyword">if</span> (properties != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">if</span> (properties.isDefaultToProperties()) &#123;<br>			configureUsingConfiguration(context, builder);<br>			configureUsingProperties(<br>					properties.getConfig().get(properties.getDefaultConfig()),<br>					builder);<br>			configureUsingProperties(properties.getConfig().get(<span class="hljs-built_in">this</span>.contextId),<br>					builder);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			configureUsingProperties(<br>					properties.getConfig().get(properties.getDefaultConfig()),<br>					builder);<br>			configureUsingProperties(properties.getConfig().get(<span class="hljs-built_in">this</span>.contextId),<br>					builder);<br>			configureUsingConfiguration(context, builder);<br>		&#125;<br>	&#125;<br>    <span class="hljs-comment">//配置类@Bean加载配置</span><br>	<span class="hljs-keyword">else</span> &#123;<br>		configureUsingConfiguration(context, builder);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在加载配置到builder对象中后，就是去生成代理对象的逻辑。</p>
+<h2 id="创建Feign代理对象"><a href="#创建Feign代理对象" class="headerlink" title="创建Feign代理对象"></a>创建Feign代理对象</h2><p>首先来看看创建负载均衡代理对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean#getTarget() <br><span class="hljs-comment">//创建负载均衡代理类</span><br><span class="hljs-keyword">return</span> (T) loadBalance(builder, context,<br>				<span class="hljs-keyword">new</span> <span class="hljs-title class_">HardCodedTarget</span>&lt;&gt;(<span class="hljs-built_in">this</span>.type, <span class="hljs-built_in">this</span>.name, <span class="hljs-built_in">this</span>.url));<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br><span class="hljs-keyword">protected</span> &lt;T&gt; T <span class="hljs-title function_">loadBalance</span><span class="hljs-params">(Feign.Builder builder, FeignContext context,</span><br><span class="hljs-params">		HardCodedTarget&lt;T&gt; target)</span> &#123;<br>    <span class="hljs-comment">//获取客户端对象</span><br>	<span class="hljs-type">Client</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> getOptional(context, Client.class);<br>	<span class="hljs-keyword">if</span> (client != <span class="hljs-literal">null</span>) &#123;<br>		builder.client(client);<br>        <span class="hljs-comment">//获取Targeter，分别有HystrixTargeter和DefaultTargeter类型</span><br>		<span class="hljs-type">Targeter</span> <span class="hljs-variable">targeter</span> <span class="hljs-operator">=</span> get(context, Targeter.class);<br>        <span class="hljs-comment">//创建代理对象，跟进去，是一个接口方法，分别对应上面两种类型的实现</span><br>		<span class="hljs-keyword">return</span> targeter.target(<span class="hljs-built_in">this</span>, builder, context, target);<br>	&#125;<br>	<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<br>			<span class="hljs-string">&quot;No Feign Client for loadBalancing defined. Did you forget to include spring-cloud-starter-netflix-ribbon?&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="DefaultTargeter创建代理对象"><a href="#DefaultTargeter创建代理对象" class="headerlink" title="DefaultTargeter创建代理对象"></a>DefaultTargeter创建代理对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignClientFactoryBean<br><span class="hljs-comment">//获取Targeter，分别有HystrixTargeter和DefaultTargeter类型</span><br>		<span class="hljs-type">Targeter</span> <span class="hljs-variable">targeter</span> <span class="hljs-operator">=</span> get(context, Targeter.class);<br>        <span class="hljs-comment">//创建代理对象，跟进去，是一个接口方法，分别对应上面两种类型的实现</span><br>		<span class="hljs-keyword">return</span> targeter.target(<span class="hljs-built_in">this</span>, builder, context, target);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">#DefaultTargeter<br><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">target</span><span class="hljs-params">(FeignClientFactoryBean factory, Feign.Builder feign,</span><br><span class="hljs-params">      FeignContext context, Target.HardCodedTarget&lt;T&gt; target)</span> &#123;<br>   <span class="hljs-keyword">return</span> feign.target(target);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">#Feign<br><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">target</span><span class="hljs-params">(Target&lt;T&gt; target)</span> &#123;<br>    <span class="hljs-comment">//跟进去</span><br>   <span class="hljs-keyword">return</span> build().newInstance(target);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java">#Feign.Builder<br><span class="hljs-keyword">public</span> Feign <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;<br>  <span class="hljs-comment">//构建SynchronousMethodHandler工厂</span><br>  SynchronousMethodHandler.<span class="hljs-type">Factory</span> <span class="hljs-variable">synchronousMethodHandlerFactory</span> <span class="hljs-operator">=</span><br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">SynchronousMethodHandler</span>.Factory(client, retryer, requestInterceptors, logger,<br>          logLevel, decode404, closeAfterDecode, propagationPolicy);<br>  <span class="hljs-comment">//设置组件对象</span><br>  <span class="hljs-type">ParseHandlersByName</span> <span class="hljs-variable">handlersByName</span> <span class="hljs-operator">=</span><br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">ParseHandlersByName</span>(contract, options, encoder, decoder, queryMapEncoder,<br>          errorDecoder, synchronousMethodHandlerFactory);<br>  <span class="hljs-comment">//创建ReflectiveFeign实例，invocationHandlerFactory是InvocationHandlerFactory.Default类型</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReflectiveFeign</span>(handlersByName, invocationHandlerFactory, queryMapEncoder);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java">#ReflectiveFeign  是Feign的实现类<br><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">newInstance</span><span class="hljs-params">(Target&lt;T&gt; target)</span> &#123;<br>  <span class="hljs-comment">//target内部保存了当前加了@FeignClient的接口Class，apply()会解析出接口中的方法和方法上的注解</span><br>  <span class="hljs-comment">//key是方法名，value是SynchronousMethodHandler类型，内部持有这个方法和注解的所有信息</span><br>  Map&lt;String, MethodHandler&gt; nameToHandler = targetToHandlersByName.apply(target);<br>  Map&lt;Method, MethodHandler&gt; methodToHandler = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedHashMap</span>&lt;Method, MethodHandler&gt;();<br>  List&lt;DefaultMethodHandler&gt; defaultMethodHandlers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>&lt;DefaultMethodHandler&gt;();<br>  <span class="hljs-comment">//target.type()就是获取接口的Class</span><br>  <span class="hljs-comment">//遍历所有的接口方法</span><br>  <span class="hljs-keyword">for</span> (Method method : target.type().getMethods()) &#123;<br>    <span class="hljs-keyword">if</span> (method.getDeclaringClass() == Object.class) &#123;<br>      <span class="hljs-comment">//Object的方法不管</span><br>      <span class="hljs-keyword">continue</span>;<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Util.isDefault(method)) &#123;<br>      <span class="hljs-comment">//default 类型的方法，要加入到defaultMethodHandlers集合</span><br>      <span class="hljs-type">DefaultMethodHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultMethodHandler</span>(method);<br>      defaultMethodHandlers.add(handler);<br>      methodToHandler.put(method, handler);<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">//非Object，default的方法，从nameToHandler中取出添加到methodToHandler集合</span><br>      methodToHandler.put(method, nameToHandler.get(Feign.configKey(target.type(), method)));<br>    &#125;<br>  &#125;<br>  <span class="hljs-comment">//InvocationHandler工厂创建InvocationHandler对象</span><br>  <span class="hljs-type">InvocationHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> factory.create(target, methodToHandler);<br>  <span class="hljs-comment">//创建代理对象</span><br>  <span class="hljs-type">T</span> <span class="hljs-variable">proxy</span> <span class="hljs-operator">=</span> (T) Proxy.newProxyInstance(target.type().getClassLoader(),<br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>&lt;?&gt;[] &#123;target.type()&#125;, handler);<br>  <span class="hljs-keyword">for</span> (DefaultMethodHandler defaultMethodHandler : defaultMethodHandlers) &#123;<br>    <span class="hljs-comment">//将default方法绑定在代理对象上</span><br>    defaultMethodHandler.bindTo(proxy);<br>  &#125;<br>  <span class="hljs-comment">//返回代理对象</span><br>  <span class="hljs-keyword">return</span> proxy;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="InvocationHandler对象调用invoke"><a href="#InvocationHandler对象调用invoke" class="headerlink" title="InvocationHandler对象调用invoke()"></a>InvocationHandler对象调用invoke()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">#InvocationHandlerFactory.Default<br><span class="hljs-keyword">public</span> InvocationHandler <span class="hljs-title function_">create</span><span class="hljs-params">(Target target, Map&lt;Method, MethodHandler&gt; dispatch)</span> &#123;<br>  <span class="hljs-comment">//创建了FeignInvocationHandler类型的InvocationHandler，直接看它的invoke方法</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReflectiveFeign</span>.FeignInvocationHandler(target, dispatch);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当feignClient中的方法被调用后会执行FeignInvocationHandler的invoke方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java">#FeignInvocationHandler<br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;equals&quot;</span>.equals(method.getName())) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-type">Object</span> <span class="hljs-variable">otherHandler</span> <span class="hljs-operator">=</span><br>          args.length &gt; <span class="hljs-number">0</span> &amp;&amp; args[<span class="hljs-number">0</span>] != <span class="hljs-literal">null</span> ? Proxy.getInvocationHandler(args[<span class="hljs-number">0</span>]) : <span class="hljs-literal">null</span>;<br>      <span class="hljs-keyword">return</span> equals(otherHandler);<br>    &#125; <span class="hljs-keyword">catch</span> (IllegalArgumentException e) &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;hashCode&quot;</span>.equals(method.getName())) &#123;<br>    <span class="hljs-keyword">return</span> hashCode();<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;toString&quot;</span>.equals(method.getName())) &#123;<br>    <span class="hljs-keyword">return</span> toString();<br>  &#125;<br>  <span class="hljs-comment">//dispatch就是在构造中赋值的，在#ReflectiveFeign的newInstance()方法中的methodToHandler</span><br>  <span class="hljs-comment">//key为接口中的方法，value为SynchronousMethodHandler和DefaultMethodHandler类型</span><br>  <span class="hljs-comment">//所以接下来就去看这两个类型的invoke方法</span><br>  <span class="hljs-keyword">return</span> dispatch.get(method).invoke(args);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="DefaultMethodHandler的invoke"><a href="#DefaultMethodHandler的invoke" class="headerlink" title="DefaultMethodHandler的invoke()"></a>DefaultMethodHandler的invoke()</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object[] argv)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>  <span class="hljs-keyword">if</span> (handle == <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<br>        <span class="hljs-string">&quot;Default method handler invoked before proxy has been bound.&quot;</span>);<br>  &#125;<br>  <span class="hljs-comment">//default修饰的方法就直接执行</span><br>  <span class="hljs-keyword">return</span> handle.invokeWithArguments(argv);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="SynchronousMethodHandler的invoke"><a href="#SynchronousMethodHandler的invoke" class="headerlink" title="SynchronousMethodHandler的invoke()"></a>SynchronousMethodHandler的invoke()</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object[] argv)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>  <span class="hljs-comment">//将方法参数构建成RequestTemplate，这个对象相信大家都很熟悉</span><br>  <span class="hljs-type">RequestTemplate</span> <span class="hljs-variable">template</span> <span class="hljs-operator">=</span> buildTemplateFromArgs.create(argv);<br>  <span class="hljs-type">Options</span> <span class="hljs-variable">options</span> <span class="hljs-operator">=</span> findOptions(argv);<br>  <span class="hljs-type">Retryer</span> <span class="hljs-variable">retryer</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.retryer.clone();<br>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-comment">//执行请求</span><br>      <span class="hljs-keyword">return</span> executeAndDecode(template, options);<br>    &#125; <span class="hljs-keyword">catch</span> (RetryableException e) &#123;<br>      <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">//重试机制</span><br>        retryer.continueOrPropagate(e);<br>      &#125; <br>      <span class="hljs-comment">//......</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs java">#SynchronousMethodHandler<br>Object <span class="hljs-title function_">executeAndDecode</span><span class="hljs-params">(RequestTemplate template, Options options)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>  <span class="hljs-comment">//调用RequestInterceptor，根据template生成Request对象</span><br>  <span class="hljs-type">Request</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> targetRequest(template);<br>  <span class="hljs-comment">//......</span><br>  <span class="hljs-comment">//响应对象</span><br>  Response response;<br>  <span class="hljs-type">long</span> <span class="hljs-variable">start</span> <span class="hljs-operator">=</span> System.nanoTime();<br>  <span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-comment">//调用客户端的execute执行请求</span><br>    response = client.execute(request, options);<br>  &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>    <span class="hljs-comment">//......</span><br>  &#125;<br>  <span class="hljs-type">long</span> <span class="hljs-variable">elapsedTime</span> <span class="hljs-operator">=</span> TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);<br>  <span class="hljs-type">boolean</span> <span class="hljs-variable">shouldClose</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;<br>  <span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-comment">//......</span><br>    <span class="hljs-comment">//对response进行解码</span><br>    <span class="hljs-keyword">if</span> (Response.class == metadata.returnType()) &#123;<br>      <span class="hljs-keyword">if</span> (response.body() == <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-keyword">return</span> response;<br>      &#125;<br>      <span class="hljs-keyword">if</span> (response.body().length() == <span class="hljs-literal">null</span> ||<br>          response.body().length() &gt; MAX_RESPONSE_BUFFER_SIZE) &#123;<br>        shouldClose = <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">return</span> response;<br>      &#125;<br>      <span class="hljs-type">byte</span>[] bodyData = Util.toByteArray(response.body().asInputStream());<br>      <span class="hljs-keyword">return</span> response.toBuilder().body(bodyData).build();<br>    &#125;<br>    <span class="hljs-keyword">if</span> (response.status() &gt;= <span class="hljs-number">200</span> &amp;&amp; response.status() &lt; <span class="hljs-number">300</span>) &#123;<br>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">void</span>.class == metadata.returnType()) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> decode(response);<br>        shouldClose = closeAfterDecode;<br>        <span class="hljs-keyword">return</span> result;<br>      &#125;<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (decode404 &amp;&amp; response.status() == <span class="hljs-number">404</span> &amp;&amp; <span class="hljs-keyword">void</span>.class != metadata.returnType()) &#123;<br>      <span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> decode(response);<br>      shouldClose = closeAfterDecode;<br>      <span class="hljs-keyword">return</span> result;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-keyword">throw</span> errorDecoder.decode(metadata.configKey(), response);<br>    &#125;<br>  &#125;<br>  <span class="hljs-comment">//......</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>真正执行请求的client.execute(request, options)是一个接口方法，是由不同的客户端工具进行实现。如果没有导入Ribbon，那么就用feign自带的Client.Default内部进行实现。Client是一个接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">#Client.Default<br><span class="hljs-keyword">public</span> Response <span class="hljs-title function_">execute</span><span class="hljs-params">(Request request, Options options)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>  <span class="hljs-comment">//convertAndSend()发送请求</span><br>  <span class="hljs-type">HttpURLConnection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> convertAndSend(request, options);<br>  <span class="hljs-comment">//convertResponse()响应解码</span><br>  <span class="hljs-keyword">return</span> convertResponse(connection, request);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果导入了Ribbon，那么就是LoadBalancerFeignClient实现，内部使用Ribbon进行负载均衡</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java">#LoadBalancerFeignClient<br><span class="hljs-keyword">public</span> Response <span class="hljs-title function_">execute</span><span class="hljs-params">(Request request, Request.Options options)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>	<span class="hljs-keyword">try</span> &#123;<br>		<span class="hljs-type">URI</span> <span class="hljs-variable">asUri</span> <span class="hljs-operator">=</span> URI.create(request.url());<br>		<span class="hljs-type">String</span> <span class="hljs-variable">clientName</span> <span class="hljs-operator">=</span> asUri.getHost();<br>		<span class="hljs-type">URI</span> <span class="hljs-variable">uriWithoutHost</span> <span class="hljs-operator">=</span> cleanUrl(request.url(), clientName);<br>		FeignLoadBalancer.<span class="hljs-type">RibbonRequest</span> <span class="hljs-variable">ribbonRequest</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FeignLoadBalancer</span>.RibbonRequest(<br>				<span class="hljs-built_in">this</span>.delegate, request, uriWithoutHost);<br>		<span class="hljs-type">IClientConfig</span> <span class="hljs-variable">requestConfig</span> <span class="hljs-operator">=</span> getClientConfig(options, clientName);<br>		<span class="hljs-keyword">return</span> lbClient(clientName)<br>				.executeWithLoadBalancer(ribbonRequest, requestConfig).toResponse();<br>	&#125;<br>	<span class="hljs-comment">//......</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>到这里，没有导入Hystrix创建代理对象的流程就分析完了，一些具体解析的方法并没有去详细分析，因为我们主要是理解openfeign的执行流程，所以分析创建代理对象，然后到真正执行请求的地方就行了。接下来是去分析引入了Hystrix后是如何创建代理。</p>
+<h1 id="HystrixTargeter创建代理对象"><a href="#HystrixTargeter创建代理对象" class="headerlink" title="HystrixTargeter创建代理对象"></a>HystrixTargeter创建代理对象</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixTargeter<br><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">target</span><span class="hljs-params">(FeignClientFactoryBean factory, Feign.Builder feign,</span><br><span class="hljs-params">		FeignContext context, Target.HardCodedTarget&lt;T&gt; target)</span> &#123;<br>    <span class="hljs-comment">//判断是否为HystrixFeign类型</span><br>	<span class="hljs-keyword">if</span> (!(feign <span class="hljs-keyword">instanceof</span> feign.hystrix.HystrixFeign.Builder)) &#123;<br>        <span class="hljs-comment">//这里会调用ReflectiveFeign的那段逻辑</span><br>		<span class="hljs-keyword">return</span> feign.target(target);<br>	&#125;<br>	feign.hystrix.HystrixFeign.<span class="hljs-type">Builder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> (feign.hystrix.HystrixFeign.Builder) feign;<br>	<span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> StringUtils.isEmpty(factory.getContextId()) ? factory.getName()<br>			: factory.getContextId();<br>	<span class="hljs-type">SetterFactory</span> <span class="hljs-variable">setterFactory</span> <span class="hljs-operator">=</span> getOptional(name, context, SetterFactory.class);<br>	<span class="hljs-keyword">if</span> (setterFactory != <span class="hljs-literal">null</span>) &#123;<br>		builder.setterFactory(setterFactory);<br>	&#125;<br>    <span class="hljs-comment">//是否设置降级</span><br>	Class&lt;?&gt; fallback = factory.getFallback();<br>	<span class="hljs-keyword">if</span> (fallback != <span class="hljs-keyword">void</span>.class) &#123;<br>		<span class="hljs-keyword">return</span> targetWithFallback(name, context, target, builder, fallback);<br>	&#125;<br>	Class&lt;?&gt; fallbackFactory = factory.getFallbackFactory();<br>	<span class="hljs-keyword">if</span> (fallbackFactory != <span class="hljs-keyword">void</span>.class) &#123;<br>		<span class="hljs-keyword">return</span> targetWithFallbackFactory(name, context, target, builder,<br>				fallbackFactory);<br>	&#125;<br>    <span class="hljs-comment">//执行到这说明没有设置降级，又会回到ReflectiveFeign</span><br>	<span class="hljs-keyword">return</span> feign.target(target);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>虽然导入了Hystrix，但是内部还是会判断是否设置过降级，如果没有，会回到普通的调用链路。上面的降级分支最终都会合并到一起，所以分析一个方法就行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixTargeter<br><span class="hljs-keyword">private</span> &lt;T&gt; T <span class="hljs-title function_">targetWithFallback</span><span class="hljs-params">(String feignClientName, FeignContext context,</span><br><span class="hljs-params">		Target.HardCodedTarget&lt;T&gt; target, HystrixFeign.Builder builder,</span><br><span class="hljs-params">		Class&lt;?&gt; fallback)</span> &#123;<br>	<span class="hljs-type">T</span> <span class="hljs-variable">fallbackInstance</span> <span class="hljs-operator">=</span> getFromContext(<span class="hljs-string">&quot;fallback&quot;</span>, feignClientName, context,<br>			fallback, target.type());<br>    <span class="hljs-comment">//创建代理对象，跟进去</span><br>	<span class="hljs-keyword">return</span> builder.target(target, fallbackInstance);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixFeign.Builder<br><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">target</span><span class="hljs-params">(Target&lt;T&gt; target, T fallback)</span> &#123;<br>  <span class="hljs-comment">//newInstance会回到ReflectiveFeign逻辑，我们关心的是引入hystrix后，InvocationHandler的类型</span><br>  <span class="hljs-comment">//在build中会设置InvocationHandlerFactory的类型</span><br>  <span class="hljs-keyword">return</span> build(fallback != <span class="hljs-literal">null</span> ? <span class="hljs-keyword">new</span> <span class="hljs-title class_">FallbackFactory</span>.Default&lt;T&gt;(fallback) : <span class="hljs-literal">null</span>)<br>      .newInstance(target);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixFeign.Builder<br>Feign <span class="hljs-title function_">build</span><span class="hljs-params">(<span class="hljs-keyword">final</span> FallbackFactory&lt;?&gt; nullableFallbackFactory)</span> &#123;<br>  <span class="hljs-built_in">super</span>.invocationHandlerFactory(<span class="hljs-keyword">new</span> <span class="hljs-title class_">InvocationHandlerFactory</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> InvocationHandler <span class="hljs-title function_">create</span><span class="hljs-params">(Target target,</span><br><span class="hljs-params">                                    Map&lt;Method, MethodHandler&gt; dispatch)</span> &#123;<br>      <span class="hljs-comment">//最终返回了HystrixInvocationHandler实例，所以去看它的invoke方法</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixInvocationHandler</span>(target, dispatch, setterFactory,<br>          nullableFallbackFactory);<br>    &#125;<br>  &#125;);<br>  <span class="hljs-built_in">super</span>.contract(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixDelegatingContract</span>(contract));<br>  <span class="hljs-keyword">return</span> <span class="hljs-built_in">super</span>.build();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixInvocationHandler<br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Object proxy, <span class="hljs-keyword">final</span> Method method, <span class="hljs-keyword">final</span> Object[] args)</span><br>    <span class="hljs-keyword">throws</span> Throwable &#123;<br>  <span class="hljs-comment">//......</span><br>  HystrixCommand&lt;Object&gt; hystrixCommand =<br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixCommand</span>&lt;Object&gt;(setterMethodMap.get(method))&#123;<br>      	<span class="hljs-meta">@Override</span><br>		<span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">run</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>		  <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">//在这里回到SynchronousMethodHandler和DefaultMethodHandler的invoke逻辑</span><br>		    <span class="hljs-keyword">return</span> HystrixInvocationHandler.<span class="hljs-built_in">this</span>.dispatch.get(method).invoke(args);<br>		  &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>		    <span class="hljs-keyword">throw</span> e;<br>		  &#125; <span class="hljs-keyword">catch</span> (Throwable t) &#123;<br>		    <span class="hljs-keyword">throw</span> (Error) t;<br>		  &#125;<br>		&#125;	<br>      <span class="hljs-comment">//......</span><br>  &#125;;<br>  <span class="hljs-comment">//最终调用到Hystrix处理逻辑</span><br>  <span class="hljs-keyword">return</span> hystrixCommand.execute();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>到这里Hystrix的代理逻辑也分析完了，它和默认创建代理对象的逻辑就是invoke()的实现不同，它只是对请求加了熔断降级的处理，其他的流程基本一致。</p>
+<p>以上就是openfeign源码分析的整体流程，首先从feign的功能是如何开启的开始分析，然后到FeignClient是如何添加到容器当中，接着分析FeignClient是如何被代理创建，最后分析了默认方式和引入Hystrix的方式分别是如何执行的。</p>
+<h1 id="hystrix配置"><a href="#hystrix配置" class="headerlink" title="hystrix配置"></a>hystrix配置</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-title function_">HystrixCommand</span><span class="hljs-params">(Setter setter)</span> &#123;<br>    <span class="hljs-comment">// use &#x27;null&#x27; to specify use the default</span><br>    <span class="hljs-built_in">this</span>(setter.groupKey, setter.commandKey, setter.threadPoolKey, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, setter.commandPropertiesDefaults, setter.threadPoolPropertiesDefaults, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>发现commandPropertiesDefaults  和  threadPoolPropertiesDefaults </p>
+<p>commandPropertiesDefaults  是命令相关参数、断路器相关参数</p>
+<p>threadPoolPropertiesDefaults 是线程池相关参数</p>
+<h1 id="ribbon源码"><a href="#ribbon源码" class="headerlink" title="ribbon源码"></a>ribbon源码</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">#HystrixInvocationHandler# invoke方法<br><span class="hljs-keyword">return</span> HystrixInvocationHandler.<span class="hljs-built_in">this</span>.dispatch.get(method).invoke(args);<br># SynchronousMethodHandler<br><span class="hljs-keyword">return</span> executeAndDecode(template, options);<br>#<span class="hljs-type">SynchronousMethodHandler</span><br><span class="hljs-variable">response</span> <span class="hljs-operator">=</span> client.execute(request, options);<br># 这时要看是哪个client<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java">#LoadBalancerFeignClient<br><span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> Response <span class="hljs-title function_">execute</span><span class="hljs-params">(Request request, Request.Options options)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">URI</span> <span class="hljs-variable">asUri</span> <span class="hljs-operator">=</span> URI.create(request.url());<br>			<span class="hljs-type">String</span> <span class="hljs-variable">clientName</span> <span class="hljs-operator">=</span> asUri.getHost();<br>			<span class="hljs-type">URI</span> <span class="hljs-variable">uriWithoutHost</span> <span class="hljs-operator">=</span> cleanUrl(request.url(), clientName);<br>			FeignLoadBalancer.<span class="hljs-type">RibbonRequest</span> <span class="hljs-variable">ribbonRequest</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FeignLoadBalancer</span>.RibbonRequest(<br>					<span class="hljs-built_in">this</span>.delegate, request, uriWithoutHost);<br><br>			<span class="hljs-type">IClientConfig</span> <span class="hljs-variable">requestConfig</span> <span class="hljs-operator">=</span> getClientConfig(options, clientName);<br>			<span class="hljs-keyword">return</span> lbClient(clientName)<br>					.executeWithLoadBalancer(ribbonRequest, requestConfig).toResponse();<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (ClientException e) &#123;<br>			<span class="hljs-type">IOException</span> <span class="hljs-variable">io</span> <span class="hljs-operator">=</span> findIOException(e);<br>			<span class="hljs-keyword">if</span> (io != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">throw</span> io;<br>			&#125;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>		&#125;<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">#AbstractLoadBalancerAwareClient<br><span class="hljs-keyword">public</span> T <span class="hljs-title function_">executeWithLoadBalancer</span><span class="hljs-params">(<span class="hljs-keyword">final</span> S request, <span class="hljs-keyword">final</span> IClientConfig requestConfig)</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">#AbstractLoadBalancerAwareClient<br>LoadBalancerCommand&lt;T&gt; command = buildLoadBalancerCommand(request, requestConfig);<br><span class="hljs-keyword">return</span> command.submit(....)<br>#LoadBalancerCommand<br>Observable&lt;T&gt; o = <br>                (server == <span class="hljs-literal">null</span> ? selectServer() : Observable.just(server))<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java">#LoadBalancerCommand<br><span class="hljs-keyword">private</span> Observable&lt;Server&gt; <span class="hljs-title function_">selectServer</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> Observable.create(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OnSubscribe</span>&lt;Server&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">(Subscriber&lt;? <span class="hljs-built_in">super</span> Server&gt; next)</span> &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">Server</span> <span class="hljs-variable">server</span> <span class="hljs-operator">=</span> loadBalancerContext.getServerFromLoadBalancer(loadBalancerURI, loadBalancerKey);   <br>                    next.onNext(server);<br>                    next.onCompleted();<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                    next.onError(e);<br>                &#125;<br>            &#125;<br>        &#125;);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">#LoadBalancerCommand<br><span class="hljs-type">Server</span> <span class="hljs-variable">server</span> <span class="hljs-operator">=</span> loadBalancerContext.getServerFromLoadBalancer(loadBalancerURI, loadBalancerKey);  <br>#LoadBalancerContext<br><span class="hljs-type">Server</span> <span class="hljs-variable">svc</span> <span class="hljs-operator">=</span> lb.chooseServer(loadBalancerKey);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Server <span class="hljs-title function_">chooseServer</span><span class="hljs-params">(Object key)</span> &#123;<br>        <span class="hljs-keyword">if</span> (counter == <span class="hljs-literal">null</span>) &#123;<br>            counter = createCounter();<br>        &#125;<br>        counter.increment();<br>        <span class="hljs-keyword">if</span> (rule == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">return</span> rule.choose(key);<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                logger.warn(<span class="hljs-string">&quot;LoadBalancer [&#123;&#125;]:  Error choosing server for key &#123;&#125;&quot;</span>, name, key, e);<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>            &#125;<br>        &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">IRule (com.netflix.loadbalancer)<br>  AbstractLoadBalancerRule (com.netflix.loadbalancer)<br>    ClientConfigEnabledRoundRobinRule (com.netflix.loadbalancer)<br>      BestAvailableRule (com.netflix.loadbalancer)<br>      PredicateBasedRule (com.netflix.loadbalancer)<br>        ZoneAvoidanceRule (com.netflix.loadbalancer)<br>        AvailabilityFilteringRule (com.netflix.loadbalancer)<br>    RoundRobinRule (com.netflix.loadbalancer)<br>      WeightedResponseTimeRule (com.netflix.loadbalancer)<br>      ResponseTimeWeightedRule (com.netflix.loadbalancer)<br>    RandomRule (com.netflix.loadbalancer)<br>    RetryRule (com.netflix.loadbalancer)<br></code></pre></td></tr></table></figure>
+
+<p>ZoneAvoidanceRule（区域权衡策略）：复合判断Server所在区域的性能和Server的可用性，轮询选择服务器。</p>
+<p>其他规则：</p>
+<p>BestAvailableRule（最低并发策略）：会先过滤掉由于多次访问故障而处于断路器跳闸状态的服务，然后选择一个并发量最小的服务。逐个找服务，如果断路器打开，则忽略。</p>
+<p>RoundRobinRule（轮询策略）：以简单轮询选择一个服务器。按顺序循环选择一个server。</p>
+<p>RandomRule（随机策略）：随机选择一个服务器。</p>
+<p>AvailabilityFilteringRule（可用过滤策略）：会先过滤掉多次访问故障而处于断路器跳闸状态的服务和过滤并发的连接数量超过阀值得服务，然后对剩余的服务列表安装轮询策略进行访问。</p>
+<p>WeightedResponseTimeRule（响应时间加权策略）：据平均响应时间计算所有的服务的权重，响应时间越快服务权重越大，容易被选中的概率就越高。刚启动时，如果统计信息不中，则使用RoundRobinRule(轮询)策略，等统计的信息足够了会自动的切换到WeightedResponseTimeRule。响应时间长，权重低，被选择的概率低。反之，同样道理。此策略综合了各种因素（网络，磁盘，IO等），这些因素直接影响响应时间。</p>
+<p>RetryRule（重试策略）：先按照RoundRobinRule(轮询)的策略获取服务，如果获取的服务失败则在指定的时间会进行重试，进行获取可用的服务。如多次获取某个服务失败，就不会再次获取该服务。主要是在一个时间段内，如果选择一个服务不成功，就继续找可用的服务，直到超时。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/spring-cloud/">spring_cloud</a>
+                    
+                      <a class="hover-with-bg" href="/categories/spring-cloud/feign/">feign</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring-cloud/">spring_cloud</a>
+                    
+                      <a class="hover-with-bg" href="/tags/feign/">feign</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/15/spring_cloud/hystrix%E5%AD%A6%E4%B9%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">hystrix学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/11/spring_cloud/spring_cloud_feign%E5%AE%9E%E8%B7%B5/">
+                        <span class="hidden-mobile">spring_cloud_feign实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

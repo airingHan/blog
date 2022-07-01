@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="流程图下图显示了当您通过 Hystrix 向服务依赖项发出请求时会发生什么：  以下部分将更详细地解释此流程：  构造一个HystrixCommand或HystrixObservableCommand对象 执行命令 响应是否缓存？ 电路是否打开？ 线程池&#x2F;队列&#x2F;信号量是否已满？ HystrixObservableCommand.construct()或者HystrixComma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hystrix怎么做的">
+<meta property="og:url" content="http://hanqichuan.com/2022/06/16/spring_cloud/hystrix%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="流程图下图显示了当您通过 Hystrix 向服务依赖项发出请求时会发生什么：  以下部分将更详细地解释此流程：  构造一个HystrixCommand或HystrixObservableCommand对象 执行命令 响应是否缓存？ 电路是否打开？ 线程池&#x2F;队列&#x2F;信号量是否已满？ HystrixObservableCommand.construct()或者HystrixComma">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix10.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix11.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix12.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix13.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix14.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix15.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix16.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix17.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix18.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hystrix19.png">
+<meta property="article:published_time" content="2022-06-16T08:19:00.000Z">
+<meta property="article:modified_time" content="2022-06-19T02:28:32.878Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="hystrix">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//hystrix10.png">
+  
+  
+  <title>hystrix怎么做的 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="hystrix怎么做的">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-16 16:19" pubdate>
+        2022年6月16日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      74 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">hystrix怎么做的</h1>
+            
+            <div class="markdown-body">
+              <h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p>下图显示了当您通过 Hystrix 向服务依赖项发出请求时会发生什么：</p>
+<p><img src="/.com//hystrix10.png" srcset="/img/loading.gif" lazyload alt="hystrix10"></p>
+<p>以下部分将更详细地解释此流程：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow1">构造一个<code>HystrixCommand</code>或<code>HystrixObservableCommand</code>对象</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow2">执行命令</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow3">响应是否缓存？</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow4">电路是否打开？</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow5">线程池&#x2F;队列&#x2F;信号量是否已满？</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow6"><code>HystrixObservableCommand.construct()</code>或者<code>HystrixCommand.run()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow7">计算电路健康</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow8">获取后备</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#flow9">返回成功的响应</a></li>
+</ol>
+<h3 id="1-构造一个HystrixCommand或HystrixObservableCommand对象"><a href="#1-构造一个HystrixCommand或HystrixObservableCommand对象" class="headerlink" title="1.构造一个HystrixCommand或HystrixObservableCommand对象"></a>1.构造一个<code>HystrixCommand</code>或<code>HystrixObservableCommand</code>对象</h3><p>第一步是构造一个<code>HystrixCommand</code>或<code>HystrixObservableCommand</code>对象来表示您对依赖项发出的请求。向构造函数传递发出请求时需要的任何参数。</p>
+<p><a target="_blank" rel="noopener" href="http://netflix.github.com/Hystrix/javadoc/index.html?com/netflix/hystrix/HystrixCommand.html"><code>HystrixCommand</code></a>如果期望依赖项返回单个响应，则构造一个对象。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">HystrixCommand</span> <span class="hljs-variable">command</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixCommand</span>(arg1, arg2);<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="http://netflix.github.com/Hystrix/javadoc/index.html?com/netflix/hystrix/HystrixObservableCommand.html"><code>HystrixObservableCommand</code></a>如果期望依赖项返回一个发出响应的 Observable，则构造一个对象。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">HystrixObservableCommand</span> <span class="hljs-variable">command</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HystrixObservableCommand</span>(arg1, arg2);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-执行命令"><a href="#2-执行命令" class="headerlink" title="2.执行命令"></a>2.执行命令</h3><p>有四种方法可以执行命令，通过使用 Hystrix 命令对象的以下四种方法之一（前两种仅适用于简单<code>HystrixCommand</code>对象，不适用于<code>HystrixObservableCommand</code>）：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixCommand.html#execute()"><code>execute()</code></a>— 阻塞，然后返回从依赖项接收到的单个响应（或在发生错误时抛出异常）</li>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixCommand.html#queue()"><code>queue()</code></a>— 返回 a <code>Future</code>，您可以使用它从依赖项中获取单个响应</li>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixObservableCommand.html#observe()"><code>observe()</code></a>— 订阅<code>Observable</code>表示来自依赖项的响应的 ，并返回一个<code>Observable</code>复制该源的<code>Observable</code></li>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixObservableCommand.html#toObservable()"><code>toObservable()</code></a>— 返回一个<code>Observable</code>，当您订阅它时，将执行 Hystrix 命令并发出它的响应</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">K</span>             <span class="hljs-variable">value</span>   <span class="hljs-operator">=</span> command.execute();<br>Future&lt;K&gt;     fValue  = command.queue();<br>Observable&lt;K&gt; ohValue = command.observe();         <span class="hljs-comment">//hot observable</span><br>Observable&lt;K&gt; ocValue = command.toObservable();    <span class="hljs-comment">//cold observable</span><br></code></pre></td></tr></table></figure>
+
+<p>同步调用<code>execute()</code>调用<code>queue().get()</code>. <code>queue()</code>反过来调用<code>toObservable().toBlocking().toFuture()</code>. 也就是说，最终每个<code>HystrixCommand</code>都由一个<a target="_blank" rel="noopener" href="http://reactivex.io/documentation/observable.html"><code>Observable</code></a>实现支持，即使是那些旨在返回单个简单值的命令。</p>
+<h3 id="3-响应是否被缓存？"><a href="#3-响应是否被缓存？" class="headerlink" title="3. 响应是否被缓存？"></a>3. 响应是否被缓存？</h3><p>如果该命令启用了请求缓存，并且缓存中有对请求的响应，则缓存的响应将立即以<code>Observable</code>. （请参阅下面的<a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-it-Works#RequestCaching">“请求缓存”</a>。）</p>
+<h3 id="4-电路是否开路？"><a href="#4-电路是否开路？" class="headerlink" title="4. 电路是否开路？"></a>4. 电路是否开路？</h3><p>当您执行命令时，Hystrix 会检查断路器以查看电路是否打开。</p>
+<p>如果电路打开（或“跳闸”），则 Hystrix 不会执行命令，但会将流程路由到 (8) Get the Fallback。</p>
+<p>如果电路闭合，则流程进行到 (5) 以检查是否有容量可用于运行命令。</p>
+<h3 id="5-线程池-x2F-队列-x2F-信号量是否已满？"><a href="#5-线程池-x2F-队列-x2F-信号量是否已满？" class="headerlink" title="5. 线程池&#x2F;队列&#x2F;信号量是否已满？"></a>5. 线程池&#x2F;队列&#x2F;信号量是否已满？</h3><p>如果与命令关联的线程池和队列（或信号量，如果未在线程中运行）已满，则 Hystrix 将不执行命令，但会立即将流路由到 (8) Get the Fallback。</p>
+<h3 id="6-HystrixObservableCommand-construct-或HystrixCommand-run"><a href="#6-HystrixObservableCommand-construct-或HystrixCommand-run" class="headerlink" title="6.HystrixObservableCommand.construct()或HystrixCommand.run()"></a>6.<code>HystrixObservableCommand.construct()</code>或<code>HystrixCommand.run()</code></h3><p>在这里，Hystrix 通过您为此目的编写的方法调用对依赖项的请求，以下方法之一：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixCommand.html#run()"><code>HystrixCommand.run()</code></a>— 返回单个响应或抛出异常</li>
+<li><a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixObservableCommand.html#construct()"><code>HystrixObservableCommand.construct()</code></a>— 返回一个发出响应或发送<code>onError</code>通知的 Observable</li>
+</ul>
+<p>如果<code>run()</code>or<code>construct()</code>方法超过了命令的超时值，线程将抛出一个<code>TimeoutException</code>（或者一个单独的计时器线程，如果命令本身没有在它自己的线程中运行）。在这种情况下，Hystrix 通过 8 路由响应。获取 Fallback，如果该方法没有取消&#x2F;中断，它会丢弃最终的返回值<code>run()</code>或方法。<code>construct()</code></p>
+<p>请注意，没有办法强制潜在线程停止工作——Hystrix 在 JVM 上可以做的最好的事情就是抛出一个 InterruptedException。如果 Hystrix 包裹的工作不考虑 InterruptedExceptions，Hystrix 线程池中的线程将继续工作，尽管客户端已经收到了 TimeoutException。这种行为可能会使 Hystrix 线程池饱和，尽管负载是“正确卸载”的。大多数 Java HTTP 客户端库不解释 InterruptedExceptions。因此，请确保在 HTTP 客户端上正确配置连接和读&#x2F;写超时。</p>
+<p>如果该命令没有抛出任何异常并且它返回了响应，Hystrix 会在执行一些日志记录和指标报告后返回此响应。在 的情况下<code>run()</code>，Hystrix 返回一个<code>Observable</code>发出单个响应然后发出<code>onCompleted</code>通知的 在<code>construct()</code>Hystrix的情况下，<code>Observable</code>返回由<code>construct()</code>.</p>
+<h3 id="7-计算电路健康"><a href="#7-计算电路健康" class="headerlink" title="7.计算电路健康"></a>7.计算电路健康</h3><p>Hystrix 向断路器报告成功、失败、拒绝和超时，断路器维护一组滚动的计数器来计算统计信息。</p>
+<p>它使用这些统计数据来确定电路何时应该“跳闸”，此时它会短路任何后续请求，直到经过恢复期，然后在首先检查某些健康检查后再次关闭电路。</p>
+<h3 id="8-获得后备"><a href="#8-获得后备" class="headerlink" title="8. 获得后备"></a>8. 获得后备</h3><p><code>construct()</code>每当命令执行失败时，Hystrix 都会尝试恢复到您的回退：当or (6.)抛出异常<code>run()</code>时，当由于电路打开 (4.) 而导致命令短路时，当命令的线程池和队列或信号量达到容量 (5.)，或者当命令超过其超时长度时。</p>
+<p>编写您的回退以从内存缓存或其他静态逻辑提供通用响应，而无需任何网络依赖。<em>如果您必须在回退中使用网络调用，您应该通过另一个<code>HystrixCommand</code>或<code>HystrixObservableCommand</code>.</em></p>
+<p>在 a 的情况下<code>HystrixCommand</code>，提供您实现的回退逻辑，<a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixCommand.html#getFallback()"><code>HystrixCommand.getFallback()</code></a>该逻辑返回单个回退值。</p>
+<p>在 a 的情况下<code>HystrixObservableCommand</code>，提供您实现的回退逻辑，<a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/com/netflix/hystrix/HystrixObservableCommand.html#resumeWithFallback()"><code>HystrixObservableCommand.resumeWithFallback()</code></a>该逻辑返回一个可能发出一个或多个回退值的 Observable。</p>
+<p>如果 fallback 方法返回一个响应，那么 Hystrix 将这个响应返回给调用者。对于 a <code>HystrixCommand.getFallback()</code>，它将返回一个 Observable ，该 Observable 发出从该方法返回的值。在这种情况下，<code>HystrixObservableCommand.resumeWithFallback()</code>它将返回从方法返回的相同 Observable。</p>
+<p>如果你没有为你的 Hystrix 命令实现一个回退方法，或者如果回退本身抛出一个异常，Hystrix 仍然返回一个 Observable，但它什么都不发出并立即终止并发出<code>onError</code>通知。正是通过这个<code>onError</code>通知，导致命令失败的异常被传回给调用者。（实施可能失败的回退实现是一种糟糕的做法。您应该实施回退，使其不执行任何可能失败的逻辑。）</p>
+<p>失败或不存在的回退的结果将根据您调用 Hystrix 命令的方式而有所不同：</p>
+<ul>
+<li><code>execute()</code>— 抛出异常</li>
+<li><code>queue()</code>— 成功返回 a <code>Future</code>，但是如果调用它的方法<code>Future</code>会抛出异常<code>get()</code></li>
+<li><code>observe()</code>— 返回一个<code>Observable</code>，当您订阅它时，将通过调用订阅者的<code>onError</code>方法立即终止</li>
+<li><code>toObservable()</code>— 返回一个<code>Observable</code>，当您订阅它时，将通过调用订阅者的<code>onError</code>方法终止</li>
+</ul>
+<h3 id="9-返回成功响应"><a href="#9-返回成功响应" class="headerlink" title="9. 返回成功响应"></a>9. 返回成功响应</h3><p>如果 Hystrix 命令成功，它将以<code>Observable</code>. 根据您在上述步骤 2 中调用命令的方式，<code>Observable</code>在返回给您之前可能会对其进行转换：</p>
+<p><img src="/.com//hystrix11.png" srcset="/img/loading.gif" lazyload alt="hystrix11"></p>
+<ul>
+<li><code>execute()``Future</code>— 以与 dos相同的方式获得 a ，<code>.queue()</code>然后调用<code>get()</code>它<code>Future</code>以获取由 the 发出的单个值<code>Observable</code></li>
+<li><code>queue()</code>— 将 the<code>Observable</code>转换为 a<code>BlockingObservable</code>以便可以将其转换为 a <code>Future</code>，然后返回 this<code>Future</code></li>
+<li><code>observe()</code>— 立即订阅<code>Observable</code>并开始执行命令的流程；返回一个<code>Observable</code>，当您<code>subscribe</code>访问它时，会重放排放和通知</li>
+<li><code>toObservable()</code>— 返回未<code>Observable</code>更改的；您必须<code>subscribe</code>这样做才能真正开始导致执行命令的流程</li>
+</ul>
+<h2 id="断路器"><a href="#断路器" class="headerlink" title="断路器"></a>断路器</h2><p>下图显示了 a <code>HystrixCommand</code>or<code>HystrixObservableCommand</code>与 a 的交互方式<a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/index.html?com/netflix/hystrix/HystrixCircuitBreaker.html"><code>HystrixCircuitBreaker</code></a>及其逻辑和决策流程，包括计数器在断路器中的行为方式。</p>
+<p><img src="/.com//hystrix12.png" srcset="/img/loading.gif" lazyload alt="hystrix12"></p>
+<p>电路开闭发生的具体方式如下：</p>
+<ol>
+<li>假设整个电路的音量满足某个阈值 ( <code>HystrixCommandProperties.circuitBreakerRequestVolumeThreshold()</code>)…</li>
+<li>并假设错误百分比超过阈值错误百分比（<code>HystrixCommandProperties.circuitBreakerErrorThresholdPercentage()</code>）……</li>
+<li>然后断路器从 转变<code>CLOSED</code>为<code>OPEN</code>。</li>
+<li>当它打开时，它会将针对该断路器的所有请求短路。</li>
+<li>一段时间后（<code>HystrixCommandProperties.circuitBreakerSleepWindowInMilliseconds()</code>），下一个请求被允许通过（这是<code>HALF-OPEN</code>状态）。如果请求失败，断路器将<code>OPEN</code>在睡眠窗口期间返回状态。如果请求成功，断路器转换到<strong>1.</strong><code>CLOSED</code>中的逻辑再次接管。</li>
+</ol>
+<h2 id="隔离"><a href="#隔离" class="headerlink" title="隔离"></a>隔离</h2><p>Hystrix 使用隔板模式来隔离彼此的依赖关系并限制对其中任何一个的并发访问。</p>
+<p><img src="/.com//hystrix13.png" srcset="/img/loading.gif" lazyload alt="hystrix13"></p>
+<h3 id="线程和线程池"><a href="#线程和线程池" class="headerlink" title="线程和线程池"></a>线程和线程池</h3><p>客户端（库、网络调用等）在不同的线程上执行。这将它们与调用线程（Tomcat 线程池）隔离开来，以便调用者可以“离开”耗时过长的依赖调用。</p>
+<p>Hystrix 使用单独的、每个依赖项的线程池作为约束任何给定依赖项的一种方式，因此底层执行的延迟将仅使该池中的可用线程饱和。</p>
+<p><img src="/.com//hystrix14.png" srcset="/img/loading.gif" lazyload alt="hystrix14"></p>
+<p>您可以在不使用线程池的情况下防止失败，但这需要受信任的客户端非常快速地失败（网络连接&#x2F;读取超时和重试配置）并始终表现良好。</p>
+<p>Netflix 在其 Hystrix 的设计中，出于多种原因选择使用线程和线程池来实现隔离，包括：</p>
+<ul>
+<li>许多应用程序针对由许多不同团队开发的数十种不同服务执行数十种（有时甚至超过 100 次）不同的后端服务调用。</li>
+<li>每个服务都提供自己的客户端库。</li>
+<li>客户端库一直在变化。</li>
+<li>客户端库逻辑可以更改以添加新的网络调用。</li>
+<li>客户端库可以包含诸如重试、数据解析、缓存（内存中或跨网络）和其他此类行为之类的逻辑。</li>
+<li>客户端库往往是“黑匣子”——对于用户来说，实现细节、网络访问模式、配置默认值等都是不透明的。</li>
+<li>在几次实际的生产中断中，决定是“哦，有些东西发生了变化，应该调整属性”或“客户端库改变了它的行为”。</li>
+<li>即使客户端本身没有变化，服务本身也会发生变化，这会影响性能特征，进而导致客户端配置无效。</li>
+<li>传递依赖可能会引入其他未预期且可能未正确配置的客户端库。</li>
+<li>大多数网络访问是同步执行的。</li>
+<li>失败和延迟也可能发生在客户端代码中，而不仅仅是网络调用。</li>
+</ul>
+<p><img src="/.com//hystrix15.png" srcset="/img/loading.gif" lazyload alt="hystrix15"></p>
+<h4 id="线程池的好处"><a href="#线程池的好处" class="headerlink" title="线程池的好处"></a>线程池的好处</h4><p>通过自己的线程池中的线程进行隔离的好处是：</p>
+<ul>
+<li>该应用程序完全不受失控客户端库的影响。给定依赖库的池可以填满，而不会影响应用程序的其余部分。</li>
+<li>该应用程序可以接受风险低得多的新客户端库。如果出现问题，它会与库隔离，不会影响其他所有内容。</li>
+<li>当失败的客户端再次恢复健康时，线程池将清理干净，应用程序立即恢复健康的性能，而不是整个 Tomcat 容器不堪重负时的长时间恢复。</li>
+<li>如果客户端库配置错误，线程池的健康状况将很快证明这一点（通过增加的错误、延迟、超时、拒绝等），您可以在不影响应用程序功能的情况下处理它（通常通过动态属性实时处理） .</li>
+<li>如果客户端服务更改了性能特征（这种情况经常发生，足以成为一个问题），进而导致需要调整属性（增加&#x2F;减少超时、更改重试等），这再次通过线程池指标（错误、延迟）变得可见、超时、拒绝），并且可以在不影响其他客户端、请求或用户的情况下进行处理。</li>
+<li>除了隔离优势之外，拥有专用线程池还提供了内置的并发性，可用于在同步客户端库之上构建异步外观（类似于 Netflix API 如何在 Hystrix 命令之上构建反应式、完全异步的 Java API） .</li>
+</ul>
+<p>简而言之，线程池提供的隔离允许客户端库和子系统性能特征的不断变化和动态组合得到妥善处理，而不会导致中断。</p>
+<p><strong>注意：</strong>尽管单独的线程提供了隔离，但您的底层客户端代码也应该有超时和&#x2F;或响应线程中断，因此它不会无限期地阻塞并使 Hystrix 线程池饱和。</p>
+<h4 id="线程池的缺点"><a href="#线程池的缺点" class="headerlink" title="线程池的缺点"></a>线程池的缺点</h4><p>线程池的主要缺点是它们增加了计算开销。每个命令执行都涉及在单独线程上运行命令所涉及的排队、调度和上下文切换。</p>
+<p>Netflix 在设计这个系统时，决定接受这种开销的成本以换取它提供的好处，并认为它足够小，不会对成本或性能产生重大影响。</p>
+<h4 id="线程成本"><a href="#线程成本" class="headerlink" title="线程成本"></a>线程成本</h4><p>Hystrix 测量在子线程上执行<code>construct()</code>or<code>run()</code>方法时的延迟以及在父线程上的总端到端时间。通过这种方式，您可以看到 Hystrix 开销（线程、指标、日志记录、断路器等）的成本。</p>
+<p>Netflix API 每天使用线程隔离处理 10+ 亿次 Hystrix 命令执行。每个 API 实例有 40 多个线程池，每个线程池有 5-20 个线程（大多数设置为 10）。</p>
+<p>下图表示<code>HystrixCommand</code>在单个 API 实例上以每秒 60 个请求的速度执行（每台服务器每秒大约 350 个总线程执行）：</p>
+<p><img src="/.com//hystrix16.png" srcset="/img/loading.gif" lazyload alt="hystrix16"></p>
+<p>在中位数（或更低），拥有一个单独的线程是没有成本的。</p>
+<p>在第 90个百分位，有一个单独的线程需要 3 毫秒的成本。</p>
+<p>在第 99个百分位，有一个单独的线程需要 9 毫秒。但是请注意，成本的增加远小于单独线程（网络请求）的执行时间增加，后者从 2 跳到 28，而成本从 0 跳到 9。</p>
+<p>对于大多数Netflix用例而言，此类电路的 90% 或更高的开销已被认为是可以接受的，因为可以实现弹性优势。</p>
+<p>对于包装非常低延迟请求的电路（例如那些主要命中内存缓存的请求），开销可能太高，在这些情况下，您可以使用另一种方法，例如可尝试的信号量，虽然它们不允许超时，无需开销即可提供大部分弹性优势。然而，一般来说，开销足够小，以至于 Netflix 在实践中通常更喜欢单独线程的隔离优势而不是此类技术。</p>
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>您可以使用信号量（或计数器）来限制对任何给定依赖项的并发调用数，而不是使用线程池&#x2F;队列大小。这允许 Hystrix 在不使用线程池的情况下减轻负载，但它不允许超时和走开。如果您信任客户端并且只想要减载，则可以使用这种方法。</p>
+<p><code>HystrixCommand</code>并<code>HystrixObservableCommand</code>在两个地方支持信号量：</p>
+<ul>
+<li><strong>后备：</strong>当 Hystrix 检索后备时，它总是在调用 Tomcat 线程上这样做。</li>
+<li><strong>执行：</strong>如果你设置这个属性<code>execution.isolation.strategy</code>，<code>SEMAPHORE</code>那么 Hystrix 将使用信号量而不是线程来限制调用命令的并发父线程的数量。</li>
+</ul>
+<p>您可以通过定义可以执行多少并发线程的动态属性来配置信号量的这两种用途。您应该使用与调整线程池大小时使用的类似计算来调整它们的大小（在亚毫秒时间内返回的内存调用可以在信号量仅为 1 或 2 的情况下执行超过 5000rps ……但默认值为 10）。</p>
+<p><strong>注意：</strong>如果一个依赖被信号量隔离然后变成潜在的，父线程将保持阻塞，直到底层网络调用超时。</p>
+<p>一旦达到限制，信号量拒绝将开始，但填充信号量的线程不能走开。</p>
+<h2 id="请求折叠"><a href="#请求折叠" class="headerlink" title="请求折叠"></a>请求折叠</h2><p>您可以在 a 前面<code>HystrixCommand</code>加上一个请求折叠器（<a target="_blank" rel="noopener" href="http://netflix.github.io/Hystrix/javadoc/index.html?com/netflix/hystrix/HystrixCollapser.html"><code>HystrixCollapser</code></a>是抽象父级），您可以使用它将多个请求折叠到一个后端依赖调用中。</p>
+<p>下图显示了两种情况下的线程数和网络连接数：首先没有请求折叠，然后请求折叠（假设所有连接在很短的时间窗口内“并发”，在本例中为 10 毫秒）。</p>
+<p><img src="/.com//hystrix17.png" srcset="/img/loading.gif" lazyload alt="hystrix17"></p>
+<h3 id="为什么使用请求折叠？"><a href="#为什么使用请求折叠？" class="headerlink" title="为什么使用请求折叠？"></a>为什么使用请求折叠？</h3><p>使用请求折叠来减少执行并发<code>HystrixCommand</code>执行所需的线程数和网络连接数。请求折叠以自动方式执行此操作，不会强制代码库的所有开发人员协调手动批处理请求。</p>
+<h4 id="全局上下文（跨所有-Tomcat-线程）"><a href="#全局上下文（跨所有-Tomcat-线程）" class="headerlink" title="全局上下文（跨所有 Tomcat 线程）"></a>全局上下文（跨所有 Tomcat 线程）</h4><p>理想的折叠类型是在全局应用程序级别完成的，因此来自任何 Tomcat 线程上的<em>任何用户</em>的请求都可以折叠在一起。</p>
+<p>例如，如果您将 a 配置<code>HystrixCommand</code>为支持任何用户对检索电影评级的依赖项的请求进行批处理，那么当同一 JVM 中的任何用户线程发出此类请求时，Hystrix 会将其请求与任何其他请求一起添加到同一个折叠的网络通话。</p>
+<p>请注意，折叠器会将单个 HystrixRequestContext 对象传递给折叠的网络调用，因此下游系统必须处理这种情况才能成为有效的选项。</p>
+<h4 id="用户请求上下文（单个-Tomcat-线程）"><a href="#用户请求上下文（单个-Tomcat-线程）" class="headerlink" title="用户请求上下文（单个 Tomcat 线程）"></a>用户请求上下文（单个 Tomcat 线程）</h4><p>如果您将 a 配置<code>HystrixCommand</code>为仅处理<em>单个用户的</em>批处理请求，则 Hystrix 可以折叠来自单个 Tomcat 线程（请求）的请求。</p>
+<p>例如，如果用户想要为 300 个视频对象加载书签，而不是执行 300 个网络调用，Hystrix 可以将它们全部合并为一个。</p>
+<h4 id="对象建模和代码复杂性"><a href="#对象建模和代码复杂性" class="headerlink" title="对象建模和代码复杂性"></a>对象建模和代码复杂性</h4><p>有时，当您创建对对象的消费者具有逻辑意义的对象模型时，这与对象生产者的有效资源利用不匹配。</p>
+<p>例如，给定一个包含 300 个视频对象的列表，遍历它们并调用<code>getSomeAttribute()</code>每个对象是一个明显的对象模型，但如果实施得天真，可能会导致 300 个网络调用都在几毫秒内进行（并且很可能会导致资源饱和）。</p>
+<p>您可以通过手动方式处理此问题，例如在允许用户调用之前<code>getSomeAttribute()</code>，要求他们声明他们想要获取哪些视频对象的属性，以便它们都可以被预取。</p>
+<p>或者，您可以划分对象模型，以便用户必须从一个地方获取视频列表，然后从其他地方请求该视频列表的属性。</p>
+<p>这些方法可能会导致笨拙的 API 和对象模型与心智模型和使用模式不匹配。当多个开发人员在代码库上工作时，它们还可能导致简单的错误和效率低下，因为为一个用例完成的优化可能会被另一个用例的实现和代码中的新路径破坏。</p>
+<p>通过将折叠逻辑下推到 Hystrix 层，您如何创建对象模型、以什么顺序进行调用、或者不同的开发人员是否知道正在完成甚至需要完成的优化都无关紧要。</p>
+<p>该<code>getSomeAttribute()</code>方法可以放在最适合的地方，并以适合使用模式的任何方式调用，并且折叠器将自动将调用批处理到时间窗口中。</p>
+<h4 id="请求崩溃的成本是多少？"><a href="#请求崩溃的成本是多少？" class="headerlink" title="请求崩溃的成本是多少？"></a>请求崩溃的成本是多少？</h4><p>启用请求折叠的代价是在执行实际命令之前增加了延迟。最大成本是批处理窗口的大小。</p>
+<p>如果您有一个执行中位数为 5 毫秒的命令，以及一个 10 毫秒的批处理窗口，那么在最坏的情况下执行时间可能会变为 15 毫秒。通常，请求不会恰好在窗口打开时被提交到窗口，因此中值惩罚是窗口时间的一半，在本例中为 5 毫秒。</p>
+<p>该成本是否值得的确定取决于正在执行的命令。高延迟命令不会因少量额外的平均延迟而受到太大影响。此外，给定命令的并发量是关键：如果要批处理的请求很少超过 1 或 2 个，那么付出代价是没有意义的。事实上，在单线程顺序迭代中，崩溃将是一个主要的性能瓶颈，因为每次迭代都会等待 10 毫秒的批处理窗口时间。</p>
+<p>然而，如果一个特定的命令被大量并发使用并且可以同时批处理数十甚至数百个调用，那么成本通常远远超过所获得的吞吐量增加，因为 Hystrix 减少了它所需的线程数和网络连接数依赖关系。</p>
+<h4 id="折叠器流"><a href="#折叠器流" class="headerlink" title="折叠器流"></a>折叠器流</h4><p><img src="/.com//hystrix18.png" srcset="/img/loading.gif" lazyload alt="hystrix18"></p>
+<h2 id="请求缓存"><a href="#请求缓存" class="headerlink" title="请求缓存"></a>请求缓存</h2><p><code>HystrixCommand</code>并且<code>HystrixObservableCommand</code>实现可以定义一个缓存键，然后用于以并发感知的方式在请求上下文中对调用进行重复数据删除。</p>
+<p>这是一个示例流程，涉及 HTTP 请求生命周期和在该请求中工作的两个线程：</p>
+<p><img src="/.com//hystrix19.png" srcset="/img/loading.gif" lazyload alt="hystrix19"></p>
+<p>请求缓存的好处是：</p>
+<ul>
+<li>不同的代码路径可以执行 Hystrix 命令，而不用担心重复工作。</li>
+</ul>
+<p>这在许多开发人员正在实现不同功能的大型代码库中特别有用。</p>
+<p>例如，所有需要获取用户<code>Account</code>对象的代码的多个路径都可以像这样请求它：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Account</span> <span class="hljs-variable">account</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserGetAccount</span>(accountId).execute();<br><br><span class="hljs-comment">//or</span><br><br>Observable&lt;Account&gt; accountObservable = <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserGetAccount</span>(accountId).observe();<br></code></pre></td></tr></table></figure>
+
+<p>Hystrix<code>RequestCache</code>将执行底层<code>run()</code>方法一次且仅一次，并且执行该方法的两个线程<code>HystrixCommand</code>将接收相同的数据，尽管实例化了不同的实例。</p>
+<ul>
+<li>数据检索在整个请求中是一致的。</li>
+</ul>
+<p>不是每次执行命令时都可能返回不同的值（或回退），而是缓存第一个响应并为同一请求中的所有后续调用返回。</p>
+<ul>
+<li>消除重复的线程执行。</li>
+</ul>
+<p>由于请求缓存位于<code>construct()</code>or<code>run()</code>方法调用之前，Hystrix 可以在调用导致线程执行之前对其进行重复数据删除。</p>
+<p>如果 Hystrix 没有实现请求缓存功能，那么每个命令都需要在<code>construct</code>or<code>run</code>方法中自己实现它，这将把它放在线程排队并执行之后。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/hystrix/">hystrix</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/hystrix/">hystrix</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/23/spring_cloud/spring_cloud_gateway%E5%AE%9E%E8%B7%B5/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring_cloud_gateway实践</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/15/spring_cloud/hystrix%E5%AD%A6%E4%B9%A0/">
+                        <span class="hidden-mobile">hystrix学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
