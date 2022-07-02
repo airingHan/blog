@@ -4,7 +4,7 @@
   
   
   <entry>
-    <title>spring_boot_sleuth实践</title>
+    <title>spring_boot_config实践</title>
     <link href="/2022/06/30/spring_cloud/spring_cloud_config%E5%AE%9E%E8%B7%B5/"/>
     <url>/2022/06/30/spring_cloud/spring_cloud_config%E5%AE%9E%E8%B7%B5/</url>
     
@@ -79,7 +79,7 @@
   
   
   <entry>
-    <title>spring_cloud_gateway实践</title>
+    <title>spring_cloud_actuator实践</title>
     <link href="/2022/06/28/spring_cloud/spring_boot_actuator%E5%AE%9E%E8%B7%B5/"/>
     <url>/2022/06/28/spring_cloud/spring_boot_actuator%E5%AE%9E%E8%B7%B5/</url>
     
