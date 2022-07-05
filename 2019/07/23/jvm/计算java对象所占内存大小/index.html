@@ -1,0 +1,500 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="转载自：https:&#x2F;&#x2F;bbs.huaweicloud.com&#x2F;blogs&#x2F;345655?utm_source&#x3D;cnblog&amp;utm_medium&#x3D;bbs-ex&amp;utm_campaign&#x3D;other&amp;utm_content&#x3D;content 计算java对象所占内存大小1.使用jdk8自带API使用这种jdk8方式时，Open JDK 不是天然支持的，需要set一下环境变量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算java对象所占内存大小">
+<meta property="og:url" content="http://hanqichuan.com/2019/07/23/jvm/%E8%AE%A1%E7%AE%97java%E5%AF%B9%E8%B1%A1%E6%89%80%E5%8D%A0%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;bbs.huaweicloud.com&#x2F;blogs&#x2F;345655?utm_source&#x3D;cnblog&amp;utm_medium&#x3D;bbs-ex&amp;utm_campaign&#x3D;other&amp;utm_content&#x3D;content 计算java对象所占内存大小1.使用jdk8自带API使用这种jdk8方式时，Open JDK 不是天然支持的，需要set一下环境变量">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649661077252994863.png">
+<meta property="og:image" content="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649662974945589459.png">
+<meta property="og:image" content="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649662942093472910.png">
+<meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
+<meta property="article:modified_time" content="2022-07-05T07:38:18.065Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649661077252994863.png">
+  
+  
+  <title>计算java对象所占内存大小 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="计算java对象所占内存大小">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-07-23 16:05" pubdate>
+        2019年7月23日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算java对象所占内存大小</h1>
+            
+            <div class="markdown-body">
+              <p>转载自：<a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/345655?utm_source=cnblog&amp;utm_medium=bbs-ex&amp;utm_campaign=other&amp;utm_content=content">https://bbs.huaweicloud.com/blogs/345655?utm_source=cnblog&amp;utm_medium=bbs-ex&amp;utm_campaign=other&amp;utm_content=content</a></p>
+<h1 id="计算java对象所占内存大小"><a href="#计算java对象所占内存大小" class="headerlink" title="计算java对象所占内存大小"></a>计算java对象所占内存大小</h1><h2 id="1-使用jdk8自带API"><a href="#1-使用jdk8自带API" class="headerlink" title="1.使用jdk8自带API"></a>1.使用jdk8自带API</h2><p>使用这种jdk8方式时，Open JDK 不是天然支持的，需要set一下环境变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">System</span>.<span class="hljs-title function_">setProperty</span>(<span class="hljs-string">&quot;java.vm.name&quot;</span>,<span class="hljs-string">&quot;Java HotSpot(TM) &quot;</span>);<br><span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-title class_">ObjectSizeCalculator</span>.<span class="hljs-title function_">getObjectSize</span>(3L));<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：<br><img src="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649661077252994863.png" srcset="/img/loading.gif" lazyload alt="结果如下"></p>
+<h2 id="2-借助org-apache-lucene工具类"><a href="#2-借助org-apache-lucene工具类" class="headerlink" title="2. 借助org.apache.lucene工具类"></a>2. 借助org.apache.lucene工具类</h2><p>当一个对象有多个属性，需要计算整个对象的大小时，可以借助org.apache.lucene工具类<br>先引入maven坐标</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;dependency&gt;<br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.lucene<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lucene-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></span><br>      &lt;/dependency&gt;<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.commons<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-lang3<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.12.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>测试代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">Map</span>&lt;<span class="hljs-title class_">String</span>, <span class="hljs-title class_">String</span>&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>      <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;map init value is &quot;</span> + <span class="hljs-title class_">RamUsageEstimator</span>.<span class="hljs-title function_">sizeOf</span>(map));<br>      <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span>; i++) &#123;<br>          <span class="hljs-title class_">RandomStringUtils</span>.<span class="hljs-title function_">randomAlphanumeric</span>(<span class="hljs-number">100</span>);<br>          map.<span class="hljs-title function_">put</span>(<span class="hljs-title class_">RandomStringUtils</span>.<span class="hljs-title function_">randomAlphanumeric</span>(<span class="hljs-number">10</span>), <span class="hljs-title class_">RandomStringUtils</span>.<span class="hljs-title function_">randomAlphanumeric</span>(<span class="hljs-number">10</span>));<br>      &#125;<br>      <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;map size 100, value is &quot;</span> + <span class="hljs-title class_">RamUsageEstimator</span>.<span class="hljs-title function_">sizeOf</span>(map));<br>      <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;map size 100, value is &quot;</span> + <span class="hljs-title class_">RamUsageEstimator</span>.<span class="hljs-title function_">humanSizeOf</span>(map));<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：<br><img src="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649662974945589459.png" srcset="/img/loading.gif" lazyload alt="image-20220411152738070.png"></p>
+<h2 id="3-借助jol工具类"><a href="#3-借助jol工具类" class="headerlink" title="3. 借助jol工具类"></a>3. 借助jol工具类</h2><p>如果需要查看某个对象的详细内存分布，可以借助jol工具类，不过这种当对象中内嵌其他对象时，只能计算ClassLayout方法中这个object对象所占内存的大小</p>
+<p>先导入maven坐标</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;dependency&gt;<br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.openjdk.jol<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jol-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br>          <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.9<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></span><br>      &lt;/dependency&gt;<br></code></pre></td></tr></table></figure>
+
+<p>测试代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-title class_">ClassLayout</span>.<span class="hljs-title function_">parseInstance</span>(23L).<span class="hljs-title function_">toPrintable</span>());<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="https://bbs-img.huaweicloud.com/blogs/img/20220411/1649662942093472910.png" srcset="/img/loading.gif" lazyload alt="image-20220411153512165.png"></p>
+<h2 id="4-java对象内存分布"><a href="#4-java对象内存分布" class="headerlink" title="4. java对象内存分布"></a>4. java对象内存分布</h2><p>最后，计算一个对象占用多大内存，需要提前了解java对象的布局，可以参考这篇<a target="_blank" rel="noopener" href="https://blog.csdn.net/belongtocode/article/details/103377187">博客</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/jvm/">jvm</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/jvm/">jvm</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/07/23/jvm/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">jvm类加载过程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/23/jvm/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+                        <span class="hidden-mobile">jvm垃圾回收</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
