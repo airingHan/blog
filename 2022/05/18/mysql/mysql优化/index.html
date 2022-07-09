@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://hanqichuan.com/.com//blockNestedLoopJoin.png">
 <meta property="og:image" content="http://hanqichuan.com/.com//%E7%BB%84%E5%90%88%E7%B4%A2%E5%BC%95%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%83%85%E5%86%B5.png">
 <meta property="article:published_time" content="2022-05-18T06:31:12.000Z">
-<meta property="article:modified_time" content="2022-07-09T01:11:09.763Z">
+<meta property="article:modified_time" content="2022-07-09T07:34:15.436Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary_large_image">
@@ -204,7 +204,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      55k 字
+      56k 字
     </span>
   
 
@@ -213,7 +213,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      463 分钟
+      467 分钟
     </span>
   
 
@@ -603,15 +603,20 @@
 <p>可保存到毫秒</p>
 <p>可保存时间范围大</p>
 <p>不要使用字符串存储日期类型，占用空间大，损失日期类型函数的便捷性</p>
-<h3 id="timestamp"><a href="#timestamp" class="headerlink" title="timestamp"></a>timestamp</h3><p>占用4个字节</p>
+<h3 id="timestamp"><a href="#timestamp" class="headerlink" title="timestamp"></a>timestamp</h3><p>占用4个字节 如果使用毫秒占用7个字节</p>
 <p>时间范围：1970-01-01到2038-01-19</p>
-<p>精确到秒</p>
+<p>精确到秒  可支持毫秒</p>
 <p>采用整形存储</p>
 <p>依赖数据库设置的时区</p>
 <p>自动更新timestamp列的值</p>
 <h3 id="date"><a href="#date" class="headerlink" title="date"></a>date</h3><p>占用的字节数比使用字符串、datetime、int存储要少，使用date类型只需要3个字节</p>
 <p>使用date类型还可以利用日期时间函数进行日期之间的计算</p>
 <p>date类型用于保存1000-01-01到9999-12-31之间的日期</p>
+<p>datetime和timestamp选择：</p>
+<p>时区可以用前端或后端处理</p>
+<p>timestamp如果没有显示的指定时区，timestamp会调用操作系统底层函数__tz_convert()做交互。这个函数每次交互的时候，他会加锁，那么高并发情况下，会有性能抖动问题。</p>
+<p>存储上7个字节与8个字节差别不大。</p>
+<p>选择datetime。</p>
 <h2 id="使用枚举代替字符串类型"><a href="#使用枚举代替字符串类型" class="headerlink" title="使用枚举代替字符串类型"></a>使用枚举代替字符串类型</h2><p>有时可以使用枚举类代替常用的字符串类型，mysql存储枚举类型会非常紧凑，会根据列表值的数据压缩到一个或两个字节中，mysql在内部会将每个值在列表中的位置保存为整数，并且在表的.frm文件中保存“数字-字符串”映射关系的查找表<br> create table enum_test(e enum(‘fish’,’apple’,’dog’) not null);<br> insert into enum_test(e) values(‘fish’),(‘dog’),(‘apple’);<br> select e+0 from enum_test;</p>
 <h1 id="select性能查看"><a href="#select性能查看" class="headerlink" title="select性能查看"></a>select性能查看</h1><h2 id="show-profile"><a href="#show-profile" class="headerlink" title="show profile"></a>show profile</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/sql-statements.html">SQL Statements</a></p>
 <p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/show.html">SHOW Statements</a></p>
@@ -1009,6 +1014,20 @@
 <p>在某些应用场景中，不需要完全精确的值，可以参考使用近似值来代替，比如可以使用explain来获取近似的值<br>其实在很多OLAP的应用中，需要计算某一个列值的基数，有一个计算近似值的算法叫hyperloglog。</p>
 <p>3.更复杂的优化</p>
 <p>一般情况下，count()需要扫描大量的行才能获取精确的数据，其实很难优化，在实际操作的时候可以考虑使用索引覆盖扫描，或者增加汇总表，或者增加外部缓存系统。</p>
+<p>测试：</p>
+<p>深分页问题</p>
+<p>select id,name from test where create_time &gt;&#x3D; ‘2022-07-09 00:00:00’ limit 0, 10</p>
+<p>select id,name from test where create_time &gt;&#x3D; ‘2022-07-09 00:00:00’ limit 100000, 10</p>
+<ol>
+<li>子查询优化</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> id,name <span class="hljs-keyword">from</span> test <span class="hljs-keyword">where</span> id <span class="hljs-operator">&gt;=</span> <br>(<span class="hljs-keyword">select</span> id <span class="hljs-keyword">from</span> test <span class="hljs-keyword">where</span> create_time <span class="hljs-operator">&gt;=</span> <span class="hljs-string">&#x27;2022-07-09 00:00:00&#x27;</span> limit <span class="hljs-number">1</span>) <br><span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id<br>limit  <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>偏移法</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> id,name <span class="hljs-keyword">from</span> test <span class="hljs-keyword">where</span> id <span class="hljs-operator">&gt;=</span> <span class="hljs-number">100000</span><br><span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id<br>limit <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
+
 <h4 id="优化关联查询"><a href="#优化关联查询" class="headerlink" title="优化关联查询"></a>优化关联查询</h4><p>1.确保on或者using子句中的列上有索引，在创建索引的时候就要考虑到关联的顺序。</p>
 <p>当表A和表B使用列C关联的时候，如果优化器的关联顺序是B、A，那么就不需要再B表的对应列上建上索引，没有用到的索引只会带来额外的负担，一般情况下来说，只需要在关联顺序中的第二个表的相应列上创建索引</p>
 <p>2.确保任何的groupby和order by中的表达式只涉及到一个表中的列，这样mysql才有可能使用索引来优化这个过程</p>
