@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://hanqichuan.com/.com//minorGC%E6%97%A5%E5%BF%97%E8%AF%A6%E8%A7%A3.jpeg">
 <meta property="og:image" content="http://hanqichuan.com/.com//FullGC%E6%97%A5%E5%BF%97%E8%AF%A6%E8%A7%A3.jpeg">
 <meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
-<meta property="article:modified_time" content="2022-07-09T07:22:52.011Z">
+<meta property="article:modified_time" content="2022-07-10T09:40:28.085Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="jvm">
 <meta name="twitter:card" content="summary_large_image">
@@ -213,7 +213,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      189 分钟
+      192 分钟
     </span>
   
 
@@ -319,7 +319,7 @@
 </thead>
 <tbody><tr>
 <td>Serial</td>
-<td>单线程收集线程，收集时stop the world</td>
+<td>单线程收集线程，整个收集过程stop the world</td>
 <td>新生代</td>
 <td>复制算法</td>
 <td>响应速度优先</td>
@@ -327,7 +327,7 @@
 </tr>
 <tr>
 <td>parNew</td>
-<td>多线程收集线程，收集时stop the world</td>
+<td>多线程收集线程，整个收集过程stop the world</td>
 <td>新生代</td>
 <td>复制算法</td>
 <td>响应速度优先</td>
@@ -335,7 +335,7 @@
 </tr>
 <tr>
 <td>Parallel scanvenge</td>
-<td>多线程收集线程，收集时stop the world</td>
+<td>多线程收集线程，整个收集过程stop the world</td>
 <td>新生代</td>
 <td>复制算法</td>
 <td>吞吐量优先</td>
@@ -343,7 +343,7 @@
 </tr>
 <tr>
 <td>Serial old</td>
-<td>单线程收集线程，收集时stop the world</td>
+<td>单线程收集线程，整个收集过程stop the world</td>
 <td>老年代</td>
 <td>标记整理</td>
 <td>响应速度优先</td>
@@ -351,7 +351,7 @@
 </tr>
 <tr>
 <td>Parallel old</td>
-<td>多线程收集线程，收集时stop the world</td>
+<td>多线程收集线程，整个收集过程stop the world</td>
 <td>老年代</td>
 <td>标记整理</td>
 <td>吞吐量优先</td>
@@ -368,7 +368,7 @@
 <tr>
 <td>G1</td>
 <td>分段，多线程，初始标记时stop the world,其他阶段可设置</td>
-<td>不分代，分区</td>
+<td>逻辑分代，分区</td>
 <td>标记整理 + 复制</td>
 <td>响应速度优先</td>
 <td>面向服务端应用，大内存时使用</td>
@@ -555,24 +555,47 @@
 <p>java -Xloggc: var&#x2F;log&#x2F;xx.log    非标准</p>
 <p>-XX:+PrintGCDetails  不稳定</p>
 <h2 id="GC常用参数"><a href="#GC常用参数" class="headerlink" title="GC常用参数"></a>GC常用参数</h2><ul>
-<li>-Xmn -Xms -Xmx -Xss<br>年轻代 最小堆 最大堆 栈空间</li>
-<li>-XX:+UseTLAB<br>使用TLAB，默认打开</li>
-<li>-XX:+PrintTLAB<br>打印TLAB的使用情况</li>
-<li>-XX:TLABSize<br>设置TLAB大小</li>
-<li>-XX:+DisableExplictGC<br>System.gc()不管用 ，FGC</li>
-<li>-XX:+PrintGC</li>
-<li>-XX:+PrintGCDetails</li>
-<li>-XX:+PrintHeapAtGC</li>
-<li>-XX:+PrintGCTimeStamps</li>
-<li>-XX:+PrintGCApplicationConcurrentTime (低)<br>打印应用程序时间</li>
-<li>-XX:+PrintGCApplicationStoppedTime （低）<br>打印暂停时长</li>
-<li>-XX:+PrintReferenceGC （重要性低）<br>记录回收了多少种不同引用类型的引用</li>
-<li>-verbose:class<br>类加载详细过程</li>
-<li>-XX:+PrintVMOptions</li>
-<li>-XX:+PrintFlagsFinal  -XX:+PrintFlagsInitial<br>必须会用</li>
-<li>-Xloggc:opt&#x2F;log&#x2F;gc.log</li>
-<li>-XX:MaxTenuringThreshold<br>升代年龄，最大值15</li>
-<li>锁自旋次数 -XX:PreBlockSpin 热点代码检测参数-XX:CompileThreshold 逃逸分析 标量替换 …<br>这些不建议设置</li>
+<li><p>-Xmn -Xms -Xmx -Xss<br>年轻代 最小堆 最大堆 栈空间</p>
+</li>
+<li><p>-XX:+UseTLAB<br>使用TLAB，默认打开</p>
+</li>
+<li><p>-XX:+PrintTLAB<br>打印TLAB的使用情况</p>
+</li>
+<li><p>-XX:TLABSize<br>设置TLAB大小</p>
+</li>
+<li><p>-XX:+DisableExplictGC<br>System.gc()不管用 ，FGC</p>
+</li>
+<li><p>-XX:+PrintGC</p>
+</li>
+<li><p>-XX:+PrintGCDetails</p>
+</li>
+<li><p>-XX:+PrintHeapAtGC</p>
+</li>
+<li><p>-XX:+PrintGCTimeStamps</p>
+</li>
+<li><p>-XX:+PrintGCApplicationConcurrentTime (低)<br>打印应用程序时间</p>
+</li>
+<li><p>-XX:+PrintGCApplicationStoppedTime （低）<br>打印暂停时长</p>
+</li>
+<li><p>-XX:+PrintReferenceGC （重要性低）<br>记录回收了多少种不同引用类型的引用</p>
+</li>
+<li><p>-verbose:class<br>类加载详细过程</p>
+</li>
+<li><p>-XX:+PrintVMOptions</p>
+</li>
+<li><p>XX:+PrintFlagsInitial 是打印所有的默认参数设置<br>-XX:+PrintFlagsFinal 是打印最终值，如果某个默认值被新值覆盖，显示新值<br>-XX:+PrintCommandLineFlags 是打印那些被新值覆盖的项</p>
+</li>
+<li><p>必须会用</p>
+</li>
+<li><p>-Xloggc:opt&#x2F;log&#x2F;gc.log</p>
+</li>
+<li><p>-XX:MaxTenuringThreshold<br>升代年龄，最大值15</p>
+</li>
+<li><p>锁自旋次数 -XX:PreBlockSpin 热点代码检测参数-XX:CompileThreshold 逃逸分析 标量替换 …<br>这些不建议设置</p>
+</li>
+<li><p>-XX:PermSize<br>指非堆区初始化内存分配大小。（非堆区配置）</p>
+<p>-XX:MaxPermSize<br>指对非堆区分配内存的最大上限。（非堆区配置）</p>
+</li>
 </ul>
 <h2 id="Parallel常用参数"><a href="#Parallel常用参数" class="headerlink" title="Parallel常用参数"></a>Parallel常用参数</h2><ul>
 <li>-XX:SurvivorRatio</li>
@@ -751,7 +774,7 @@
 <p>4.因为订单信息导出这个方法可能会有几万的数据量，首先要从数据库里面查询出来订单信息，然后把订单信息生成excel，这个过程会产生大量的String对象。</p>
 <p>问题可能出现点：</p>
 <p>1.无重复提交限制</p>
-<p>2.功能使用频繁，数据量大，生成大对象，直接进入老年代，从而鉵发full gc</p>
+<p>2.功能使用频繁，数据量大，生成大对象，直接进入老年代，从而触发full gc</p>
 <p>解决方案：</p>
 <p>1.重复提交限制</p>
 <p>2.业务代码获取数据 循环获取，转成小对象，配合JVM的大对象进入老年代参数</p>
@@ -773,6 +796,11 @@
 <p>堆外内存泄漏：</p>
 <p>现象：heap使用率很低，但是出现了OOM或者Full GC</p>
 <p>解决方案： 可以用btrace跟踪DirectByteBuffer的构造函数来定位</p>
+<h3 id="案例九：-因为对事务理解不足，造成死循环，导致CPU高"><a href="#案例九：-因为对事务理解不足，造成死循环，导致CPU高" class="headerlink" title="案例九： 因为对事务理解不足，造成死循环，导致CPU高"></a>案例九： 因为对事务理解不足，造成死循环，导致CPU高</h3><p>用户量不多，并发不多</p>
+<p>使用可重复读事务级别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">select value from test <span class="hljs-type">where</span> <span class="hljs-variable">flag</span>  <span class="hljs-operator">=</span> 可用 limit <span class="hljs-number">1</span><br>  <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span>(count &gt; <span class="hljs-number">0</span>) &#123;<br>   count = update test <span class="hljs-type">set</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;已用&quot;</span><br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p>用户请求后，一直死循环，造成服务所在CPU高，造成mysql查询变慢。</p>
 <h2 id="CPU经常100-问题定位"><a href="#CPU经常100-问题定位" class="headerlink" title="CPU经常100% 问题定位"></a>CPU经常100% 问题定位</h2><p>问题分析：CPU高一定是某个程序长期占用了CPU资源。</p>
 <p>1、所以先需要找出那个进行占用CPU高。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">top  列出系统各个进程的资源占用情况。<br></code></pre></td></tr></table></figure>
