@@ -191,39 +191,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/07/09/mysql/mysqlimg/%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%89%AB%E6%8F%8F%E6%9D%A5%E5%81%9A%E6%8E%92%E5%BA%8F/" target="_self">
-          
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/07/09/mysql/mysqlimg/%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%89%AB%E6%8F%8F%E6%9D%A5%E5%81%9A%E6%8E%92%E5%BA%8F/" target="_self">
-          
-          使用索引扫描来做排序​		mysql有两种方式可以生成有序的结果：通过排序操作或者按索引顺序扫描，如果explain出来的type列的值为index,则说明mysql使用了索引扫描来做排序 ​		扫描索引本身是很快的，因为只需要从一条索引记录移动到紧接着的下一条记录。但如果索引不能覆盖查询所需的全部列，那么就不得不每扫描一条索引记录就得回表查询一次对应的行，这基本都是随机IO，因此按索引顺序读取数
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-07-09 08:54" pubdate>
-              2022-07-09
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
         <a href="/2022/06/30/spring_cloud/spring_cloud_config%E5%AE%9E%E8%B7%B5/" target="_self">
           spring_boot_config实践
         </a>
@@ -634,6 +601,57 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/hystrix/">hystrix</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          spring_cloud_feign_ribbon_hystrix源码分析
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          
+          流程图 @EnableFeignClients开启Feign功能使用时都是在spring boot 启动类加上@EnableFeignClients注解。 123@Import(FeignClientsRegistrar.class)public @interface EnableFeignClients &amp;#123;&amp;#125;  注解上有FeignClientsRegistrar类 Feign
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-14 15:12" pubdate>
+              2022-06-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-cloud/">spring_cloud</a>
+            
+              <a href="/categories/spring-cloud/feign/">feign</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-cloud/">spring_cloud</a>
+            
+              <a href="/tags/feign/">feign</a>
             
           </div>
         
