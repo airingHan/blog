@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用1、String str &#x3D; “hello”;创建了一个对象jvm在编译阶段会判断常量池中是否有“hello”这个常量对象，如果有，str就直接指向这个常量的引用，如果没有就会在常量池中创建这个对象。2、String str &#x3D; new String（“hello”）；创建了两个对象jvm编译阶段会判断常量池中是否有“hello”这个常量对象，进而判断是否创建常量对象，然后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="String创建了几个对象">
+<meta property="og:url" content="http://hanqichuan.com/2019/07/18/java/String%E5%88%9B%E5%BB%BA%E4%BA%86%E5%87%A0%E4%B8%AA%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="使用1、String str &#x3D; “hello”;创建了一个对象jvm在编译阶段会判断常量池中是否有“hello”这个常量对象，如果有，str就直接指向这个常量的引用，如果没有就会在常量池中创建这个对象。2、String str &#x3D; new String（“hello”）；创建了两个对象jvm编译阶段会判断常量池中是否有“hello”这个常量对象，进而判断是否创建常量对象，然后">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-18T03:22:00.000Z">
+<meta property="article:modified_time" content="2022-07-20T01:33:05.721Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>String创建了几个对象 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="String创建了几个对象">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-07-18 11:22" pubdate>
+        2019年7月18日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">String创建了几个对象</h1>
+            
+            <div class="markdown-body">
+              <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>1、String str &#x3D; “hello”;<br>创建了一个对象<br>jvm在编译阶段会判断常量池中是否有“hello”这个常量对象，如果有，str就直接指向这个常量的引用，如果没有就会在常量池中创建这个对象。<br>2、String str &#x3D; new String（“hello”）；<br>创建了两个对象<br>jvm编译阶段会判断常量池中是否有“hello”这个常量对象，进而判断是否创建常量对象，然后运行阶段通过new关键字在java 堆上开辟一块儿空间来创建String 对象。<br>3、String str &#x3D; “hello” + “world”；<br>创建了一个对象<br>jvm编译阶段通过编译器优化后，会把字符串常量直接合并成“helloworld”，所以在常量池中只创建了一个对象。<br>4、String str &#x3D; new String(“he”) + new String（“llo”）；<br>创建了六个对象<br>在字符串常量池通过字面量创建”he” 和 “llo”字符串对象，并保存其对象引用，以及在堆中创建”he” 和 “llo”字符串对象，另外底层是通过new StringBuilder().append(“he”).append(“llo”).toString()进行拼接。其中StringBuilder的toString()会生成一个新的字符串对象new String(“hello”)，但由于这个代码是运行期动态生成的，所以不会在字符串常量池中创建字符串对象”hello”，但会在堆中创建字符串对象”hello”。</p>
+<h1 id="为什么要先在字符串常量池中创建对象"><a href="#为什么要先在字符串常量池中创建对象" class="headerlink" title="为什么要先在字符串常量池中创建对象"></a>为什么要先在字符串常量池中创建对象</h1><p>由于字符串的使用频率实在是太高了，所以 Java 虚拟机为了提高性能和减少内存开销，在创建字符串对象的时候进行了一些优化，特意为字符串开辟了一个字符串常量池。</p>
+<h1 id="intern方法"><a href="#intern方法" class="headerlink" title="intern方法"></a>intern方法</h1><p>这个方法会随着JVM源码的变化而变化。还是要看源码的注释。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Returns a canonical representation for the string object.</span><br><span class="hljs-comment"> * &lt;p&gt;</span><br><span class="hljs-comment"> * A pool of strings, initially empty, is maintained privately by the</span><br><span class="hljs-comment"> * class &#123;<span class="hljs-doctag">@code</span> String&#125;.</span><br><span class="hljs-comment"> * &lt;p&gt;</span><br><span class="hljs-comment"> * When the intern method is invoked, if the pool already contains a</span><br><span class="hljs-comment"> * string equal to this &#123;<span class="hljs-doctag">@code</span> String&#125; object as determined by</span><br><span class="hljs-comment"> * the &#123;<span class="hljs-doctag">@link</span> #equals(Object)&#125; method, then the string from the pool is</span><br><span class="hljs-comment"> * returned. Otherwise, this &#123;<span class="hljs-doctag">@code</span> String&#125; object is added to the</span><br><span class="hljs-comment"> * pool and a reference to this &#123;<span class="hljs-doctag">@code</span> String&#125; object is returned.</span><br><span class="hljs-comment"> * &lt;p&gt;</span><br><span class="hljs-comment"> * It follows that for any two strings &#123;<span class="hljs-doctag">@code</span> s&#125; and &#123;<span class="hljs-doctag">@code</span> t&#125;,</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@code</span> s.intern() == t.intern()&#125; is &#123;<span class="hljs-doctag">@code</span> true&#125;</span><br><span class="hljs-comment"> * if and only if &#123;<span class="hljs-doctag">@code</span> s.equals(t)&#125; is &#123;<span class="hljs-doctag">@code</span> true&#125;.</span><br><span class="hljs-comment"> * &lt;p&gt;</span><br><span class="hljs-comment"> * All literal strings and string-valued constant expressions are</span><br><span class="hljs-comment"> * interned. String literals are defined in section 3.10.5 of the</span><br><span class="hljs-comment"> * &lt;cite&gt;The Java&amp;trade; Language Specification&lt;/cite&gt;.</span><br><span class="hljs-comment"> </span><br><span class="hljs-comment"> 		返回字符串对象的规范表示。一个字符串池，最初是空的，由 String 类私下维护。当调用 intern 方法时，如果池中已经包含一个等于该 String 对象的字符串，由 equals(Object) 方法确定，则返回池中的字符串。否则，将此 String 对象添加到池中并返回对该 String 对象的引用。由此可见，对于任何两个字符串 s 和 t，当且仅当 s.equals(t) 为真时，s.intern() == t.intern() 才为真。所有文字字符串和字符串值的常量表达式都是实习的。字符串文字在 Java™ 语言规范的第 3.10.5 节中定义。</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span>  a string that has the same contents as this string, but is</span><br><span class="hljs-comment"> *          guaranteed to be from a pool of unique strings.</span><br><span class="hljs-comment"> 					与此字符串具有相同内容的字符串，但保证来自唯一字符串池。</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">native</span> String <span class="hljs-title function_">intern</span><span class="hljs-params">()</span>;<br></code></pre></td></tr></table></figure>
+
+<p>根据注释，发现如果常量池中没有对象时，会创建一个常量池对象。</p>
+<p>注释上同时说明对于任何两个字符串 s 和 t，当且仅当 s.equals(t) 为真时，s.intern() &#x3D;&#x3D; t.intern() 才为真。</p>
+<p>如果直接判断  s   &#x3D;&#x3D;  t.intern()   这时不一定为真。如果使用intern方法尽量两边都使用。</p>
+<p>Intern()方法一直返回的是字符串常量池中的对象，所以&#x3D;&#x3D;判断时要先区分字符串不是来自常量池。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/java/">java</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">接口幂等性设计</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/18/java/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8%E5%92%8C%E9%9D%9E%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8/">
+                        <span class="hidden-mobile">什么是受检异常和非受检异常</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

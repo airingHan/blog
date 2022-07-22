@@ -248,7 +248,7 @@
       <p class="index-excerpt">
         <a href="/2019/09/03/spring/spring%20IOC/" target="_self">
           
-          1.为什么使用IOC?什么是IOC?什么是DI?IOC 中文为控制反转 最早，对象A里使用对象B的方法,两种方式，一种是外部引用(属性设置、构造方法设置、方法传参)，别一种是内部创建(属性直接创建、构造方法创建、普通方法内创建)，如果使用第二种就会造成代码的耦合，所以第一种比较好。第一种就会出现谁来创建的问题。 这就引出了IOC 容器，IOC 容器来创建对象B, 把对象B注入进对象A.(依赖查找、
+          1.为什么使用IOC?什么是IOC?什么是DI?IOC 中文为控制反转。 IOC是一种设计、设计模式。DI是注入的一种方式。 一般依赖使用：  123Student student &#x3D; new Student();Score score &#x3D; new Score();student.setScore(score);   降低了程序里对象与对象之间的耦合性。 2.spring ioc 的源码分析及实现
         </a>
       </p>
 
@@ -327,6 +327,53 @@
               <a href="/tags/spring/">spring</a>
             
               <a href="/tags/spring-boot/">spring boot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/09/03/spring/spring%20AOP/" target="_self">
+          spring AOP
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/09/03/spring/spring%20AOP/" target="_self">
+          
+          AOP面向切面编程面向切面编程是将程序抽象成各个切面。 AOP 要达到的效果是，保证开发者不修改源代码的前提下，去为系统中的业务组件添加某种通用功能。 用在哪里：日志、事务 AOP实现分类：  静态 AOP 实现， AOP 框架在编译阶段对程序源代码进行修改，生成了静态的 AOP 代理类（生成的 *.class 文件已经被改掉了，需要使用特定的编译器），比如 AspectJ。 动态 AOP 实现，
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-09-03 14:11" pubdate>
+              2019-09-03
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring/">spring</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring/">spring</a>
             
           </div>
         
@@ -620,58 +667,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2019/07/23/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%A9%BF%E8%A1%A3/" target="_self">
-          程序员穿衣
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2019/07/23/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%A9%BF%E8%A1%A3/" target="_self">
-          
-          着装第一要义：合身上身：四层理论一个简单的方法告诉你不同季节该穿几件衣服： 夏天穿一层，春天穿两层，秋天穿三层，冬天穿四层。 也就是说： 一件衬衫&#x2F;T恤&#x3D;夏天 T恤+衬衫&#x2F;夹克&#x3D;春天 T恤+衬衫+夹克&#x2F;毛衣&#x3D;秋天 T恤+衬衫+毛衣+夹克&#x3D;冬天 1、纯血T恤 2、衬衫：不买格子衬衫。合身最重要。白色永远百搭，浅蓝看着舒服，牛仔十分
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-07-23 16:05" pubdate>
-              2019-07-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%94%9F%E6%B4%BB/">生活</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/10/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/#board">12</a><a class="page-number" href="/page/13/#board">13</a><a class="extend next" rel="next" href="/page/12/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/10/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/#board">12</a><a class="page-number" href="/page/13/#board">13</a><a class="page-number" href="/page/14/#board">14</a><a class="extend next" rel="next" href="/page/12/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
