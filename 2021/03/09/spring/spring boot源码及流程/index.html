@@ -1,0 +1,482 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="为什么用springboot?springboot是一个脚手架项目，提供了自动装配的功能，不用像以前一样自己去找少哪个包，配置复杂问题，现在只要引入对应的starter，修改yml就可以添加对应的功能。 SpringBoot自动配置原理：1、@EnableAutoConfiguration这个注解会”猜”你将如何配置spring，前提是你已经添加了jar依赖项，如果spring-boot-star">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring boot源码及流程">
+<meta property="og:url" content="http://hanqichuan.com/2021/03/09/spring/spring%20boot%E6%BA%90%E7%A0%81%E5%8F%8A%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="为什么用springboot?springboot是一个脚手架项目，提供了自动装配的功能，不用像以前一样自己去找少哪个包，配置复杂问题，现在只要引入对应的starter，修改yml就可以添加对应的功能。 SpringBoot自动配置原理：1、@EnableAutoConfiguration这个注解会”猜”你将如何配置spring，前提是你已经添加了jar依赖项，如果spring-boot-star">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-09T13:17:00.000Z">
+<meta property="article:modified_time" content="2022-07-24T08:11:02.467Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>spring boot源码及流程 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="spring boot源码及流程">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-03-09 21:17" pubdate>
+        2021年3月9日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">spring boot源码及流程</h1>
+            
+            <div class="markdown-body">
+              <h1 id="为什么用springboot"><a href="#为什么用springboot" class="headerlink" title="为什么用springboot?"></a>为什么用springboot?</h1><p>springboot是一个脚手架项目，提供了自动装配的功能，不用像以前一样自己去找少哪个包，配置复杂问题，现在只要引入对应的starter，修改yml就可以添加对应的功能。</p>
+<h1 id="SpringBoot自动配置原理："><a href="#SpringBoot自动配置原理：" class="headerlink" title="SpringBoot自动配置原理："></a>SpringBoot自动配置原理：</h1><p>1、@EnableAutoConfiguration这个注解会”猜”你将如何配置spring，前提是你已经添加了jar依赖项，如果spring-boot-starter-web已经添加Tomcat和SpringMVC，这个注释就会自动假设您在开发一个web应用程序并添加相应的spring配置，会自动去maven中读取每个starter中的spring.factories文件，该文件里配置了所有需要被创建spring容器中bean<br>2、在main方法中加上@SpringBootApplication和@EnableAutoConfiguration<br>SpringBoot starter工作原理：<br>1、SpringBoot在启动时扫描项目依赖的jar包，寻找包含spring.factories文件的jar<br>2、根据spring.factories配置加载AutoConfigure<br>3、根据@Conditional注解的条件，进行自动配置并将bean注入到Spring Context</p>
+<h1 id="如何找到spring-factories文件并初始化其中的类"><a href="#如何找到spring-factories文件并初始化其中的类" class="headerlink" title="如何找到spring.factories文件并初始化其中的类"></a>如何找到spring.factories文件并初始化其中的类</h1><figure class="highlight mel"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs mel">getSpringFactoriesInstances方法<br>SpringFactoriesLoader.loadFactoryNames方法从<span class="hljs-keyword">spring</span>.factories文件中获取全路径名<br>createSpringFactoriesInstances 实例化这些类<br>AnnotationAwareOrderComparator.<span class="hljs-keyword">sort</span> 排序<br></code></pre></td></tr></table></figure>
+
+<h1 id="spring-boot-启动流程（带devtools）："><a href="#spring-boot-启动流程（带devtools）：" class="headerlink" title="spring boot 启动流程（带devtools）："></a>spring boot 启动流程（带devtools）：</h1><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-number">1.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SpringApplication</span>.</span></span>run(xx.<span class="hljs-keyword">class</span>, args);<br><span class="hljs-number">2.</span>加载listener,这个listener中包含了RestartApplicationListener（devtools包的spring.factories）<br>set<span class="hljs-constructor">Listeners((Collection)</span> get<span class="hljs-constructor">SpringFactoriesInstances(ApplicationListener.<span class="hljs-params">class</span>)</span>);<br><span class="hljs-number">3.</span>监听器执行，发送应该开始启动事件<br>listener.starting<span class="hljs-literal">()</span>;<br><span class="hljs-number">4.</span>RestartApplicationListener的方法就可以收到事件。<br>public void on<span class="hljs-constructor">ApplicationEvent(ApplicationEvent <span class="hljs-params">event</span>)</span><br><span class="hljs-number">5.</span>Restarter的初始化（单例的）<br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Restarter</span>.</span></span>initialize(args, <span class="hljs-literal">false</span>, <span class="hljs-keyword">initializer</span>, restartOnInitialize);<br><br><span class="hljs-number">6.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Restarter</span>.</span></span>initialize(restartOnInitialize)的执行<br><br><span class="hljs-number">7.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Restarter</span>.</span></span>immediate<span class="hljs-constructor">Restart()</span>的执行<br><span class="hljs-number">8.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">LeakSafeThread</span>.</span></span>call<span class="hljs-constructor">AndWait()</span>，这里是个线程，打断点需要用线程断点，启动线程并让主线程等待.这里入参是个匿名类<br><span class="hljs-number">9.</span>执行<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Restarter</span>.</span></span><span class="hljs-keyword">do</span><span class="hljs-constructor">Start()</span>至<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Restarter</span>.</span></span>relaunch<span class="hljs-literal">()</span>方法<br><span class="hljs-number">10.</span>创建RestartLauncher，这是个线程，看run方法，里面是执行的xx.<span class="hljs-keyword">class</span>的run方法<br><span class="hljs-number">11.</span>重复以上步骤，执行至Restarter的初始化，这时localInstance是空，所以不会死循环<br><span class="hljs-number">12.</span>这时候就扫行到<br>ApplicationArguments applicationArguments = <span class="hljs-keyword">new</span> <span class="hljs-constructor">DefaultApplicationArguments(<span class="hljs-params">args</span>)</span>;<br><span class="hljs-number">13.</span>根据webApplicationType=SERVLET实例化<br>org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext<br><span class="hljs-number">14.</span>因为main方法中传入了启动类，<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SpringApplication</span>.</span></span>get<span class="hljs-constructor">AllSources()</span>方法，相当于配置文件xml<br><span class="hljs-number">15.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SpringApplication</span>.</span></span>load(ApplicationContext context, Object<span class="hljs-literal">[]</span> sources)<br><span class="hljs-number">16.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">SpringApplication</span>.</span></span>get<span class="hljs-constructor">BeanDefinitionRegistry(ApplicationContext <span class="hljs-params">context</span>)</span><br><span class="hljs-number">17.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">BeanDefinitionLoader</span>.</span></span>load<span class="hljs-literal">()</span>方法 加载启动类到容器<br><span class="hljs-number">18.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">BeanDefinitionLoader</span>.</span></span>isComponent方法，判断这个资源是否带有component注解<br><span class="hljs-number">19.</span>一路下来最终会调用refresh<span class="hljs-literal">()</span>方法<br><span class="hljs-number">20.</span>调用invoke<span class="hljs-constructor">BeanFactoryPostProcessors()</span>执行BenFactoryPostProcessors<br><span class="hljs-number">21.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ConfigurationClassParser</span>.</span></span>process<span class="hljs-constructor">ConfigurationClass()</span><br><span class="hljs-number">22.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ConfigurationClassParser</span>.</span></span><span class="hljs-keyword">do</span><span class="hljs-constructor">ProcessConfigurationClass()</span>方法，根据启动类查找所有bean，<br>如果这些类里还有配置类，则会递归一直找全所有的bean,这里会转成bean的对象beanDefinition<br><span class="hljs-number">23.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ConfigurationClassParser</span>.</span></span>collect<span class="hljs-constructor">Imports()</span>递归获取注解import,注解上标有两个类<br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span><span class="hljs-keyword">class</span>、<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationPackages</span>.</span><span class="hljs-module"><span class="hljs-identifier">Registrar</span>.</span></span><span class="hljs-keyword">class</span><br>AutoConfigurationImportSelector为自动装配的处理类<br><br><br><span class="hljs-number">24.</span><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ConfigurationClassParser</span>.</span></span>get<span class="hljs-constructor">Imports()</span><br><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DeferredImportSelectorGroupingHandler</span>.</span></span>process<span class="hljs-constructor">GroupImports()</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DeferredImportSelectorGrouping</span>.</span></span>get<span class="hljs-constructor">Imports()</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span>process<span class="hljs-literal">()</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span>get<span class="hljs-constructor">AutoConfigurationMetadata()</span>  <br>这里获取到<br> <br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span>get<span class="hljs-constructor">AutoConfigurationEntry()</span>  <br>这里获取到所有<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">EnableAutoConfiguration</span>.</span></span><span class="hljs-keyword">class</span>的AutoConfiguration类<br> <br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span>get<span class="hljs-constructor">SpringFactoriesLoaderFactoryClass()</span><br>得到<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">EnableAutoConfiguration</span>.</span></span><span class="hljs-keyword">class</span><br> <br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">AutoConfigurationImportSelector</span>.</span></span>filter<span class="hljs-literal">()</span>方法会过滤不存在的自动装配类<br></code></pre></td></tr></table></figure>
+
+<h1 id="spring-boot-自动装配"><a href="#spring-boot-自动装配" class="headerlink" title="spring boot 自动装配"></a>spring boot 自动装配</h1><p>1.load启动类（run方法传入的class）<br>2.根据启动类找到启动类上的注解import的AutoConfigurationImportSelector<br>3.获取到所有的自动装配类</p>
+<h1 id="spring-boot-mvc模块自动装配"><a href="#spring-boot-mvc模块自动装配" class="headerlink" title="spring boot mvc模块自动装配"></a>spring boot mvc模块自动装配</h1><p>1.DispatcherServletAutoConfiguration 自动装配类加载<br>2.初始化DispatcherServlet<br>3.客户端发送请求后，httpServlet中init方法，直到 dispatcherServlet中initStrategies</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/spring/">spring</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring/">spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/09/spring/spring%20data%20mongo%E7%9A%84%E5%AD%90%E5%AF%B9%E8%B1%A1id%E9%97%AE%E9%A2%98/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring data mongo的子对象id问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/09/spring/spring%20mvc%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B/">
+                        <span class="hidden-mobile">spring mvc源码流程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
