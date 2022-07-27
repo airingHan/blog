@@ -191,6 +191,147 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2019/07/18/java/String%E4%B8%8EStringBuffer%E4%B8%8EStringBuilder%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          String与StringBuffer与StringBuilder的区别
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/java/String%E4%B8%8EStringBuffer%E4%B8%8EStringBuilder%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          
+          String与StringBuffer与StringBuilder的区别1.可变性 String内部的value值是final修饰的，所以它是一个不可变的类，每一次修改String的值的时候，都会产生一个新的对象。 StringBuffer和StringBuilder是一个可变类，字符串的变更不会产生新的对象。 2.线程安全性 String是一个不可变的类，是线程安全的。 StringBuffer
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          接口幂等性设计
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          
+          什么是接口幂等性幂等是一个数学概念。在接口中表示一个接口多次调用没有副作用。 什么情况会出现接口幂等性问题查询请求不会修改数据，所以不会出现幂等性问题。 添加、修改、删除会出现幂等性问题。 什么场景会出现用户重复操作 代码重试 消息重复消费 如何实现接口幂等性1.唯一索引去重 2.token + redis 3.状态机 4.乐观锁 5.悲观锁（分布式锁） rouyi实现12345678910111
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/07/18/java/String%E5%88%9B%E5%BB%BA%E4%BA%86%E5%87%A0%E4%B8%AA%E5%AF%B9%E8%B1%A1/" target="_self">
+          String创建了几个对象
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/java/String%E5%88%9B%E5%BB%BA%E4%BA%86%E5%87%A0%E4%B8%AA%E5%AF%B9%E8%B1%A1/" target="_self">
+          
+          使用1、String str &#x3D; “hello”;创建了一个对象jvm在编译阶段会判断常量池中是否有“hello”这个常量对象，如果有，str就直接指向这个常量的引用，如果没有就会在常量池中创建这个对象。2、String str &#x3D; new String（“hello”）；创建了两个对象jvm编译阶段会判断常量池中是否有“hello”这个常量对象，进而判断是否创建常量对象，然后
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2019/07/18/java/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8%E5%92%8C%E9%9D%9E%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8/" target="_self">
           什么是受检异常和非受检异常
         </a>

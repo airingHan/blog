@@ -16,21 +16,21 @@
   <meta name="author" content="韩启川">
   <meta name="keywords" content="">
   
-    <meta name="description" content="参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;zjcjava&#x2F;article&#x2F;details&#x2F;78881803 http:&#x2F;&#x2F;www.junww.com&#x2F;server&#x2F;2017&#x2F;0612&#x2F;238.html https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ylong52&#x2F;p&#x2F;5665708.html">
+    <meta name="description" content="什么是redisredis基于键值对的缓存库. Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。 它支持多 种类型的数据结构，如 字符串（strings）、散列（hashes）、 列表（lists）、 集合（sets）、 有序集合（sorted sets）与范围查询 ,bitmaps， hyperloglogs 和 地理空间（geospatia">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis所在服务器被当为肉鸡">
-<meta property="og:url" content="http://hanqichuan.com/2022/05/17/redis/redis%E6%89%80%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A2%AB%E5%BD%93%E4%B8%BA%E8%82%89%E9%B8%A1/index.html">
+<meta property="og:title" content="redis简介及使用">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/17/redis/redis%E7%AE%80%E4%BB%8B%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="这是一个很酷的事">
-<meta property="og:description" content="参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;zjcjava&#x2F;article&#x2F;details&#x2F;78881803 http:&#x2F;&#x2F;www.junww.com&#x2F;server&#x2F;2017&#x2F;0612&#x2F;238.html https:&#x2F;&#x2F;www.cnblogs.com&#x2F;ylong52&#x2F;p&#x2F;5665708.html">
+<meta property="og:description" content="什么是redisredis基于键值对的缓存库. Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。 它支持多 种类型的数据结构，如 字符串（strings）、散列（hashes）、 列表（lists）、 集合（sets）、 有序集合（sorted sets）与范围查询 ,bitmaps， hyperloglogs 和 地理空间（geospatia">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-17T01:20:00.000Z">
-<meta property="article:modified_time" content="2022-06-02T03:06:06.592Z">
+<meta property="article:modified_time" content="2022-07-27T03:40:46.519Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>redis所在服务器被当为肉鸡 - 这是一个很酷的事</title>
+  <title>redis简介及使用 - 这是一个很酷的事</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -176,7 +176,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="redis所在服务器被当为肉鸡">
+            <span class="h2" id="subtitle" title="redis简介及使用">
               
             </span>
 
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      148 字
+      1.1k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2 分钟
+      10 分钟
     </span>
   
 
@@ -235,12 +235,48 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">redis所在服务器被当为肉鸡</h1>
+            <h1 style="display: none">redis简介及使用</h1>
             
             <div class="markdown-body">
-              <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zjcjava/article/details/78881803">https://blog.csdn.net/zjcjava/article/details/78881803</a></p>
-<p><a target="_blank" rel="noopener" href="http://www.junww.com/server/2017/0612/238.html">http://www.junww.com/server/2017/0612/238.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ylong52/p/5665708.html">https://www.cnblogs.com/ylong52/p/5665708.html</a> </p>
+              <h1 id="什么是redis"><a href="#什么是redis" class="headerlink" title="什么是redis"></a>什么是redis</h1><p>redis基于键值对的缓存库.</p>
+<p>Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。</p>
+<p>它支持多 种类型的数据结构，如 字符串（strings）、散列（hashes）、 列表（lists）、 集合（sets）、 有序集合（sorted sets）与范围查询 ,bitmaps， hyperloglogs 和 地理空间（geospatial） 索引半径查询。 </p>
+<p>Redis 内置了 复制（replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（transactions） 和不同级别的 磁盘持久化（persistence）， 并通过 Redis哨兵（Sentinel）和自动 分区（Cluster）提供高可用性（high availability）。</p>
+<p><strong>业务端使用Redis降低后端MySQL负载</strong></p>
+<h1 id="help使用"><a href="#help使用" class="headerlink" title="help使用"></a>help使用</h1><p>使用redis-cli命令登录后。</p>
+<p>输入help</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">To get <span class="hljs-built_in">help</span> about Redis commands <span class="hljs-built_in">type</span>:<br>      <span class="hljs-string">&quot;help @&lt;group&gt;&quot;</span> to get a list of commands <span class="hljs-keyword">in</span> &lt;group&gt;<br>      <span class="hljs-string">&quot;help &lt;command&gt;&quot;</span> <span class="hljs-keyword">for</span> <span class="hljs-built_in">help</span> on &lt;<span class="hljs-built_in">command</span>&gt;<br>      <span class="hljs-string">&quot;help &lt;tab&gt;&quot;</span> to get a list of possible <span class="hljs-built_in">help</span> topics<br>      <span class="hljs-string">&quot;quit&quot;</span> to <span class="hljs-built_in">exit</span><br><br>To <span class="hljs-built_in">set</span> redis-cli preferences:<br>      <span class="hljs-string">&quot;:set hints&quot;</span> <span class="hljs-built_in">enable</span> online hints<br>      <span class="hljs-string">&quot;:set nohints&quot;</span> <span class="hljs-built_in">disable</span> online hints<br>Set your preferences <span class="hljs-keyword">in</span> ~/.redisclirc<br></code></pre></td></tr></table></figure>
+
+<p>官网帮助：<a target="_blank" rel="noopener" href="https://redis.io/docs/manual/cli/">https://redis.io/docs/manual/cli/</a></p>
+<p><code>redis-cli</code>使用命令为大多数 Redis<a target="_blank" rel="noopener" href="https://redis.io/commands">命令</a>提供在线帮助<code>HELP</code>。该命令可以以两种形式使用：</p>
+<ul>
+<li><div class="code-wrapper"><pre><code class="hljs">HELP @&lt;category&gt;
+</code></pre></div>
+<p>显示有关给定类别的所有命令。类别是：</p>
+<ul>
+<li><code>@generic</code></li>
+<li><code>@string</code></li>
+<li><code>@list</code></li>
+<li><code>@set</code></li>
+<li><code>@sorted_set</code></li>
+<li><code>@hash</code></li>
+<li><code>@pubsub</code></li>
+<li><code>@transactions</code></li>
+<li><code>@connection</code></li>
+<li><code>@server</code></li>
+<li><code>@scripting</code></li>
+<li><code>@hyperloglog</code></li>
+<li><code>@cluster</code></li>
+<li><code>@geo</code></li>
+<li><code>@stream</code></li>
+</ul>
+</li>
+<li><p><code>HELP &lt;commandname&gt;</code>显示作为参数给出的命令的特定帮助。</p>
+</li>
+</ul>
+<p>help @generic 会显示一些基本的命令。</p>
+<p>help @string 会显示string相关的命令。</p>
+<p>以此类推。</p>
 
             </div>
             <hr>
@@ -275,9 +311,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/05/17/redis/redis%E5%AE%89%E8%A3%85/">
+                      <a href="/2022/05/17/redis/redis%E6%9E%B6%E6%9E%84%E5%8F%8A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%AB/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">redis6.0安装</span>
+                        <span class="hidden-mobile">redis架构及为什么快</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -285,8 +321,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/05/17/redis/redis%E6%9E%B6%E6%9E%84%E5%8F%8A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%AB/">
-                        <span class="hidden-mobile">redis架构及为什么快</span>
+                      <a href="/2022/05/17/redis/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="hidden-mobile">redis简介与使用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

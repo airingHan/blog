@@ -1,0 +1,721 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;Me_xuan&#x2F;article&#x2F;details&#x2F;124260839 前言redis是通过对象来表示存储的数据的，redis 也是键值对存储的方式，那么每存储一条数据，redis至少会生成2个对象，一个是redisObject，用来描述具体数据的类型的，比如用的是那种数据类型，底层用了哪种数据结构，还有一个对象就是具体存储的数据。 这个存储对象数据就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis简介与使用">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/17/redis/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="参考https:&#x2F;&#x2F;blog.csdn.net&#x2F;Me_xuan&#x2F;article&#x2F;details&#x2F;124260839 前言redis是通过对象来表示存储的数据的，redis 也是键值对存储的方式，那么每存储一条数据，redis至少会生成2个对象，一个是redisObject，用来描述具体数据的类型的，比如用的是那种数据类型，底层用了哪种数据结构，还有一个对象就是具体存储的数据。 这个存储对象数据就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//sds%E7%A9%BA%E9%97%B4%E9%A2%84%E5%88%86%E9%85%8D.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//string_int.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//string_embstr.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//string_raw.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//List_ziplist.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//list_linkedlist.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//list_quicklist.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//hash_hashtable.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//set_intset.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//zset_zkiplist.png">
+<meta property="article:published_time" content="2022-05-17T01:20:00.000Z">
+<meta property="article:modified_time" content="2022-07-27T03:45:57.921Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//sds%E7%A9%BA%E9%97%B4%E9%A2%84%E5%88%86%E9%85%8D.png">
+  
+  
+  <title>redis简介与使用 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="redis简介与使用">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-17 09:20" pubdate>
+        2022年5月17日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      9.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      77 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">redis简介与使用</h1>
+            
+            <div class="markdown-body">
+              <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Me_xuan/article/details/124260839">https://blog.csdn.net/Me_xuan/article/details/124260839</a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>redis是通过对象来表示存储的数据的，redis 也是键值对存储的方式，那么每存储一条数据，redis至少会生成2个对象，一个是redisObject，用来描述具体数据的类型的，比如用的是那种数据类型，底层用了哪种数据结构，还有一个对象就是具体存储的数据。 这个存储对象数据就是通过redisObject这个对象的指针来指引的。</p>
+<h1 id="Redis为什么要使用2个对象？两个对象的好处"><a href="#Redis为什么要使用2个对象？两个对象的好处" class="headerlink" title="Redis为什么要使用2个对象？两个对象的好处"></a>Redis为什么要使用2个对象？两个对象的好处</h1><p>1.redis在执行命令的时候，就可以通过redisObject 的类型和编码来确定是否可以执行相应的命令，不用等操作具体的数据是才发现不行<br>2.针对不同的场景，可以为对象设置不同的数据结构，从而优化了对象在不同场景下的使用效率<br>3.可以基于redisObject中的refcount 引用计数进行内存回收机制，自动释放对象所占用的内存<br>4.可以让多个数据库来共享一个对象来节省空间<br>5.redis可以根据REDIS_LRU_BITS 记录最后一次访问时间，针对时间较长对象的进行删除</p>
+<h1 id="redisObject对象解析"><a href="#redisObject对象解析" class="headerlink" title="redisObject对象解析"></a>redisObject对象解析</h1><p>redisObject结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">redisObject</span>&#123;</span><br>    <span class="hljs-comment">//类型</span><br>    <span class="hljs-type">unsigned</span> type:<span class="hljs-number">4</span>;<br> <br>    <span class="hljs-comment">//编码</span><br>    <span class="hljs-type">unsigned</span> encoding:<span class="hljs-number">4</span>;<br> <br>    <span class="hljs-comment">//对象最后一次被访问的时间</span><br>    <span class="hljs-type">unsigned</span> lru:REDIS_LRU_BITS<br> <br>    <span class="hljs-comment">//引用计数</span><br>    <span class="hljs-type">int</span> refcount<br> <br>    <span class="hljs-comment">//指向底层实现数据结构的指针</span><br>    <span class="hljs-type">void</span> *ptr;<br>    ….. <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>ptr指针指向的就是每种数据类型的具体的数据结构</p>
+<p>type 表示的是使用的那种数据结构，常用的有5种，string，hash，list，set，zset。 type就是来存这个的。</p>
+<table>
+<thead>
+<tr>
+<th>编码常量（encoding）</th>
+<th>编码对应的底层数据结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REDIS_ENCODING_INT</td>
+<td>long类型的整数</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_EMBSTR</td>
+<td>embstr编码的简单动态字符串</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_RAW</td>
+<td>简单动态字符串</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_HT</td>
+<td>字典</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_LINKEDLIST</td>
+<td>双向链表</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_ZIPLIST</td>
+<td>压缩列表</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_INTSET</td>
+<td>整数集合</td>
+</tr>
+<tr>
+<td>REDIS_ENCODING_SKIPLIST</td>
+<td>跳跃表和字典</td>
+</tr>
+</tbody></table>
+<p>encoding 标注了这个对象具体的数据结构类型</p>
+<p>![redis_ encoding](img&#x2F;redis_ encoding.png)</p>
+<p>每一种redisObject对象对应底层都会有至少2种数据结构</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>编码</th>
+<th>对象</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>String</td>
+<td>int</td>
+<td>整数值实现</td>
+</tr>
+<tr>
+<td>String</td>
+<td>embstr</td>
+<td>sds实现 &lt;&#x3D;39 字节</td>
+</tr>
+<tr>
+<td>String</td>
+<td>raw</td>
+<td>sds实现 &gt; 39字节</td>
+</tr>
+<tr>
+<td>List</td>
+<td>ziplist</td>
+<td>压缩列表实现</td>
+</tr>
+<tr>
+<td>List</td>
+<td>linkedlist</td>
+<td>双端链表实现</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>intset</td>
+<td>整数集合使用</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>hashtable</td>
+<td>字典实现</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>ziplist</td>
+<td>压缩列表实现</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>hashtable</td>
+<td>字典使用</td>
+</tr>
+<tr>
+<td>Sorted set</td>
+<td>ziplist</td>
+<td>压缩列表实现</td>
+</tr>
+<tr>
+<td>Sorted set</td>
+<td>skiplist</td>
+<td>跳跃表和字典</td>
+</tr>
+</tbody></table>
+<p>介绍完了redisObject了，下面介绍每一种具体的数据类型及其对应的底层数据结构</p>
+<h1 id="查看redis用什么数据结构存储的"><a href="#查看redis用什么数据结构存储的" class="headerlink" title="查看redis用什么数据结构存储的"></a>查看redis用什么数据结构存储的</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">help</span> object<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">OBJECT subcommand [arguments [arguments ...]]<br>  summary: Inspect the internals of Redis objects<br>  since: 2.2.3<br>  group: generic<br></code></pre></td></tr></table></figure>
+
+<p>检查Redis对象的内部</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">set</span> key1 1<br>object encoding key1<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-string">&quot;int&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="String-类型"><a href="#String-类型" class="headerlink" title="String 类型"></a>String 类型</h1><p>在c语音中，定义的字符串是不可被修改的，因此redis设计了可变的字符串长度对象，接SDS（simple dynamic string），实现原理：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sdshdr</span>&#123;</span><br>    <span class="hljs-comment">//记录buf数组中已存的字节数量，也就是sds保存的字符串长度</span><br>    <span class="hljs-type">int</span> len;<br> <br>    <span class="hljs-comment">// buf数组中剩余可用的字节数量</span><br>    <span class="hljs-type">int</span> <span class="hljs-built_in">free</span>;<br> <br>    <span class="hljs-comment">//字节数组，用来存储字符串的</span><br>    <span class="hljs-type">char</span> buf[];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>参数解析：</p>
+<ol>
+<li>len ： 保存的字符串长度。获取字符串的长度就是O(1)</li>
+<li>free：剩余可用存储字符串的长度</li>
+<li>buf：保存字符串</li>
+</ol>
+<p>这样设计的优点：</p>
+<p>1.当用户修改字符串时sds api会先检查空间是否满足需求，如果满足，直接执行修改操作，如果不满足，将空间修改至满足需求的大小，然后再执行修改操作<br>2.空间预分配<br>    2.1如果修改后的sds的字符串小于1MB时（也就是len的长度小于1MB），那么程序会分配与len属性相同大小的未使用空间（就是再给未使用空间free也分配与len相同的空间）   例：字符串大小为600k，那么会分配600k给这个字符串使用，再分配600k的free空间在那。<br>    2.2惰性空间释放，当缩短sds的存储内容时，并不会立即使用内存重分配来回收字符串缩短后的空间，而是通过free将空闲的空间记录起来，等待将来使用。真正需要释放内存的时候，通过调用api来释放内存<br>    2.3通过空间预分配操作，redis有效的减少了执行字符串增长所需要的内存分配次数<br>    2.4如果修改后sds大于1MB时（也就是len的长度大于等于1MB），那么程序会分配1MB的未使用空间  例：字符串大小为3MB，那么会分配3MB给这个字符串使用，再分配1MB的free空间在那。</p>
+<p>3.二进制安全</p>
+<p>你已经知道了 Redis 可以存储各种数据类型，那么二进制数据肯定也不例外。但二进制数据并不是规则的字符串格式，可能会包含一些特殊的字符，比如 ‘\0’ 等。</p>
+<p>前面我们提到过，C 中字符串遇到 ‘\0’ 会结束，那 ‘\0’ 之后的数据就读取不上了。但在 SDS 中，是根据 len 长度来判断字符串结束的。</p>
+<p><img src="/.com//sds%E7%A9%BA%E9%97%B4%E9%A2%84%E5%88%86%E9%85%8D.png" srcset="/img/loading.gif" lazyload alt="sds空间预分配"></p>
+<p>字符串由3种编码实现。</p>
+<h2 id="1、int-整数值实现"><a href="#1、int-整数值实现" class="headerlink" title="1、int 整数值实现"></a>1、int 整数值实现</h2><p>存储的数据是整数时，redis会将键值设置为int类型来进行存储，对应的编码类型是REDIS_ENCODING_INT</p>
+<p><img src="/.com//string_int.png" srcset="/img/loading.gif" lazyload alt="string_int"></p>
+<h2 id="2、embstr"><a href="#2、embstr" class="headerlink" title="2、embstr"></a>2、embstr</h2><p>由sds实现 ，字节数 &lt;&#x3D; 39</p>
+<p>存储的数据是字符串时，且字节数小于等于39 ，用的是embstr</p>
+<p>优点：</p>
+<p>1、创建字符串对象由两次变成了一次</p>
+<p>2、连续的内存，更好的利用缓存优势</p>
+<p>缺点：</p>
+<p>1、由于是连续的空间，所以适合只读，如果修改的话，就会变成raw</p>
+<p>2、由于是连续的空间，所以值适合小字符串</p>
+<p><img src="/.com//string_embstr.png" srcset="/img/loading.gif" lazyload alt="string_embstr"></p>
+<h2 id="3、raw"><a href="#3、raw" class="headerlink" title="3、raw"></a>3、raw</h2><p>由sds实现 字节数 &gt; 39</p>
+<p><img src="/.com//string_raw.png" srcset="/img/loading.gif" lazyload alt="string_raw"></p>
+<h1 id="List-类型"><a href="#List-类型" class="headerlink" title="List 类型"></a>List 类型</h1><p>list是由压缩链表和双向链表实现的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listNode</span> &#123;</span><br>    <span class="hljs-comment">// 前置节点</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listNode</span> *<span class="hljs-title">prev</span>;</span><br> <br>    <span class="hljs-comment">// 后置节点</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">listNode</span> *<span class="hljs-title">next</span>;</span><br> <br>    <span class="hljs-comment">// 存储的数据</span><br>    <span class="hljs-type">void</span> *value;<br>&#125; listNode;<br> <br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list</span> &#123;</span><br>    <span class="hljs-comment">// 链表头节点</span><br>    listNode *head;<br> <br>    <span class="hljs-comment">// 链表尾节点</span><br>    listNode *tail;<br> <br>    <span class="hljs-comment">// 节点值复制函数</span><br>    <span class="hljs-type">void</span> *(*dup)(<span class="hljs-type">void</span> *ptr);<br> <br>    <span class="hljs-comment">// 节点值释放函数</span><br>    <span class="hljs-type">void</span> (*<span class="hljs-built_in">free</span>)(<span class="hljs-type">void</span> *ptr);<br> <br>    <span class="hljs-comment">// 节点值对比函数</span><br>    <span class="hljs-type">int</span> (*match)(<span class="hljs-type">void</span> *ptr, <span class="hljs-type">void</span> *key);<br> <br>    <span class="hljs-comment">// 链表所有节点数量</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> len;<br>&#125; <span class="hljs-built_in">list</span>;<br></code></pre></td></tr></table></figure>
+
+<h2 id="1、压缩链表：ziplist"><a href="#1、压缩链表：ziplist" class="headerlink" title="1、压缩链表：ziplist"></a>1、压缩链表：ziplist</h2><p>适用于长度较小的值，因为他是由连续的空间实现的。</p>
+<p>存取的效率高，内存占用小，但由于内存是连续的，在修改的时候要重新分配内存</p>
+<p>在数据量比较小的时候使用的是ziplist</p>
+<p>当list对象同时满足以下两个条件是，使用的ziplist编码</p>
+<p> 1.list对象保存的所有字符串元素长度都小于64字节</p>
+<p> 2.list对象保存的元素数量小于512个</p>
+<p><img src="/.com//List_ziplist.png" srcset="/img/loading.gif" lazyload alt="List_ziplist"></p>
+<p>缺点：</p>
+<p>1.极端情况下会出现连锁更新现象。因为我们的previous_entry_length 记录了entry 的长度，如果每个长度都是250 - 253之间，那么如果在头部插一个新的entry节点，第一个节点的长度大于254字节，那么后一个节点的previous_entry_length 值就会从1个字节变为 5字节，那么这个entry的长度就大于了254字节，后面一个节点的previous_entry_length 值也得更新，后面的都得更新，导致整行的列表都得更新。<br>2.只能存储小数据的值</p>
+<h2 id="2、双向链表：linkedlist"><a href="#2、双向链表：linkedlist" class="headerlink" title="2、双向链表：linkedlist"></a>2、双向链表：linkedlist</h2><p>在使用redis的list数据结构时，存储数据较大时，list对象已经不满足上面描述的ziplist条件，则会使用linkedlist</p>
+<p>优点：修改效率高</p>
+<p>缺点：保存前后指针，会占内存。</p>
+<p><img src="/.com//list_linkedlist.png" srcset="/img/loading.gif" lazyload alt="list_linkedlist"></p>
+<h2 id="3、快速列表：quicklist"><a href="#3、快速列表：quicklist" class="headerlink" title="3、快速列表：quicklist"></a>3、快速列表：quicklist</h2><p>结合了压缩列表和双向链表的优点，也解决了他们的缺点 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 快速列表节点</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">quicklistNode</span> &#123;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">quicklistNode</span> *<span class="hljs-title">prev</span>;</span> <span class="hljs-comment">//上一个node节点</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">quicklistNode</span> *<span class="hljs-title">next</span>;</span> <span class="hljs-comment">//下一个node</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *zl;            <span class="hljs-comment">//保存的数据 压缩前ziplist 压缩后压缩的数据</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> sz;             <span class="hljs-comment">/* ziplist size in bytes */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> count : <span class="hljs-number">16</span>;     <span class="hljs-comment">/* count of items in ziplist */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> encoding : <span class="hljs-number">2</span>;   <span class="hljs-comment">/* RAW==1 or LZF==2 */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> container : <span class="hljs-number">2</span>;  <span class="hljs-comment">/* NONE==1 or ZIPLIST==2 */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> recompress : <span class="hljs-number">1</span>; <span class="hljs-comment">/* was this node previous compressed? */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> attempted_compress : <span class="hljs-number">1</span>; <span class="hljs-comment">/* node can&#x27;t compress; too small */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> extra : <span class="hljs-number">10</span>; <span class="hljs-comment">/* more bits to steal for future usage */</span><br>&#125; quicklistNode;<br> <br><span class="hljs-comment">// 快速列表</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">quicklist</span> &#123;</span><br>    quicklistNode *head;<br>    quicklistNode *tail;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> count;        <span class="hljs-comment">/* total count of all entries in all ziplists */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> len;          <span class="hljs-comment">/* number of quicklistNodes */</span><br>    <span class="hljs-type">int</span> fill : <span class="hljs-number">16</span>;              <span class="hljs-comment">/* fill factor for individual nodes ziplist大小设置 */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> compress : <span class="hljs-number">16</span>; <span class="hljs-comment">/* depth of end nodes not to compress;0=off 节点压缩深度设置*/</span><br>&#125; quicklist;<br> <br><span class="hljs-comment">// 被压缩的列表</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">quicklistLZF</span> &#123;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> sz; <span class="hljs-comment">/* LZF size in bytes*/</span><br>    <span class="hljs-type">char</span> compressed[];<br>&#125; quicklistLZF;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/.com//list_quicklist.png" srcset="/img/loading.gif" lazyload alt="list_quicklist"></p>
+<h1 id="Hash-类型"><a href="#Hash-类型" class="headerlink" title="Hash 类型"></a>Hash 类型</h1><p>底层是由ziplist 或hashtable 实现的</p>
+<p>ziplist在上面介绍过了，下面来聊聊hashtable</p>
+<h2 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h2><p> 一个哈希表里面可以有多个哈希节点，而每个哈希节点就保存了字典中的一个键值对。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 字典 数据结构</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dict</span> &#123;</span><span class="hljs-comment">//管理两个dictht，主要用于动态扩容。</span><br>    <span class="hljs-comment">//类型特定函数</span><br>    dictType *type;<br> <br>    <span class="hljs-comment">//私有数据</span><br>    <span class="hljs-type">void</span> *privdata;<br> <br>    <span class="hljs-comment">// 哈希表</span><br>    dictht ht[<span class="hljs-number">2</span>];<br> <br>    <span class="hljs-comment">// rehash索引，当rehash不再进行是，值为 -1</span><br>    <span class="hljs-type">long</span> rehashidx; <span class="hljs-comment">/* 扩容标志rehashing not in progress if rehashidx == -1 */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> iterators; <span class="hljs-comment">/* number of iterators currently running */</span><br>&#125; dict;<br> <br> <br><span class="hljs-comment">/* This is our hash table structure. Every dictionary has two of this as we</span><br><span class="hljs-comment"> * implement incremental rehashing, for the old to the new table. */</span><br><span class="hljs-comment">//定义一个hash桶，用来管理hashtable</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dictht</span> &#123;</span><br>    <span class="hljs-comment">// hash表数组，所谓的桶</span><br>    dictEntry **table;<br> <br>    <span class="hljs-comment">// hash表大小，元素个数</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> size;<br> <br>    <span class="hljs-comment">// hash表大小掩码，用于计算索引值，值总是size -1 </span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> sizemask;<br> <br>    <span class="hljs-comment">// 该hash表已有的节点数量</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> used;<br>&#125; dictht;<br> <br><span class="hljs-comment">//hash节点</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dictEntry</span> &#123;</span><br>    <span class="hljs-comment">//键</span><br>    <span class="hljs-type">void</span> *key;<br> <br>    <span class="hljs-comment">// 值</span><br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span> <br>        <span class="hljs-type">void</span> *val;<br>        <span class="hljs-type">uint64_t</span> u64;<br>        <span class="hljs-type">int64_t</span> s64;<br>        <span class="hljs-type">double</span> d;<br>    &#125; v;<br> <br>    <span class="hljs-comment">// 指向下一个节点，解决碰撞冲突</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dictEntry</span> *<span class="hljs-title">next</span>;</span><br>&#125; dictEntry;<br> <br> <br><span class="hljs-comment">//定义hash需要使用的函数</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dictType</span> &#123;</span><br>    <span class="hljs-comment">// 计算哈希值的函数</span><br>    <span class="hljs-type">uint64_t</span> (*hashFunction)(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *key);<br> <br>    <span class="hljs-comment">//复制键的函数</span><br>    <span class="hljs-type">void</span> *(*keyDup)(<span class="hljs-type">void</span> *privdata, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *key);<br> <br>    <span class="hljs-comment">// 复制值的函数</span><br>    <span class="hljs-type">void</span> *(*valDup)(<span class="hljs-type">void</span> *privdata, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *obj);<br> <br>    <span class="hljs-comment">// 对比键的函数</span><br>    <span class="hljs-type">int</span> (*keyCompare)(<span class="hljs-type">void</span> *privdata, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *key1, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *key2);<br> <br>    <span class="hljs-comment">//销毁键的函数</span><br>    <span class="hljs-type">void</span> (*keyDestructor)(<span class="hljs-type">void</span> *privdata, <span class="hljs-type">void</span> *key);<br> <br>    <span class="hljs-comment">// 销毁值的函数</span><br>    <span class="hljs-type">void</span> (*valDestructor)(<span class="hljs-type">void</span> *privdata, <span class="hljs-type">void</span> *obj);<br>&#125; dictType;<br></code></pre></td></tr></table></figure>
+
+<p>参数解析：</p>
+<p>dict中</p>
+<p>​	type标识dictType类型，privatedata是指向特定数据类型的数组；</p>
+<p>​	ht包含了两个哈希表的数组，其中一个ht[0]保存哈希表，ht[1]只会在对ht[0]进行rehash时使用</p>
+<p>dicht中</p>
+<p>​	table是一个数组，其中一个数组元素都是一个指向哈希表节点的指针，每一个哈希表节点都保存了一对键值对。</p>
+<p>​	size记录了table的大小，也即是哈希表的大小</p>
+<p>​	used记录了当前已使用节点的数量</p>
+<p>​	sizemask&#x3D;size-1 ,决定了一个键应该放tabl数组的哪个索引上</p>
+<p>dicEntry中</p>
+<p>​	key保存键值对中的键，</p>
+<p>​	v保存这键值对中的值</p>
+<p>​	next为指向另一个哈希表几点的指针，当有hash冲突的时候</p>
+<p><img src="/.com//hash_hashtable.png" srcset="/img/loading.gif" lazyload alt="hash_hashtable"></p>
+<h3 id="哈希表的扩展和收缩"><a href="#哈希表的扩展和收缩" class="headerlink" title="哈希表的扩展和收缩"></a>哈希表的扩展和收缩</h3><p>当以下条件中的任意一个被满足时，程序会自动开始对哈希表执行扩展操作</p>
+<p>1：服务器目前没有在执行bgsave命令或者bgrewriteaof命令、并且哈希表的负载因子大于等于1</p>
+<p>2：服务器目前正在执行bgsave命令或者bgrewriteaof命令并且哈希表的负载因子大于等于5</p>
+<h3 id="rehash"><a href="#rehash" class="headerlink" title="rehash"></a>rehash</h3><p>rehash 跟Java中的hashmap扩容机制差不多</p>
+<p>随着操作的不断执行，哈希表保存的键值对会逐渐地增多或减少，为了让哈希表的负载因子维持在一个合理的</p>
+<p>范围内当哈希表保存的键值对数量太多或者太少时程序需要对哈希表的大小进行相应的扩展或者收缩</p>
+<p>redis对字典的哈希表执行rehash的步骤如下;</p>
+<p>1、为字典ht[1]哈希表分配空间，这个哈希表的空间大小取决于要执行的操作以及ht[0]当前包含的键值对数量（ht[0].used）</p>
+<p>2、如果执行的是扩展操作，那么ht[1]的大小为第一个大于等于ht[0].used*2的n次幂</p>
+<p>3、如果执行的是收缩操作，那么ht[1]的大小为第一个大于等于ht[0].used的2的n次幂</p>
+<p>4、将保存在ht[0]中的所有键值对rehash到ht[1]上面rehash指的是重新计算键的哈希值和索引值,然后将键值对放置到ht[1]哈希表的指定位置上</p>
+<p>5、当ht[0]包含的所有键值对都迁移到了ht[1]之后释放ht[0]将ht[1]设置为ht[0],并在ht[1]新创键一个空白哈希表为下一次rehash做准备</p>
+<p>为了避免rehash对服务器性能造成影响，服务器不是一次性将ht[0]里面的所有键值对全部rehash到ht[1]而是分多次将ht[0]里面的键值对慢慢地rehash到ht[1]</p>
+<p>在进行渐进式rehash的过程中,字典会同时使用ht[0] ht[1]两个哈希表所以在渐进式rehash进行期间字典的删除 查找 更新等操作会在两个哈希表上进行 新添加到字典的键值对一律会保存到ht[1]里面则ht[0]不再进行任何添加操作</p>
+<h3 id="渐进式hash"><a href="#渐进式hash" class="headerlink" title="渐进式hash"></a>渐进式hash</h3><p>如果哈希表里保存的键值对数量是四百万、四千万甚至四亿个键值对，那么要一次性将这些键值对全部rehash到ht[1]的话，庞大的计算量可能会导致服务器在一段时间内停止服务。因此，为了避免rehash对服务器性能造成影响，服务器不是一次性将 ht[0]里面的所有键值对全部rehash到ht[1]，而是分多次、渐进式地将ht[0]里面的键值对慢慢地rehash到ht[1]。</p>
+<p>以下是哈希表渐进式 rehash 的详细步骤：</p>
+<p>1、为ht[1]分配空间，让字典同时持有ht[0]和ht[1]两个哈希表。</p>
+<p>2、在字典中维持一个索引计数器变量rehashidx，并将它的值设置为0，表示rehash工作正式开始。</p>
+<p>3、在rehash进行期间，<strong>每次对字典执行添加、删除、查找或者更新操作时，程序除了执行指定的操作以外，</strong>还会顺带将ht[0]哈希表在rehashidx索引上的所有键值对</p>
+<p>4、rehash到ht[1]，当rehash工作完成之后，程序将rehashidx+1(表示下次将rehash下一个桶)。</p>
+<p>5、随着字典操作的不断执行，最终在某个时间点上，ht[0]的所有键值对都会被rehash至ht[1]，这时程序将rehashidx属性的值设为-1，表示rehash操作已完成。</p>
+<p>渐进式rehash的好处在于它采取分而治之的方式，将rehash键值对所需的计算工作均摊到对字典的每个添加、删除、查找和更新操作上，从而避免了集中式rehash 而带来的庞大计算量。而memcached通过也需要rehash，但是它是另外单独开一个线程，专门执行rehash操作。这就是区别与Redis的做法，个人任何Redis的作者方法更胜一筹。因为这种分治算法，将全部负载，均摊到了每次的操作过程中，在单个线程中实现。这个就是迁移线程，memcached中的迁移线程。</p>
+<h1 id="Set-类型"><a href="#Set-类型" class="headerlink" title="Set 类型"></a>Set 类型</h1><p>底层使用的是intset 或hashtable 实现的</p>
+<p>hashtable 上面介绍过了，下面介绍intset。</p>
+<h2 id="intset-整数集合"><a href="#intset-整数集合" class="headerlink" title="intset 整数集合"></a>intset 整数集合</h2><p>有序不重复的连续空间，特性如下：</p>
+<p>1、节约内存，但由于是连续空间，修改效率不高</p>
+<p>2、集合中的数都是整数时，且数据量不超过512个时，使用intset</p>
+<p>3、整数集合是集合键的底层实现之一   </p>
+<p>4、 整数集合的底层实现是数组，这个数组以有序、无重复的方式保存集合元素，在有需要的时候，程序会根据新添加元素的类型，改变这个数组的类型。</p>
+<p>5、升级操作为整数集合带来了操作上的灵活性，并且尽可能的节约了内存。</p>
+<p>6、整数集合只支持升级操作，不支持降级操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">intset</span> &#123;</span><br>    <span class="hljs-comment">// 编码类型 int16_t、int32_t、int64_t</span><br>    <span class="hljs-type">uint32_t</span> encoding;  <br> <br>    <span class="hljs-comment">// 长度 最大长度:2^32</span><br>    <span class="hljs-type">uint32_t</span> length;  <br> <br>    <span class="hljs-comment">// 用来存储数据的柔性数组  </span><br>    <span class="hljs-type">int8_t</span> contents[];  <br>&#125; intset;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="/.com//set_intset.png" srcset="/img/loading.gif" lazyload alt="set_intset"></p>
+<h1 id="Zset-类型"><a href="#Zset-类型" class="headerlink" title="Zset 类型"></a>Zset 类型</h1><p>底层是由ziplist 或 skiplist 实现的，ziplist 上面介绍过了，下面介绍skiplist</p>
+<h2 id="skiplist-跳表"><a href="#skiplist-跳表" class="headerlink" title="skiplist 跳表"></a>skiplist 跳表</h2><p>跳表（Skiplist）是一个特殊的链表，相比一般的链表，有更高的查找效率，可比拟二叉查找树，平均期望的查找、插入、删除时间复杂度都是O(logn)。具有层次结构的链表，可支持范围查询</p>
+<p>跳表的第一层是一个双向链表，其他层级的都是单向链表</p>
+<p>它由很多层结构组成，每一层都是一个有序的链表，默认是升序，也可以根据创建映射时所提供的Comparator进行排序，具体取决于使用的构造方法<br>最底层(Level 1)的链表包含所有元素<br>如果一个元素出现在Level i 的链表中，则它在Level i 之下的链表也都会出现<br>每个节点包含两个指针，一个指向同一链表中的下一个元素，一个指向下面一层的元素</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">// 跳表节点</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplistNode</span> &#123;</span><br>    <span class="hljs-comment">// 存放至该节点的数据</span><br>    robj *obj;<br> <br>    <span class="hljs-comment">// 数据的分数值，zset根据这个分数值进行升序排序</span><br>    <span class="hljs-type">double</span> score;<br> <br>    <span class="hljs-comment">// 指向链表的上一个节点</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplistNode</span> *<span class="hljs-title">backward</span>;</span><br> <br>    <span class="hljs-comment">// 跳表的层级，每一条数据代表着一层</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplistLevel</span> &#123;</span><br>        <span class="hljs-comment">// 指向下一个节点的指针</span><br>        <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplistNode</span> *<span class="hljs-title">forward</span>;</span><br> <br>        <span class="hljs-comment">// 表示这个指针跳跃了多少个节点</span><br>        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> span;<br>    &#125; level[];<br>&#125; zskiplistNode;<br> <br><span class="hljs-comment">// 跳表</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplist</span> &#123;</span><br>    <span class="hljs-comment">// 头节点指针，尾节点指针</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">zskiplistNode</span> *<span class="hljs-title">header</span>, *<span class="hljs-title">tail</span>;</span><br> <br>    <span class="hljs-comment">// 跳表的长度，不包括头指针</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> length;<br> <br>    <span class="hljs-comment">// 跳表的层数</span><br>    <span class="hljs-type">int</span> level;<br>&#125; zskiplist;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/.com//zset_zkiplist.png" srcset="/img/loading.gif" lazyload alt="zset_zkiplist"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/redis/">redis</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/redis/">redis</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/17/redis/redis%E7%AE%80%E4%BB%8B%E4%B8%8E%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">redis简介及使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/14/linux/linux%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAip%E5%9C%B0%E5%9D%80/">
+                        <span class="hidden-mobile">linux配置多个ip地址</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
