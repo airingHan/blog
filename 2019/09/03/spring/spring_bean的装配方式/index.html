@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="什么是spring bean装配Bean的装配可以理解为依赖关系注入，Bean的装配方式即Bean依赖注入的方式。 spring 容器加载bean定义方式1.xml 2.注解 bean装配方式xml标签中定义了autowite属性 No  缺省情况下，自动配置是通过“ref”属性手动设定，在项目中最常用。 byName  根据属性名称自动装配。如果一个bean的名称和其他的bean属性的名称是一样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring_bean的装配方式">
+<meta property="og:url" content="http://hanqichuan.com/2019/09/03/spring/spring_bean%E7%9A%84%E8%A3%85%E9%85%8D%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="什么是spring bean装配Bean的装配可以理解为依赖关系注入，Bean的装配方式即Bean依赖注入的方式。 spring 容器加载bean定义方式1.xml 2.注解 bean装配方式xml标签中定义了autowite属性 No  缺省情况下，自动配置是通过“ref”属性手动设定，在项目中最常用。 byName  根据属性名称自动装配。如果一个bean的名称和其他的bean属性的名称是一样">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-03T06:11:00.000Z">
+<meta property="article:modified_time" content="2022-08-09T06:07:04.238Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>spring_bean的装配方式 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="spring_bean的装配方式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-09-03 14:11" pubdate>
+        2019年9月3日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      14k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      119 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">spring_bean的装配方式</h1>
+            
+            <div class="markdown-body">
+              <h1 id="什么是spring-bean装配"><a href="#什么是spring-bean装配" class="headerlink" title="什么是spring bean装配"></a>什么是spring bean装配</h1><p>Bean的装配可以理解为依赖关系注入，Bean的装配方式即Bean依赖注入的方式。</p>
+<h1 id="spring-容器加载bean定义方式"><a href="#spring-容器加载bean定义方式" class="headerlink" title="spring 容器加载bean定义方式"></a>spring 容器加载bean定义方式</h1><p>1.xml</p>
+<p>2.注解</p>
+<h1 id="bean装配方式"><a href="#bean装配方式" class="headerlink" title="bean装配方式"></a>bean装配方式</h1><h2 id="xml"><a href="#xml" class="headerlink" title="xml"></a>xml</h2><p>标签中定义了autowite属性</p>
+<p>No  缺省情况下，自动配置是通过“ref”属性手动设定，在项目中最常用。</p>
+<p>byName  根据属性名称自动装配。如果一个bean的名称和其他的bean属性的名称是一样的，将会装配它。</p>
+<p>byType 按类型自动装配，如果bean的数据类型是用其它bean属性的数据类型，兼容并自动装配它。</p>
+<p>Constructor 在构造函数参数的byType方式。</p>
+<p>autodetect 如果找到默认的构造函数，使用“自动装配用构造”；否则，使用“按类型自动装配”</p>
+<h2 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h2><h3 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h3><figure class="highlight xml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">spring-framework.version</span>&gt;</span>5.2.12.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">spring-framework.version</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="关注点"><a href="#关注点" class="headerlink" title="关注点"></a>关注点</h3><p>@Resource @Autowired</p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">SpringApplication.run(ServiceBApplication.class, args);<br>refreshContext(context);<br>refresh((ApplicationContext) context);<br>AbstractApplicationContext.refresh();<br>finishBeanFactoryInitialization(beanFactory);<br>beanFactory.preInstantiateSingletons();<br>doGetBean();<br>createBean();<br>populateBean(beanName, mbd, instanceWrapper);<br><span class="hljs-type">PropertyValues</span> <span class="hljs-variable">pvsToUse</span> <span class="hljs-operator">=</span> ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);<br></code></pre></td></tr></table></figure>
+
+
+
+<p>@Resource 对应着  CommonAnnotationBeanPostProcessor</p>
+<p>@Autowired 对应着 AutowiredAnnotationBeanPostProcessor</p>
+<h4 id="resource"><a href="#resource" class="headerlink" title="@resource"></a>@resource</h4><p>CommonAnnotationBeanPostProcessor    postProcessProperties方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">InjectionMetadata</span> <span class="hljs-variable">metadata</span> <span class="hljs-operator">=</span> findResourceMetadata(beanName, bean.getClass(), pvs);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> InjectionMetadata <span class="hljs-title function_">findResourceMetadata</span><span class="hljs-params">(String beanName, <span class="hljs-keyword">final</span> Class&lt;?&gt; clazz, <span class="hljs-meta">@Nullable</span> PropertyValues pvs)</span> &#123;<br>	<span class="hljs-comment">// Fall back to class name as cache key, for backwards compatibility with custom callers.</span><br>	<span class="hljs-type">String</span> <span class="hljs-variable">cacheKey</span> <span class="hljs-operator">=</span> (StringUtils.hasLength(beanName) ? beanName : clazz.getName());<br>	<span class="hljs-comment">// Quick check on the concurrent map first, with minimal locking.</span><br>	<span class="hljs-type">InjectionMetadata</span> <span class="hljs-variable">metadata</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.injectionMetadataCache.get(cacheKey);<br>	<span class="hljs-keyword">if</span> (InjectionMetadata.needsRefresh(metadata, clazz)) &#123;<br>		<span class="hljs-keyword">synchronized</span> (<span class="hljs-built_in">this</span>.injectionMetadataCache) &#123;<br>			metadata = <span class="hljs-built_in">this</span>.injectionMetadataCache.get(cacheKey);<br>			<span class="hljs-keyword">if</span> (InjectionMetadata.needsRefresh(metadata, clazz)) &#123;<br>				<span class="hljs-keyword">if</span> (metadata != <span class="hljs-literal">null</span>) &#123;<br>					metadata.clear(pvs);<br>				&#125;<br>				metadata = buildResourceMetadata(clazz);<br>				<span class="hljs-built_in">this</span>.injectionMetadataCache.put(cacheKey, metadata);<br>			&#125;<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span> metadata;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> InjectionMetadata <span class="hljs-title function_">buildResourceMetadata</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Class&lt;?&gt; clazz)</span>;<br>				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (field.isAnnotationPresent(Resource.class)) &#123;<br>					<span class="hljs-keyword">if</span> (Modifier.isStatic(field.getModifiers())) &#123;<br>						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;@Resource annotation is not supported on static fields&quot;</span>);<br>					&#125;<br>					<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.ignoredResourceTypes.contains(field.getType().getName())) &#123;<br>						currElements.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ResourceElement</span>(field, field, <span class="hljs-literal">null</span>));<br>					&#125;<br>				&#125;<br></code></pre></td></tr></table></figure>
+
+<p>看到这里发现ResourceElement。关注类中name和lookupType</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">ResourceElement</span><span class="hljs-params">(Member member, AnnotatedElement ae, <span class="hljs-meta">@Nullable</span> PropertyDescriptor pd)</span> &#123;<br>			<span class="hljs-built_in">super</span>(member, pd);<br>			<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> ae.getAnnotation(Resource.class);<br>			<span class="hljs-type">String</span> <span class="hljs-variable">resourceName</span> <span class="hljs-operator">=</span> resource.name();<br>			Class&lt;?&gt; resourceType = resource.type();<br>			<span class="hljs-built_in">this</span>.isDefaultName = !StringUtils.hasLength(resourceName);<br>			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.isDefaultName) &#123;<br>				resourceName = <span class="hljs-built_in">this</span>.member.getName();<br>				<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.member <span class="hljs-keyword">instanceof</span> Method &amp;&amp; resourceName.startsWith(<span class="hljs-string">&quot;set&quot;</span>) &amp;&amp; resourceName.length() &gt; <span class="hljs-number">3</span>) &#123;<br>					resourceName = Introspector.decapitalize(resourceName.substring(<span class="hljs-number">3</span>));<br>				&#125;<br>			&#125;<br>			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (embeddedValueResolver != <span class="hljs-literal">null</span>) &#123;<br>				resourceName = embeddedValueResolver.resolveStringValue(resourceName);<br>			&#125;<br>			<span class="hljs-keyword">if</span> (Object.class != resourceType) &#123;<br>				checkResourceType(resourceType);<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-comment">// No resource type specified... check field/method.</span><br>				resourceType = getResourceType();<br>			&#125;<br>			<span class="hljs-built_in">this</span>.name = (resourceName != <span class="hljs-literal">null</span> ? resourceName : <span class="hljs-string">&quot;&quot;</span>);<br>			<span class="hljs-built_in">this</span>.lookupType = resourceType;<br>			<span class="hljs-type">String</span> <span class="hljs-variable">lookupValue</span> <span class="hljs-operator">=</span> resource.lookup();<br>			<span class="hljs-built_in">this</span>.mappedName = (StringUtils.hasLength(lookupValue) ? lookupValue : resource.mappedName());<br>			<span class="hljs-type">Lazy</span> <span class="hljs-variable">lazy</span> <span class="hljs-operator">=</span> ae.getAnnotation(Lazy.class);<br>			<span class="hljs-built_in">this</span>.lazyLookup = (lazy != <span class="hljs-literal">null</span> &amp;&amp; lazy.value());<br>		&#125;<br></code></pre></td></tr></table></figure>
+
+<p>找到InjectionMetadata后：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">metadata.inject(bean, beanName, pvs);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">inject</span><span class="hljs-params">(Object target, <span class="hljs-meta">@Nullable</span> String beanName, <span class="hljs-meta">@Nullable</span> PropertyValues pvs)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>	Collection&lt;InjectedElement&gt; checkedElements = <span class="hljs-built_in">this</span>.checkedElements;<br>	Collection&lt;InjectedElement&gt; elementsToIterate =<br>			(checkedElements != <span class="hljs-literal">null</span> ? checkedElements : <span class="hljs-built_in">this</span>.injectedElements);<br>	<span class="hljs-keyword">if</span> (!elementsToIterate.isEmpty()) &#123;<br>		<span class="hljs-keyword">for</span> (InjectedElement element : elementsToIterate) &#123;<br>			element.inject(target, beanName, pvs);<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>会调用ResourceElement的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">inject</span><span class="hljs-params">(Object target, <span class="hljs-meta">@Nullable</span> String requestingBeanName, <span class="hljs-meta">@Nullable</span> PropertyValues pvs)</span><br>				<span class="hljs-keyword">throws</span> Throwable &#123;<br><br>			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.isField) &#123;<br>				<span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> (Field) <span class="hljs-built_in">this</span>.member;<br>				ReflectionUtils.makeAccessible(field);<br>				field.set(target, getResourceToInject(target, requestingBeanName));<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-keyword">if</span> (checkPropertySkipping(pvs)) &#123;<br>					<span class="hljs-keyword">return</span>;<br>				&#125;<br>				<span class="hljs-keyword">try</span> &#123;<br>					<span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> (Method) <span class="hljs-built_in">this</span>.member;<br>					ReflectionUtils.makeAccessible(method);<br>					method.invoke(target, getResourceToInject(target, requestingBeanName));<br>				&#125;<br>				<span class="hljs-keyword">catch</span> (InvocationTargetException ex) &#123;<br>					<span class="hljs-keyword">throw</span> ex.getTargetException();<br>				&#125;<br>			&#125;<br>		&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">getResourceToInject</span><span class="hljs-params">(Object target, <span class="hljs-meta">@Nullable</span> String requestingBeanName)</span> &#123;<br>	<span class="hljs-keyword">return</span> (<span class="hljs-built_in">this</span>.lazyLookup ? buildLazyResourceProxy(<span class="hljs-built_in">this</span>, requestingBeanName) :<br>			getResource(<span class="hljs-built_in">this</span>, requestingBeanName));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">getResource</span><span class="hljs-params">(LookupElement element, <span class="hljs-meta">@Nullable</span> String requestingBeanName)</span><br>		<span class="hljs-keyword">throws</span> NoSuchBeanDefinitionException &#123;<br><br>	<span class="hljs-keyword">if</span> (StringUtils.hasLength(element.mappedName)) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.jndiFactory.getBean(element.mappedName, element.lookupType);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.alwaysUseJndiLookup) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.jndiFactory.getBean(element.name, element.lookupType);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.resourceFactory == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NoSuchBeanDefinitionException</span>(element.lookupType,<br>				<span class="hljs-string">&quot;No resource factory configured - specify the &#x27;resourceFactory&#x27; property&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">return</span> autowireResource(<span class="hljs-built_in">this</span>.resourceFactory, element, requestingBeanName);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">autowireResource</span><span class="hljs-params">(BeanFactory factory, LookupElement element, <span class="hljs-meta">@Nullable</span> String requestingBeanName)</span><br>			<span class="hljs-keyword">throws</span> NoSuchBeanDefinitionException &#123;<br><br>		Object resource;<br>		Set&lt;String&gt; autowiredBeanNames;<br>		<span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> element.name;<br><br>		<span class="hljs-keyword">if</span> (factory <span class="hljs-keyword">instanceof</span> AutowireCapableBeanFactory) &#123;<br>			<span class="hljs-type">AutowireCapableBeanFactory</span> <span class="hljs-variable">beanFactory</span> <span class="hljs-operator">=</span> (AutowireCapableBeanFactory) factory;<br>			<span class="hljs-type">DependencyDescriptor</span> <span class="hljs-variable">descriptor</span> <span class="hljs-operator">=</span> element.getDependencyDescriptor();<br>			<span class="hljs-comment">// @Resoure 没有指定 name(name 是默认值)，并且容器中不存在这个默认 name 对应的 bean，那么就使用 byType 方式进行注入</span><br>      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.fallbackToDefaultTypeMatch &amp;&amp; element.isDefaultName &amp;&amp; !factory.containsBean(name)) &#123;<br>				autowiredBeanNames = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedHashSet</span>&lt;&gt;();<br>        <span class="hljs-comment">// 按 byType 方式解析依赖进行注入</span><br>				resource = beanFactory.resolveDependency(descriptor, requestingBeanName, autowiredBeanNames, <span class="hljs-literal">null</span>);<br>				<span class="hljs-keyword">if</span> (resource == <span class="hljs-literal">null</span>) &#123;<br>					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NoSuchBeanDefinitionException</span>(element.getLookupType(), <span class="hljs-string">&quot;No resolvable resource object&quot;</span>);<br>				&#125;<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 满足如下条件，则按 byName 的方式解析依赖进行注入：  </span><br>            <span class="hljs-comment">// 1. 如果 @Resource 指定了 name，则按指定 name 解析依赖进行注入  </span><br>            <span class="hljs-comment">// 2. 如果容器中存在 name 对应的 bean，则按 byName 方式进行注入  </span><br>				resource = beanFactory.resolveBeanByName(name, descriptor);<br>				autowiredBeanNames = Collections.singleton(name);<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			resource = factory.getBean(name, element.lookupType);<br>			autowiredBeanNames = Collections.singleton(name);<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (factory <span class="hljs-keyword">instanceof</span> ConfigurableBeanFactory) &#123;<br>			<span class="hljs-type">ConfigurableBeanFactory</span> <span class="hljs-variable">beanFactory</span> <span class="hljs-operator">=</span> (ConfigurableBeanFactory) factory;<br>			<span class="hljs-keyword">for</span> (String autowiredBeanName : autowiredBeanNames) &#123;<br>				<span class="hljs-keyword">if</span> (requestingBeanName != <span class="hljs-literal">null</span> &amp;&amp; beanFactory.containsBean(autowiredBeanName)) &#123;<br>					beanFactory.registerDependentBean(autowiredBeanName, requestingBeanName);<br>				&#125;<br>			&#125;<br>		&#125;<br><br>		<span class="hljs-keyword">return</span> resource;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>@Resource 在不指定 name 的情况下，默认是按 field 的 name 来注入的；如果按默认的 name 找不到 bean，则会按 type 注入</p>
+<h4 id="Autowired"><a href="#Autowired" class="headerlink" title="@Autowired"></a>@Autowired</h4><p>AutowiredAnnotationBeanPostProcessor </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Deprecated</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> PropertyValues <span class="hljs-title function_">postProcessPropertyValues</span><span class="hljs-params">(</span><br><span class="hljs-params">		PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)</span> &#123;<br><br>	<span class="hljs-keyword">return</span> postProcessProperties(pvs, bean, beanName);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> PropertyValues <span class="hljs-title function_">postProcessProperties</span><span class="hljs-params">(PropertyValues pvs, Object bean, String beanName)</span> &#123;<br>	<span class="hljs-type">InjectionMetadata</span> <span class="hljs-variable">metadata</span> <span class="hljs-operator">=</span> findAutowiringMetadata(beanName, bean.getClass(), pvs);<br>	<span class="hljs-keyword">try</span> &#123;<br>		metadata.inject(bean, beanName, pvs);<br>	&#125;<br>	<span class="hljs-keyword">catch</span> (BeanCreationException ex) &#123;<br>		<span class="hljs-keyword">throw</span> ex;<br>	&#125;<br>	<span class="hljs-keyword">catch</span> (Throwable ex) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BeanCreationException</span>(beanName, <span class="hljs-string">&quot;Injection of autowired dependencies failed&quot;</span>, ex);<br>	&#125;<br>	<span class="hljs-keyword">return</span> pvs;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>找到 AutowiredFieldElement  AutowiredMethodElement</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br>		<span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">inject</span><span class="hljs-params">(Object bean, <span class="hljs-meta">@Nullable</span> String beanName, <span class="hljs-meta">@Nullable</span> PropertyValues pvs)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>			<span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> (Field) <span class="hljs-built_in">this</span>.member;<br>			Object value;<br>			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.cached) &#123;<br>				value = resolvedCachedArgument(beanName, <span class="hljs-built_in">this</span>.cachedFieldValue);<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-type">DependencyDescriptor</span> <span class="hljs-variable">desc</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DependencyDescriptor</span>(field, <span class="hljs-built_in">this</span>.required);<br>				desc.setContainingClass(bean.getClass());<br>				Set&lt;String&gt; autowiredBeanNames = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedHashSet</span>&lt;&gt;(<span class="hljs-number">1</span>);<br>				Assert.state(beanFactory != <span class="hljs-literal">null</span>, <span class="hljs-string">&quot;No BeanFactory available&quot;</span>);<br>				<span class="hljs-type">TypeConverter</span> <span class="hljs-variable">typeConverter</span> <span class="hljs-operator">=</span> beanFactory.getTypeConverter();<br>				<span class="hljs-keyword">try</span> &#123;<br>					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);<br>				&#125;<br>				<span class="hljs-keyword">catch</span> (BeansException ex) &#123;<br>					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnsatisfiedDependencyException</span>(<span class="hljs-literal">null</span>, beanName, <span class="hljs-keyword">new</span> <span class="hljs-title class_">InjectionPoint</span>(field), ex);<br>				&#125;<br>				<span class="hljs-keyword">synchronized</span> (<span class="hljs-built_in">this</span>) &#123;<br>					<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.cached) &#123;<br>						<span class="hljs-type">Object</span> <span class="hljs-variable">cachedFieldValue</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>						<span class="hljs-keyword">if</span> (value != <span class="hljs-literal">null</span> || <span class="hljs-built_in">this</span>.required) &#123;<br>							cachedFieldValue = desc;<br>							registerDependentBeans(beanName, autowiredBeanNames);<br>							<span class="hljs-keyword">if</span> (autowiredBeanNames.size() == <span class="hljs-number">1</span>) &#123;<br>								<span class="hljs-type">String</span> <span class="hljs-variable">autowiredBeanName</span> <span class="hljs-operator">=</span> autowiredBeanNames.iterator().next();<br>								<span class="hljs-keyword">if</span> (beanFactory.containsBean(autowiredBeanName) &amp;&amp;<br>										beanFactory.isTypeMatch(autowiredBeanName, field.getType())) &#123;<br>									cachedFieldValue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ShortcutDependencyDescriptor</span>(<br>											desc, autowiredBeanName, field.getType());<br>								&#125;<br>							&#125;<br>						&#125;<br>						<span class="hljs-built_in">this</span>.cachedFieldValue = cachedFieldValue;<br>						<span class="hljs-built_in">this</span>.cached = <span class="hljs-literal">true</span>;<br>					&#125;<br>				&#125;<br>			&#125;<br>			<span class="hljs-keyword">if</span> (value != <span class="hljs-literal">null</span>) &#123;<br>				ReflectionUtils.makeAccessible(field);<br>				field.set(bean, value);<br>			&#125;<br>		&#125;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-meta">@Nullable</span><br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">resolveDependency</span><span class="hljs-params">(DependencyDescriptor descriptor, <span class="hljs-meta">@Nullable</span> String requestingBeanName,</span><br><span class="hljs-params">		<span class="hljs-meta">@Nullable</span> Set&lt;String&gt; autowiredBeanNames, <span class="hljs-meta">@Nullable</span> TypeConverter typeConverter)</span> <span class="hljs-keyword">throws</span> BeansException &#123;<br><br>	descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());<br>	<span class="hljs-keyword">if</span> (Optional.class == descriptor.getDependencyType()) &#123;<br>		<span class="hljs-keyword">return</span> createOptionalDependency(descriptor, requestingBeanName);<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ObjectFactory.class == descriptor.getDependencyType() ||<br>			ObjectProvider.class == descriptor.getDependencyType()) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DependencyObjectProvider</span>(descriptor, requestingBeanName);<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (javaxInjectProviderClass == descriptor.getDependencyType()) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Jsr330Factory</span>().createDependencyProvider(descriptor, requestingBeanName);<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(<br>				descriptor, requestingBeanName);<br>		<span class="hljs-keyword">if</span> (result == <span class="hljs-literal">null</span>) &#123;<br>			result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);<br>		&#125;<br>		<span class="hljs-keyword">return</span> result;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">public</span> Object <span class="hljs-title function_">doResolveDependency</span><span class="hljs-params">(DependencyDescriptor descriptor, <span class="hljs-meta">@Nullable</span> String beanName,</span><br><span class="hljs-params">			<span class="hljs-meta">@Nullable</span> Set&lt;String&gt; autowiredBeanNames, <span class="hljs-meta">@Nullable</span> TypeConverter typeConverter)</span> <span class="hljs-keyword">throws</span> BeansException &#123;<br><br>		<span class="hljs-type">InjectionPoint</span> <span class="hljs-variable">previousInjectionPoint</span> <span class="hljs-operator">=</span> ConstructorResolver.setCurrentInjectionPoint(descriptor);<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">Object</span> <span class="hljs-variable">shortcut</span> <span class="hljs-operator">=</span> descriptor.resolveShortcut(<span class="hljs-built_in">this</span>);<br>			<span class="hljs-keyword">if</span> (shortcut != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> shortcut;<br>			&#125;<br><br>			Class&lt;?&gt; type = descriptor.getDependencyType();<br>			<span class="hljs-type">Object</span> <span class="hljs-variable">value</span> <span class="hljs-operator">=</span> getAutowireCandidateResolver().getSuggestedValue(descriptor);<br>			<span class="hljs-keyword">if</span> (value != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> String) &#123;<br>					<span class="hljs-type">String</span> <span class="hljs-variable">strVal</span> <span class="hljs-operator">=</span> resolveEmbeddedValue((String) value);<br>					<span class="hljs-type">BeanDefinition</span> <span class="hljs-variable">bd</span> <span class="hljs-operator">=</span> (beanName != <span class="hljs-literal">null</span> &amp;&amp; containsBean(beanName) ?<br>							getMergedBeanDefinition(beanName) : <span class="hljs-literal">null</span>);<br>					value = evaluateBeanDefinitionString(strVal, bd);<br>				&#125;<br>				<span class="hljs-type">TypeConverter</span> <span class="hljs-variable">converter</span> <span class="hljs-operator">=</span> (typeConverter != <span class="hljs-literal">null</span> ? typeConverter : getTypeConverter());<br>				<span class="hljs-keyword">try</span> &#123;<br>					<span class="hljs-keyword">return</span> converter.convertIfNecessary(value, type, descriptor.getTypeDescriptor());<br>				&#125;<br>				<span class="hljs-keyword">catch</span> (UnsupportedOperationException ex) &#123;<br>					<span class="hljs-comment">// A custom TypeConverter which does not support TypeDescriptor resolution...</span><br>					<span class="hljs-keyword">return</span> (descriptor.getField() != <span class="hljs-literal">null</span> ?<br>							converter.convertIfNecessary(value, type, descriptor.getField()) :<br>							converter.convertIfNecessary(value, type, descriptor.getMethodParameter()));<br>				&#125;<br>			&#125;<br><br>			<span class="hljs-type">Object</span> <span class="hljs-variable">multipleBeans</span> <span class="hljs-operator">=</span> resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter);<br>			<span class="hljs-keyword">if</span> (multipleBeans != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> multipleBeans;<br>			&#125;<br>			<span class="hljs-comment">// 先按类型查找bean</span><br>			Map&lt;String, Object&gt; matchingBeans = findAutowireCandidates(beanName, type, descriptor);<br>			<span class="hljs-keyword">if</span> (matchingBeans.isEmpty()) &#123;<br>				<span class="hljs-keyword">if</span> (isRequired(descriptor)) &#123;<br>					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);<br>				&#125;<br>				<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>			&#125;<br><br>			String autowiredBeanName;<br>			Object instanceCandidate;<br><br>			<span class="hljs-keyword">if</span> (matchingBeans.size() &gt; <span class="hljs-number">1</span>) &#123;<br>        <span class="hljs-comment">// 如果按类型找到多个，则再按name进行匹配</span><br>				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor);<br>				<span class="hljs-keyword">if</span> (autowiredBeanName == <span class="hljs-literal">null</span>) &#123;<br>					<span class="hljs-keyword">if</span> (isRequired(descriptor) || !indicatesMultipleBeans(type)) &#123;<br>						<span class="hljs-keyword">return</span> descriptor.resolveNotUnique(descriptor.getResolvableType(), matchingBeans);<br>					&#125;<br>					<span class="hljs-keyword">else</span> &#123;<br>						<span class="hljs-comment">// In case of an optional Collection/Map, silently ignore a non-unique case:</span><br>						<span class="hljs-comment">// possibly it was meant to be an empty collection of multiple regular beans</span><br>						<span class="hljs-comment">// (before 4.3 in particular when we didn&#x27;t even look for collection beans).</span><br>						<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>					&#125;<br>				&#125;<br>				instanceCandidate = matchingBeans.get(autowiredBeanName);<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-comment">// We have exactly one match.</span><br>        <span class="hljs-comment">// 如果按类型找到1个，则注入完成</span><br>				Map.Entry&lt;String, Object&gt; entry = matchingBeans.entrySet().iterator().next();<br>				autowiredBeanName = entry.getKey();<br>				instanceCandidate = entry.getValue();<br>			&#125;<br><br>			<span class="hljs-keyword">if</span> (autowiredBeanNames != <span class="hljs-literal">null</span>) &#123;<br>				autowiredBeanNames.add(autowiredBeanName);<br>			&#125;<br>			<span class="hljs-keyword">if</span> (instanceCandidate <span class="hljs-keyword">instanceof</span> Class) &#123;<br>				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, <span class="hljs-built_in">this</span>);<br>			&#125;<br>			<span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> instanceCandidate;<br>			<span class="hljs-keyword">if</span> (result <span class="hljs-keyword">instanceof</span> NullBean) &#123;<br>				<span class="hljs-keyword">if</span> (isRequired(descriptor)) &#123;<br>					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);<br>				&#125;<br>				result = <span class="hljs-literal">null</span>;<br>			&#125;<br>			<span class="hljs-keyword">if</span> (!ClassUtils.isAssignableValue(type, result)) &#123;<br>				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BeanNotOfRequiredTypeException</span>(autowiredBeanName, type, instanceCandidate.getClass());<br>			&#125;<br>			<span class="hljs-keyword">return</span> result;<br>		&#125;<br>		<span class="hljs-keyword">finally</span> &#123;<br>			ConstructorResolver.setCurrentInjectionPoint(previousInjectionPoint);<br>		&#125;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>@Autowired 的装配顺序：</p>
+<p>1.按 type 在上下文中查找匹配的 bean<br>2.如果有多个bean，则按 name 进行匹配<br>    2.1 如果有 @Qualifier 注解，则按照 @Qualifier 指定的name进行匹配<br>    2.2 如果没有，则按照 field 的 name 进行匹配<br>3. 匹配不到，则报错。<br>    如果设置 @Autowired(required&#x3D;false)，则注入失败时不会抛出异常</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/spring/">spring</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring/">spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/09/03/spring/spring%20AOP/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring AOP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/31/linux/linux%E7%9A%84cat%E5%91%BD%E4%BB%A4/">
+                        <span class="hidden-mobile">linux的cat命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
