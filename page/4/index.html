@@ -520,15 +520,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/14/linux/linux%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAip%E5%9C%B0%E5%9D%80/" target="_self">
-          linux配置多个ip地址
+        <a href="/2022/05/17/redis/Redis%E5%8D%95%E7%82%B9%E5%88%B0%E9%9B%86%E7%BE%A4/" target="_self">
+          Redis单点到集群
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/14/linux/linux%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAip%E5%9C%B0%E5%9D%80/" target="_self">
+        <a href="/2022/05/17/redis/Redis%E5%8D%95%E7%82%B9%E5%88%B0%E9%9B%86%E7%BE%A4/" target="_self">
           
-          配置多个ip地址12cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;cp ifcfg-ens160 ifcfg-ens160:1  编辑： 123456789101112131415161718TYPE&#x3D;EthernetPROXY_METHOD&#x3D;noneBROWSER_ONLY&#x3D;noBOOTPROTO&#x3D;staticDEFROUTE&#x3D;yesIPV4_FAILURE_FATAL&#x3D;n
+          单机、单节点、单实例有什么问题？ 单点故障 容量有限 压力  redis sentinel(哨兵)可以解决：单点故障、压力(连接或读) 选举当redis集群的主节点故障时，Sentinel集群将从剩余的从节点中选举一个新的主节点，有以下步骤：  故障节点主观下线 故障节点客观下线 Sentinel集群选举Leader Sentinel Leader决定新主节点  选举过程1、主观下线Sentine
         </a>
       </p>
 
@@ -536,8 +536,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-14 15:41" pubdate>
-              2022-05-14
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
             </time>
           </div>
         
@@ -545,7 +545,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/linux/">linux</a>
+              <a href="/categories/redis/">redis</a>
             
           </div>
         
@@ -553,7 +553,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/linux/">linux</a>
+              <a href="/tags/redis/">redis</a>
             
           </div>
         
@@ -567,15 +567,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/12/java/java%E5%8E%9F%E5%A7%8B%E5%91%BD%E4%BB%A4%E6%89%93jar%E5%8C%85%E5%8F%8Aidea%E6%89%93jar%E5%8C%85/" target="_self">
-          java原始命令打jar包及idea打jar包
+        <a href="/2022/05/17/redis/Redis%E7%9A%84%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" target="_self">
+          Redis的过期键的删除策略
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/12/java/java%E5%8E%9F%E5%A7%8B%E5%91%BD%E4%BB%A4%E6%89%93jar%E5%8C%85%E5%8F%8Aidea%E6%89%93jar%E5%8C%85/" target="_self">
+        <a href="/2022/05/17/redis/Redis%E7%9A%84%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" target="_self">
           
-          原始命令打jar包简述：jar包（文件）就是 Java Archive File（Java档案[归档]文件），是 Java 的一种文件格式，可将多个文件组合成一个文件。一个JAR文件由一系列采用Zip压缩格式的文件构成，同时还有一张“清单（Manifest）”，对所有这些文件进行了描述。JDK提供的许多类，也是以jar包的形式提供的。jar包用于部署和封装库、组件和插件程序，并可被像编译器和 JV
+          Redis的过期键的删除策略Redis是key-value数据库，我们可以设置Redis中缓存的key的过期时间。 Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。 通用的过期策略定时过期每个设置过期时间的key都需要创建一个定时器，到过期时间就会立即清除。该策略可以立即清除过期的数据，对内存很友好；但是会占用大量的CPU资源去处理过期的数据，从而影响缓存的响应时间
         </a>
       </p>
 
@@ -583,8 +583,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-12 14:34" pubdate>
-              2022-05-12
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
             </time>
           </div>
         
@@ -592,7 +592,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/java/">java</a>
+              <a href="/categories/redis/">redis</a>
             
           </div>
         
@@ -600,7 +600,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/java/">java</a>
+              <a href="/tags/redis/">redis</a>
             
           </div>
         
@@ -614,15 +614,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/11/java/java%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80/" target="_self">
-          java获取本机IP地址
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
+          如何保证数据库与缓存的数据一致性
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/11/java/java%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80/" target="_self">
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
           
-          规则127.xxx.xxx.xxx 属于 “loopback” 地址，即只能你自己的本机可见，就是本机地址，比较常见的有 127.0.0.1192.168.xxx.xxx 属于 private 私有地址 (site local address)，属于本地组织内部访问，只能在本地局域网可见同样 10.xxx.xxx.xxx、从 172.16.xxx.xxx 到172.31.xxx.xxx 都是私有地
+          前置Mysql 做数据库   redis做缓存 如何保证数据库与缓存的数据一致性?cache aside pattern 1.命中：程序先从缓存中读取数据，如果命中，则直接返回 2.失效：程序先从缓存中读取数据，如果没有命中，则从数据库中读取，成功之后将数据放到缓存中 3.更新：程序先更新数据库，在删缓存。 先更新数据库，再删除缓存, 是不是就没有问题？假设这会有两个请求，一个请求A做查询操作，一
         </a>
       </p>
 
@@ -630,8 +630,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-11 13:10" pubdate>
-              2022-05-11
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
             </time>
           </div>
         
@@ -639,7 +639,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/java/">java</a>
+              <a href="/categories/redis/">redis</a>
             
           </div>
         
@@ -647,7 +647,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/java/">java</a>
+              <a href="/tags/redis/">redis</a>
             
           </div>
         

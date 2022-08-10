@@ -1,0 +1,606 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="单机、单节点、单实例有什么问题？ 单点故障 容量有限 压力  redis sentinel(哨兵)可以解决：单点故障、压力(连接或读) 选举当redis集群的主节点故障时，Sentinel集群将从剩余的从节点中选举一个新的主节点，有以下步骤：  故障节点主观下线 故障节点客观下线 Sentinel集群选举Leader Sentinel Leader决定新主节点  选举过程1、主观下线Sentine">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis单点到集群">
+<meta property="og:url" content="http://hanqichuan.com/2022/05/17/redis/Redis%E5%8D%95%E7%82%B9%E5%88%B0%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="单机、单节点、单实例有什么问题？ 单点故障 容量有限 压力  redis sentinel(哨兵)可以解决：单点故障、压力(连接或读) 选举当redis集群的主节点故障时，Sentinel集群将从剩余的从节点中选举一个新的主节点，有以下步骤：  故障节点主观下线 故障节点客观下线 Sentinel集群选举Leader Sentinel Leader决定新主节点  选举过程1、主观下线Sentine">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//redis%E6%8A%95%E7%A5%A8%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//redis%E5%85%A8%E9%87%8F%E5%90%8C%E6%AD%A5.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//redis%E9%83%A8%E5%88%86%E5%90%8C%E6%AD%A5.png">
+<meta property="og:image" content="http://hanqichuan.com/.com//redis%E5%91%BD%E4%BB%A4%E4%BC%A0%E6%92%AD.png">
+<meta property="article:published_time" content="2022-05-17T01:20:00.000Z">
+<meta property="article:modified_time" content="2022-08-10T06:26:14.228Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//redis%E6%8A%95%E7%A5%A8%E8%BF%87%E7%A8%8B.png">
+  
+  
+  <title>Redis单点到集群 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Redis单点到集群">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-17 09:20" pubdate>
+        2022年5月17日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      41 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Redis单点到集群</h1>
+            
+            <div class="markdown-body">
+              <h1 id="单机、单节点、单实例有什么问题？"><a href="#单机、单节点、单实例有什么问题？" class="headerlink" title="单机、单节点、单实例有什么问题？"></a>单机、单节点、单实例有什么问题？</h1><ol>
+<li>单点故障</li>
+<li>容量有限</li>
+<li>压力</li>
+</ol>
+<h1 id="redis-sentinel-哨兵"><a href="#redis-sentinel-哨兵" class="headerlink" title="redis sentinel(哨兵)"></a>redis sentinel(哨兵)</h1><p>可以解决：单点故障、压力(连接或读)</p>
+<h2 id="选举"><a href="#选举" class="headerlink" title="选举"></a>选举</h2><p>当redis集群的主节点故障时，Sentinel集群将从剩余的从节点中选举一个新的主节点，有以下步骤：</p>
+<ol>
+<li>故障节点主观下线</li>
+<li>故障节点客观下线</li>
+<li>Sentinel集群选举Leader</li>
+<li>Sentinel Leader决定新主节点</li>
+</ol>
+<h2 id="选举过程"><a href="#选举过程" class="headerlink" title="选举过程"></a>选举过程</h2><h3 id="1、主观下线"><a href="#1、主观下线" class="headerlink" title="1、主观下线"></a>1、主观下线</h3><p>Sentinel集群的每一个Sentinel节点会定时对redis集群的所有节点发心跳包检测节点是否正常。如果一个节点在down-after-milliseconds时间内没有回复Sentinel节点的心跳包，则该redis节点被该Sentinel节点主观下线。</p>
+<h3 id="2、客观下线"><a href="#2、客观下线" class="headerlink" title="2、客观下线"></a>2、客观下线</h3><p>当节点被一个Sentinel节点记为主观下线时，并不意味着该节点肯定故障了，还需要Sentinel集群的其他Sentinel节点共同判断为主观下线才行。</p>
+<p>该Sentinel节点会询问其他Sentinel节点，如果Sentinel集群中超过quorum数量的Sentinel节点认为该redis节点主观下线，则该redis客观下线。</p>
+<p>如果客观下线的redis节点是从节点或者是Sentinel节点，则操作到此为止，没有后续的操作了；如果客观下线的redis节点为主节点，则开始故障转移，从从节点中选举一个节点升级为主节点。</p>
+<h3 id="3、Sentinel集群选举Leader"><a href="#3、Sentinel集群选举Leader" class="headerlink" title="3、Sentinel集群选举Leader"></a>3、Sentinel集群选举Leader</h3><p>如果需要从redis集群选举一个节点为主节点，首先需要从Sentinel集群中选举一个Sentinel节点作为Leader。</p>
+<p>每一个Sentinel节点都可以成为Leader，当一个Sentinel节点确认redis集群的主节点主观下线后，会请求其他Sentinel节点要求将自己选举为Leader。被请求的Sentinel节点如果没有同意过其他Sentinel节点的选举请求，则同意该请求(选举票数+1)，否则不同意。</p>
+<p>如果一个Sentinel节点获得的选举票数达到Leader最低票数(quorum和Sentinel节点数&#x2F;2+1的最大值)，则该Sentinel节点选举为Leader；否则重新进行选举。</p>
+<p><img src="/.com//redis%E6%8A%95%E7%A5%A8%E8%BF%87%E7%A8%8B.png" srcset="/img/loading.gif" lazyload alt="redis投票过程"></p>
+<h3 id="4、Sentinel-Leader决定新主节点"><a href="#4、Sentinel-Leader决定新主节点" class="headerlink" title="4、Sentinel Leader决定新主节点"></a>4、Sentinel Leader决定新主节点</h3><p>当Sentinel集群选举出Sentinel Leader后，由Sentinel Leader从redis从节点中选择一个redis节点作为主节点：</p>
+<p>过滤故障的节点<br>选择优先级slave-priority最大的从节点作为主节点，如不存在则继续<br>选择复制偏移量（数据写入量的字节，记录写了多少数据。主服务器会把偏移量同步给从服务器，当主从的偏移量一致，则数据是完全同步）最大的从节点作为主节点，如不存在则继续<br>选择runid（redis每次启动的时候生成随机的runid作为redis的标识）最小的从节点作为主节点</p>
+<h2 id="为什么Sentinel集群至少3节点"><a href="#为什么Sentinel集群至少3节点" class="headerlink" title="为什么Sentinel集群至少3节点"></a>为什么Sentinel集群至少3节点</h2><p>一个Sentinel节选举成为Leader的最低票数为<code>quorum</code>和<code>Sentinel节点数/2+1</code>的最大值，如果Sentinel集群只有2个Sentinel节点，则</p>
+<figure class="highlight text"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs text">Sentinel节点数/2 + 1<br>= 2/2 + 1<br>= 2<br></code></pre></td></tr></table></figure>
+
+<p>即Leader最低票数至少为2，当该Sentinel集群中由一个Sentinel节点故障后，仅剩的一个Sentinel节点是永远无法成为Leader。</p>
+<p>也可以由此公式可以推导出，Sentinel集群允许1个Sentinel节点故障则需要3个节点的集群；允许2个节点故障则需要5个节点集群。</p>
+<h1 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h1><h2 id="如何分片"><a href="#如何分片" class="headerlink" title="如何分片"></a>如何分片</h2><p>方案1.客户端按业务逻辑  不同的redis实例</p>
+<p>方案2. 客户端使用 算法：hash+取模 modula  不同的redis实例</p>
+<p>  增加或删除redis实例不方便</p>
+<p>方案3. 客户端采用 逻辑： 随机 + 队列 先去看我在哪个实例  不同的redis实例</p>
+<p>方案4. 客户端采用 一致性哈希 + 哈希环</p>
+<h2 id="集群方案选型"><a href="#集群方案选型" class="headerlink" title="集群方案选型"></a>集群方案选型</h2><p>集群方案解决：单点故障、容量有限、压务</p>
+<p>代理方式：twemproxy  或者 Predixy</p>
+<p>redis官方的集群：redis cluster</p>
+<p>twemproxy  或者 Predixy 或者 redis cluster都是集群方案。</p>
+<h2 id="集群都支持hash-tag"><a href="#集群都支持hash-tag" class="headerlink" title="集群都支持hash tag"></a>集群都支持hash tag</h2><p>可以把{tag}的key放到一个redis实例。</p>
+<h2 id="redis-cluster"><a href="#redis-cluster" class="headerlink" title="redis cluster"></a>redis cluster</h2><p>redis cluster 使用分片方案4，获取是先算出在哪个槽位，再去哪个库取。</p>
+<h1 id="复制过程"><a href="#复制过程" class="headerlink" title="复制过程"></a>复制过程</h1><p>Redis 的复制功能分为同步( sync )和命令传播( command propagate )两个步骤：</p>
+<ul>
+<li>同步用于将从服务器的数据库状态更新至主服务器当前所处的数据库状态。</li>
+<li>命令传播则用于在主服务器的数据库状态被修改，导致主从服务器的数据库状态出现不一致时，让主从服务器的数据库重新回到一致状态。</li>
+</ul>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>Redis 使用 psync 命令完成主从数据同步，同步过程分为：全量复制和部分复制。</p>
+<p>全量复制：一般用于初次复制场景，它会把主节点全部数据一次性发送给从节点发送给从节点，当数据量较大时，会对主从节点和网络造成很大的开销。</p>
+<p>部分复制：用于处理在主从复制中因网络闪断等原因造成的网络丢失场景，当从节点再次连接上主节点后，如果条件允许，主节点会补发丢失数据给从节点。因为补发的数据远远小于全量数据，可以有效避免全量复制的过高开销。</p>
+<p>psync 命令运行需要以下组件支持：</p>
+<ul>
+<li>主从节点各自复制偏移量</li>
+<li>主节点复制积压缓冲区</li>
+<li>主节点运行 id</li>
+</ul>
+<p>参与复制的从节点都会维护自身复制偏移量。主节点在处理完写命令后，会把命令的字节长度做累加记录，统计在 info replication 中的 masterreploffset 指标中。 从节点在接收到主节点发送的命令后，也会累加记录自身的偏移量，并且会每秒钟上报自身的复制偏移量给主节点。 通过对比主从节点的复制偏移量，可以判断主从节点数据是否一致。</p>
+<p>复制积压缓冲区是保存在主节点的一个固定长度的队列，默认大小为 1MB，当主节点有连接的从节点时被创建。主节点响应写命令时，不但会把命令发送给从节点，还会写入复制积压缓冲区中。</p>
+<p>复制积压缓冲区大小有限，只能保存最近的复制数据，用于部分复制和复制命令丢失时的数据补救。</p>
+<p>每个 Redis 节点启动后都会动态分配一个 40 位的十六进制字符串作为运行 ID。运行 ID 的主要作用是用来唯一标识 Redis 节点，比如说从节点保存主节点的运行 ID 来识别自己正在复制的时哪个主节点。</p>
+<h3 id="全量同步"><a href="#全量同步" class="headerlink" title="全量同步"></a>全量同步</h3><p><img src="/.com//redis%E5%85%A8%E9%87%8F%E5%90%8C%E6%AD%A5.png" srcset="/img/loading.gif" lazyload alt="redis全量同步"></p>
+<p>slaveof 命令的执行</p>
+<ol>
+<li><p>从节点发送 psync 命令进行数据同步，由于是第一次进行复制，从节点没有复制偏移量和主节点的运行ID，所以发送的命令时 PSYNC ? -1。</p>
+</li>
+<li><p>主节点根据 PSYNC ? -1 解析出当前为全量复制，回复 + FULLRESYNC 响应。</p>
+</li>
+<li><p>从节点接收主节点的响应数据保存运行 ID 和偏移量 offset。</p>
+</li>
+<li><p>主节点执行 bgsave 保存 RDB 文件到本地，有关 RDB 的知识可以查看<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/NpUV-7bvXTD3iu0_2aRssQ">《Redis RDB 持久化详解》</a></p>
+</li>
+<li><p>主节点发送 RDB 文件给从节点，从节点把接收的 RDB 文件保存在本地并直接作为从节点的数据文件，接收完 RDB 后从节点打印相关日志，可以在日志中查看主节点发送的数据量。</p>
+</li>
+</ol>
+<p>需要注意，对于数据量较大的主节点，比如生成的 RDB 文件超过 6GB 以上时要格外小心。如果传输 RDB 的时间超过 repl-timeout 所配置的值，从节点将发起接收 RDB 文件并清理已经下载的临时文件，导致全量复制失败。</p>
+<ol start="6">
+<li>对于主节点开始保存 RDB 快照到从节点接收完成期间，主节点仍然响应读命令，因此主节点会把这期间写命令保存在复制客户端缓冲区内，当从节点加载完 RDB 文件后，主节点再把缓冲区内的数据发送给从节点，保证主从之间数据一致性。</li>
+</ol>
+<p>如果主节点创建和传输 RDB 的时间过长，可能会出现主节点复制客户端缓冲区溢出。默认配置为 client-output-buffer-limit slave 256MB 64MB 60，如果60s内缓冲区消耗持续大于64MB或者直接超过256MB时，主节点将直接关闭复制客户端连接，造成全量同步失败。</p>
+<ol start="7">
+<li><p>从节点接收完主节点传送来的全部数据后会清空自身旧数据，该步骤对应如下日志。</p>
+</li>
+<li><p>从节点清空数据后开始加载 RDB 文件，对于加大的 RDB 文件，这一步操作依然比较耗时，可以通过计算日志之间的时间差来判断加载 RDB 的总耗时。</p>
+</li>
+<li><p>收到 SYNC 命令的主服务器执行 BGSAVE 命令，在后台生成一个 RDB 文件，并使用一个缓冲区记录从现在开始执行的所有写命令。</p>
+</li>
+<li><p>当主服务器的 BGSAVE 命令执行完毕时，主服务器会将 GBSAVE 命令生成的 RDB 文件发送给从服务器，从服务器接收并载入这个 RDB 文件，将自己的数据库状态更新至主服务器执行 BGSAVE 命令时的数据库状态。</p>
+</li>
+<li><p>主服务器将记录在缓冲区里边的所有写命令发送给从服务器，从服务器执行这些写命令，将自己的数据库状态更新至主服务器数据库当前所处的状态。</p>
+</li>
+</ol>
+<p>通过分析全量复制的所有流程，读者会发现全量复制是一个非常耗时费力的操作。它时间开销主要包括：</p>
+<ul>
+<li>主节点 bgsave 时间</li>
+<li>RDB 文件网络传输时间</li>
+<li>从节点清空数据时间</li>
+<li>从节点加载 RDB 的时间</li>
+<li>可能的 AOF 重写时间</li>
+</ul>
+<p>全量同步过程中不仅会消耗大量时间，还会进行多次持久化相关操作和网络数据传输，这期间会大量消耗主从节点所在服务器的 CPU、内存和网络资源。所以，除了第一次复制是采用全量同步无法避免，其他场景应该规避全量复制，采取部分同步功能。</p>
+<h3 id="部分同步"><a href="#部分同步" class="headerlink" title="部分同步"></a>部分同步</h3><p>部分复制主要是 Redis 针对全量复制的过高开销做出的一种优化措施，使用 psync {runId} {offset} 命令实现。当从节点正在复制主节点时，如果出现网络闪断或者命令丢失等异常情况时，从节点会向主节点要求补发丢失的命令数据，如果主节点的复制积压缓冲区存在这部分数据则直接发送给从节点，这样就保证了主从节点复制的一致性。补发的这部分数据一般远远小于全量数据，所以开销很小。</p>
+<p><img src="/.com//redis%E9%83%A8%E5%88%86%E5%90%8C%E6%AD%A5.png" srcset="/img/loading.gif" lazyload alt="redis部分同步"></p>
+<ol>
+<li><p>当主从节点之间网络出现中断时，如果超过了 repl-timeout 时间，主节点会认为从节点故障并中断复制连接。</p>
+</li>
+<li><p>主从连接中断期间主节点依然响应命令，但因复制连接中断命令无法发送给从节点，不过主节点内部存在复制积压缓冲区( repl-backlog-buffer )，依然可以保存最近一段时间的写命令数据，默认最大缓存 1MB。</p>
+</li>
+<li><p>当主从节点网络恢复后，从节点会再次连上主节点。</p>
+</li>
+<li><p>当主从连接恢复后，由于从节点之前保存了自身已复制的偏移量和主节点的运行ID。因此会把它们作为 psync 参数发送给主节点，要求进行补发复制操作。</p>
+</li>
+<li><p>主节点接到 psync 命令后首先核对参数 runId 是否与自身一致，如果一致，说明之前复制的是当前主节点；之后根据参数 offset 在自身复制积压缓冲区查找，如果偏移量之后的数据存在缓冲区中，则对从节点发送 +CONTINUE 响应，表示可以进行部分复制。</p>
+</li>
+<li><p>主节点根据偏移量把复制积压缓冲区里的数据发送给从节点，保证主从复制进入正常状态。</p>
+</li>
+</ol>
+<h2 id="心跳检测"><a href="#心跳检测" class="headerlink" title="心跳检测"></a>心跳检测</h2><p>主从节点在建立复制后，它们之间维护着长连接并彼此发送心跳命令，如下图所示。</p>
+<p>主从心跳判断机制如下所示：</p>
+<ol>
+<li><p>主从节点彼此都有心跳检测机制，各自模拟成对方的客户端进行通信，通过 client list 命令查看复制相关客户端信息，主节点的连接状态为 flags&#x3D;M，从节点连接状态为 flags&#x3D;S。</p>
+</li>
+<li><p>主节点默认每隔 10 秒对从节点发送 ping 命令，判断从节点的存活性和连接状态。可以通过参数 repl-ping-slave-period 控制发送频率。</p>
+</li>
+<li><p>从节点在主线程中每隔 1 秒发送 replconf ack { offset } 命令，给主节点上报自己当前的复制偏移量。</p>
+</li>
+</ol>
+<p>replconf 命令不仅能实时监测主从节点网络状态，还能上报从节点复制偏移量。主节点会根据从节点上传的偏移量检查复制数据是否丢失，如果从节点数据丢失，再从主节点的复制缓存区中拉取丢失的数据发送给该从节点。</p>
+<h2 id="异步复制和命令传播"><a href="#异步复制和命令传播" class="headerlink" title="异步复制和命令传播"></a>异步复制和命令传播</h2><p>主节点不但负责数据读写，还负责把写命令同步给从节点。写命令的发送过程是异步完成，也就是说主节点自身处理完写命令后直接返回给客户端，并不等待从节点复制完成。</p>
+<p><img src="/.com//redis%E5%91%BD%E4%BB%A4%E4%BC%A0%E6%92%AD.png" srcset="/img/loading.gif" lazyload alt="redis命令传播"></p>
+<p>这个异步过程由命令传播来处理，它不仅会将写命令发送给所有从服务器，还会将写命令入队到复制积压缓冲区里边。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/redis/">redis</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/redis/">redis</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/17/redis/redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">redis底层数据结构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/17/redis/Redis%E7%9A%84%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/">
+                        <span class="hidden-mobile">Redis的过期键的删除策略</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

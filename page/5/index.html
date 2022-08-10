@@ -191,6 +191,288 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/05/17/redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/" target="_self">
+          Redis持久化
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/17/redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/" target="_self">
+          
+          redis为什么要持久化1.redis做为数据库使用时，数据库必须提供持久化特性； 2.redis做为缓存使用时，持久化缓存数据： ​	redis崩溃时重新加载持久化的数据； ​	redis迁移 redis支持的两种持久化方式RDB属于全量数据备份，备份的是数据 save 这个是阻塞的。一般在关机维护时使用。 bgsave 这个是由fork()子进程实现的。 配置文件中给出bgsave的规则： (
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/redis/">redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/redis/">redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/17/redis/redisson%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
+          redisson简介及分布式锁
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/17/redis/redisson%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
+          
+          redissonRedisson是一个在Redis的基础上实现的Java驻内存数据网格（In-Memory Data Grid）。它不仅提供了一系列的分布式的Java常用对象，还提供了许多分布式服务。其中包括(BitSet, Set, Multimap, SortedSet, Map, List, Queue, BlockingQueue, Deque, BlockingDeque, Semaph
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/redis/">redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/redis/">redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/17/redis/%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%E4%B8%8E%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E4%B8%8E%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F/" target="_self">
+          缓存雪崩与缓存击穿与缓存穿透
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/17/redis/%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%E4%B8%8E%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E4%B8%8E%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F/" target="_self">
+          
+          前置Mysql 做数据库   redis做缓存 缓存击穿什么是缓存击穿单个key过期，高并发访问这个key, 高并发直接访问数据库。 解决方案分布式锁只让一个请求去访问数据库 缓存穿透什么是缓存穿透简单描述：从业务接收查询的是你系统根本不存在的数据 复杂描述：缓存穿透是指用户查询数据，在数据库没有，自然在缓存中也不会有。这样就导致用户查询的时候， 在缓存中找不到对应key的value，每次都要去数
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/redis/">redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/redis/">redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/14/linux/linux%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAip%E5%9C%B0%E5%9D%80/" target="_self">
+          linux配置多个ip地址
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/14/linux/linux%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAip%E5%9C%B0%E5%9D%80/" target="_self">
+          
+          配置多个ip地址12cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;cp ifcfg-ens160 ifcfg-ens160:1  编辑： 123456789101112131415161718TYPE&#x3D;EthernetPROXY_METHOD&#x3D;noneBROWSER_ONLY&#x3D;noBOOTPROTO&#x3D;staticDEFROUTE&#x3D;yesIPV4_FAILURE_FATAL&#x3D;n
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-14 15:41" pubdate>
+              2022-05-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/linux/">linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/12/java/java%E5%8E%9F%E5%A7%8B%E5%91%BD%E4%BB%A4%E6%89%93jar%E5%8C%85%E5%8F%8Aidea%E6%89%93jar%E5%8C%85/" target="_self">
+          java原始命令打jar包及idea打jar包
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/12/java/java%E5%8E%9F%E5%A7%8B%E5%91%BD%E4%BB%A4%E6%89%93jar%E5%8C%85%E5%8F%8Aidea%E6%89%93jar%E5%8C%85/" target="_self">
+          
+          原始命令打jar包简述：jar包（文件）就是 Java Archive File（Java档案[归档]文件），是 Java 的一种文件格式，可将多个文件组合成一个文件。一个JAR文件由一系列采用Zip压缩格式的文件构成，同时还有一张“清单（Manifest）”，对所有这些文件进行了描述。JDK提供的许多类，也是以jar包的形式提供的。jar包用于部署和封装库、组件和插件程序，并可被像编译器和 JV
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-12 14:34" pubdate>
+              2022-05-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/11/java/java%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80/" target="_self">
+          java获取本机IP地址
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/11/java/java%E8%8E%B7%E5%8F%96%E6%9C%AC%E6%9C%BAIP%E5%9C%B0%E5%9D%80/" target="_self">
+          
+          规则127.xxx.xxx.xxx 属于 “loopback” 地址，即只能你自己的本机可见，就是本机地址，比较常见的有 127.0.0.1192.168.xxx.xxx 属于 private 私有地址 (site local address)，属于本地组织内部访问，只能在本地局域网可见同样 10.xxx.xxx.xxx、从 172.16.xxx.xxx 到172.31.xxx.xxx 都是私有地
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-11 13:10" pubdate>
+              2022-05-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/05/10/linux/nginx%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D%E5%8F%8A%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90/" target="_self">
           nginx功能介绍及配置解析
         </a>
@@ -366,290 +648,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/ant/">ant</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/maven/maven%E5%AE%89%E8%A3%85/" target="_self">
-          maven安装
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/maven/maven%E5%AE%89%E8%A3%85/" target="_self">
-          
-          下载https:&#x2F;&#x2F;maven.apache.org&#x2F; 解压： 1tar -xvzf apache-maven-3.8.5-bin.tar.gz  配置1vi ~&#x2F;.bash_profile  12export M2_HOME&#x3D;&#x2F;Applications&#x2F;apache-maven-3.8.5export PATH&#x3D;$PATH:$M2_HOME&#x2F;bin  环境变量生效： 1source ~&#x2F;.bas
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 13:16" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/maven/">maven</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/maven/">maven</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/linux/centos7%E7%9A%84firewall%E9%98%B2%E7%81%AB%E5%A2%99/" target="_self">
-          centos7的firewall防火墙
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/linux/centos7%E7%9A%84firewall%E9%98%B2%E7%81%AB%E5%A2%99/" target="_self">
-          
-          一、firewalld(linux防火墙)的基本使用12345启动： systemctl start firewalld查看状态： systemctl status firewalld停止： systemctl disable firewalld禁用： systemctl stop firewalld查看防火墙允许端口：firewall-cmd --list-all (使用前置条件为：防火墙已开启
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 09:29" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/linux/linux%E5%AE%89%E8%A3%85nginx/" target="_self">
-          linux安装nginx
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/linux/linux%E5%AE%89%E8%A3%85nginx/" target="_self">
-          
-          下载http:&#x2F;&#x2F;nginx.org&#x2F; 下载： 1wget http:&#x2F;&#x2F;nginx.org&#x2F;download&#x2F;nginx-1.20.2.tar.gz  解压： 1tar -xvzf nginx-1.20.2.tar.gz  安装linux系统需要安装的组件：gcc、 openssl-devel、 pcre-devel、 zlib-devel 可以使用yum查看是否已经安装： 1yum list
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 09:29" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-              <a href="/tags/nginx/">nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/linux/linux%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85/" target="_self">
-          linux查看软件是否安装
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/linux/linux%E6%9F%A5%E7%9C%8B%E8%BD%AF%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85/" target="_self">
-          
-          linux有多种方式安装软件，查看某个软件是否安装的方法有以下几种： 以rpm包安装的软件使用 rpm -qa | grep “软件或者包的名字”命令查看 1rpm -qa | grep ruby  以deb包安装的软件使用dpkg -l | grep “软件或者包的名字”命令查看 1dpkg-l |grep ruby  yum方法安装的软件可以用yum list installed | grep
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 09:29" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/06/fastDFS/fastDfs%E4%B8%8Enginx%E6%95%B4%E5%90%88/" target="_self">
-          fastDfs与nginx整合
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/06/fastDFS/fastDfs%E4%B8%8Enginx%E6%95%B4%E5%90%88/" target="_self">
-          
-          下载安装包https:&#x2F;&#x2F;github.com&#x2F;happyfish100 作者：余庆（YuQing） 安装wget: 1yum install wget  下载： https:&#x2F;&#x2F;github.com&#x2F;happyfish100&#x2F;fastdfs-nginx-module&#x2F;archive&#x2F;refs&#x2F;tags&#x2F;V1.22.tar.gz 解压： 1tar -zxvf fastdfs-nginx-modul
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-06 18:14" pubdate>
-              2022-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/fastDfs/">fastDfs</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/fastDfs/">fastDfs</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/06/fastDFS/fastDfs%E5%8D%95%E6%9C%BA%E7%89%88%E5%AE%89%E8%A3%85/" target="_self">
-          fastDfs单机版安装
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/06/fastDFS/fastDfs%E5%8D%95%E6%9C%BA%E7%89%88%E5%AE%89%E8%A3%85/" target="_self">
-          
-          安装FastDFS依赖FastDFS是C语言开发的应用。安装必须使用make、cmake和gcc编译器。 1yum install -y make cmake gcc gcc-c++ perl  下载安装包libfatscommon FastDFS分离出的一些公用函数包 FastDFS FastDFS本体 https:&#x2F;&#x2F;github.com&#x2F;happyfish100 作者：余庆（YuQing）
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-06 18:14" pubdate>
-              2022-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/fastDfs/">fastDfs</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/fastDfs/">fastDfs</a>
             
           </div>
         
