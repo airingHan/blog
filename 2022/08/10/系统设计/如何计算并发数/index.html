@@ -16,21 +16,20 @@
   <meta name="author" content="韩启川">
   <meta name="keywords" content="">
   
-    <meta name="description" content="新手与高手的差距新手和高手的差距集中体现在解决问题上。 问题分为：常规问题、非常规问题、简单问题、复杂问题(由多个简单问题组合成的) 高手： 快速解决问题 识别细微的差异 识别情景 有效监控问题解决的策略和过程 准确性高 看问题的深度 产生差距的原因是什么？知识、经验、技巧 知识 + 经验 + 技巧  &#x3D; 模式 什么是模式： 以某个问题为核心，将与之相关的知识、经验及技巧组合在一起的块状">
+    <meta name="description" content="一、经典公式一般来说，利用以下经验公式进行估算系统的平均并发用户数和峰值数据   1）平均并发用户数为 C &#x3D; nL&#x2F;T  2）并发用户数峰值 C‘ &#x3D; C + 3*根号C   C是平均并发用户数，n是login session的数量，L是login session的平均长度，T是值考察的时间长度   C’是并发用户数峰值 举例假设系统A，该系统有3000个用户，平均">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何从新手迅速成长为高手">
-<meta property="og:url" content="http://hanqichuan.com/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/index.html">
+<meta property="og:title" content="如何计算并发数">
+<meta property="og:url" content="http://hanqichuan.com/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/index.html">
 <meta property="og:site_name" content="这是一个很酷的事">
-<meta property="og:description" content="新手与高手的差距新手和高手的差距集中体现在解决问题上。 问题分为：常规问题、非常规问题、简单问题、复杂问题(由多个简单问题组合成的) 高手： 快速解决问题 识别细微的差异 识别情景 有效监控问题解决的策略和过程 准确性高 看问题的深度 产生差距的原因是什么？知识、经验、技巧 知识 + 经验 + 技巧  &#x3D; 模式 什么是模式： 以某个问题为核心，将与之相关的知识、经验及技巧组合在一起的块状">
+<meta property="og:description" content="一、经典公式一般来说，利用以下经验公式进行估算系统的平均并发用户数和峰值数据   1）平均并发用户数为 C &#x3D; nL&#x2F;T  2）并发用户数峰值 C‘ &#x3D; C + 3*根号C   C是平均并发用户数，n是login session的数量，L是login session的平均长度，T是值考察的时间长度   C’是并发用户数峰值 举例假设系统A，该系统有3000个用户，平均">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-08T01:11:00.000Z">
-<meta property="article:modified_time" content="2022-08-08T01:55:47.816Z">
+<meta property="article:published_time" content="2022-08-10T08:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-10T07:29:44.490Z">
 <meta property="article:author" content="韩启川">
-<meta property="article:tag" content="方法论">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>如何从新手迅速成长为高手 - 这是一个很酷的事</title>
+  <title>如何计算并发数 - 这是一个很酷的事</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -176,7 +175,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="如何从新手迅速成长为高手">
+            <span class="h2" id="subtitle" title="如何计算并发数">
               
             </span>
 
@@ -186,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-08-08 09:11" pubdate>
-        2022年8月8日 上午
+      <time datetime="2022-08-10 16:00" pubdate>
+        2022年8月10日 下午
       </time>
     </span>
   
@@ -197,7 +196,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      600 字
+      1.2k 字
     </span>
   
 
@@ -206,7 +205,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6 分钟
+      11 分钟
     </span>
   
 
@@ -235,47 +234,39 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">如何从新手迅速成长为高手</h1>
+            <h1 style="display: none">如何计算并发数</h1>
             
             <div class="markdown-body">
-              <h1 id="新手与高手的差距"><a href="#新手与高手的差距" class="headerlink" title="新手与高手的差距"></a>新手与高手的差距</h1><p>新手和高手的差距集中体现在解决问题上。</p>
-<p>问题分为：常规问题、非常规问题、简单问题、复杂问题(由多个简单问题组合成的)</p>
-<p>高手：</p>
-<p>快速解决问题</p>
-<p>识别细微的差异</p>
-<p>识别情景</p>
-<p>有效监控问题解决的策略和过程</p>
-<p>准确性高</p>
-<p>看问题的深度</p>
-<h1 id="产生差距的原因是什么？"><a href="#产生差距的原因是什么？" class="headerlink" title="产生差距的原因是什么？"></a>产生差距的原因是什么？</h1><p>知识、经验、技巧</p>
-<p>知识 + 经验 + 技巧  &#x3D; 模式</p>
-<p>什么是模式：</p>
-<p>以某个问题为核心，将与之相关的知识、经验及技巧组合在一起的块状或树状结构。</p>
-<p>高手拥有模式库。</p>
-<p>遇到问题找模式。</p>
-<p>找不到模式：</p>
-<p>​	头脑中的模式进行调整</p>
-<p>​	多个模式整合</p>
-<p>​	吸收新知识，直到找到问题的解决办法。</p>
-<p>​	存储模式。</p>
-<h1 id="成长为高手的三大途径"><a href="#成长为高手的三大途径" class="headerlink" title="成长为高手的三大途径"></a>成长为高手的三大途径</h1><h2 id="学习《最佳实践》"><a href="#学习《最佳实践》" class="headerlink" title="学习《最佳实践》"></a>学习《最佳实践》</h2><p>1.公司安排的师傅或导师</p>
-<p>2.主动寻找高手，观察并模仿</p>
-<p>3.研读高手的著作</p>
-<h2 id="模拟"><a href="#模拟" class="headerlink" title="模拟"></a>模拟</h2><h3 id="角色扮演"><a href="#角色扮演" class="headerlink" title="角色扮演"></a>角色扮演</h3><h3 id="案例研究"><a href="#案例研究" class="headerlink" title="案例研究"></a>案例研究</h3><p>1.判断案例问题</p>
-<p>2.运用知识分析案例</p>
-<p>3.带着案例分析与人讨论</p>
-<h3 id="反思"><a href="#反思" class="headerlink" title="反思"></a>反思</h3><p>并非一开始反思就能找到问题的本质和解决方法</p>
-<p>从浅到深：</p>
-<p>总结性反思：我做了什么？结果怎么样？我拜访了哪些客户，进展如何？</p>
-<p>自我评价性反思：我做得怎么样？好还是坏？我有哪些地方做得不足？</p>
-<p>对比性反思：我哪里做得好？哪里做得不好？该如何改善？</p>
-<p>批判性反思：我为什么这么做？为什么做得好或者不好？哪些因素影响了我的行为？为什么客户会拒绝我？</p>
-<h3 id="反思的三种方法"><a href="#反思的三种方法" class="headerlink" title="反思的三种方法"></a>反思的三种方法</h3><h4 id="自我对话"><a href="#自我对话" class="headerlink" title="自我对话"></a>自我对话</h4><p>我刚刚做了什么？</p>
-<p>做得怎么样？</p>
-<p>哪些地方需要改善？</p>
-<p>为什么会导致现在的状态？</p>
-<p>如果遇到类似的问题，应该采取什么样的措施？</p>
-<h4 id="写反思日记"><a href="#写反思日记" class="headerlink" title="写反思日记"></a>写反思日记</h4><h4 id="和同事合作讨论"><a href="#和同事合作讨论" class="headerlink" title="和同事合作讨论"></a>和同事合作讨论</h4><h3 id="反思过后，一定要采取行动"><a href="#反思过后，一定要采取行动" class="headerlink" title="反思过后，一定要采取行动"></a>反思过后，一定要采取行动</h3>
+              <h1 id="一、经典公式"><a href="#一、经典公式" class="headerlink" title="一、经典公式"></a>一、经典公式</h1><p>一般来说，利用以下经验公式进行估算系统的平均并发用户数和峰值数据 </p>
+<p> 1）平均并发用户数为 C &#x3D; nL&#x2F;T</p>
+<p> 2）并发用户数峰值 C‘ &#x3D; C + 3*根号C</p>
+<p>  C是平均并发用户数，n是login session的数量，L是login session的平均长度，T是值考察的时间长度</p>
+<p>  C’是并发用户数峰值</p>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>假设系统A，该系统有3000个用户，平均每天大概有400个用户要访问该系统（可以从系统日志从获得），对于一个典型用户来说，一天之内用户从登陆到退出的平均时间为4小时，而在一天之内，用户只有在8小时之内会使用该系统。</p>
+<p> 那么，</p>
+<p> 平均并发用户数为：C &#x3D; 400*4&#x2F;8 &#x3D; 200</p>
+<p> 并发用户数峰值为：C‘ &#x3D; 200 + 3*根号200 &#x3D; 243</p>
+<h1 id="二、通用公式："><a href="#二、通用公式：" class="headerlink" title="二、通用公式："></a>二、通用公式：</h1><p> 对绝大多数场景，我们用（用户总量&#x2F;统计时间）*影响因子（一般为3）来进行估算并发量。</p>
+<h2 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h2><figure class="highlight text"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs text">以乘坐地铁为例子，每天乘坐人数为5万人次，每天早高峰是7到9点，晚高峰是6到7点，<br><br>根据8/2原则，80%的乘客会在高峰期间乘坐地铁，<br>则每秒到达地铁检票口的人数为50000*80%/（3*60*60）=3.7，约4人/S，<br>考虑到安检，入口关闭等因素，实际堆积在检票口的人数肯定比这个要大，<br>假定每个人需要3秒才能进站，那实际并发应为4人/s*3s=12，当然影响因子可以根据实际情况增大！<br></code></pre></td></tr></table></figure>
+
+<h1 id="三、根据PV计算公式："><a href="#三、根据PV计算公式：" class="headerlink" title="三、根据PV计算公式："></a>三、根据PV计算公式：</h1><p>Page Views一般指页面浏览量</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">比如一个网站，每天的PV大概1000w，根据2/8原则，<br>我们可以认为这1000w pv的80%是在一天的9个小时内完成的（人的精力有限），<br><br>那么TPS为： 1000w*80%/(9*3600)=246.92个/s,取经验因子3，<br><br>则并发量应为： 246.92*3=740<br></code></pre></td></tr></table></figure>
+
+<h1 id="四、根据TPS估计："><a href="#四、根据TPS估计：" class="headerlink" title="四、根据TPS估计："></a>四、根据TPS估计：</h1><p>Transcation Per Second 每秒进行的事务的数目。（整体定义事务的 请求、操作、返回）。</p>
+<p>Think Time是一个真实的用户动作之间的等待时间。</p>
+<p>  公式为 C &#x3D; (Think time + 1)*TPS</p>
+<h1 id="五、根据系统用户数计算："><a href="#五、根据系统用户数计算：" class="headerlink" title="五、根据系统用户数计算："></a>五、根据系统用户数计算：</h1><p>并发用户数 &#x3D; 系统最大在线用户数的5%到10%</p>
+<h1 id="六、服务的调用方的数量"><a href="#六、服务的调用方的数量" class="headerlink" title="六、服务的调用方的数量"></a>六、服务的调用方的数量</h1><h2 id="拿什么来做为并发数"><a href="#拿什么来做为并发数" class="headerlink" title="拿什么来做为并发数"></a>拿什么来做为并发数</h2><ol>
+<li>并发的用户数。有一部分用户使用业务，另外一部分用户 挂机，没有具体操作。</li>
+<li>并发连接数。用户和服务器之间的连接。一部分连接在传输数据，一部分连接 仅仅连接而已。</li>
+<li>并发请求数。有可能请求静态数据，有可能是写操作 这两者消耗性能不一样。</li>
+<li>并发线程数。系统内，并发的线程数目。线程多不一定是用户造成的，有可能是系统复杂。</li>
+</ol>
+<p>以上都不能准确的表示。没有并发数的统一标准。</p>
+<p>一般在公司使用：同时服务的调用方的数量。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>以上都是预估的。所以都不准确，只能当做参考。真正的线上还是要做好扩容、限流等。</p>
+<p>然后才能使用监控服务，对某个服务进行监控。比如淘宝的双11，商户详情服务、订单服务。才能知道峰值的并发数。</p>
+
             </div>
             <hr>
             <div>
@@ -284,17 +275,10 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
+                      <a class="hover-with-bg" href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
                     
                   </div>
                 
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
-                    
-                  </div>
                 
               </div>
               
@@ -309,18 +293,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">如何计算并发数</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/">
-                        <span class="hidden-mobile">时间管理</span>
+                      <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/">
+                        <span class="hidden-mobile">如何从新手迅速成长为高手</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

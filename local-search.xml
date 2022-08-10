@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>如何计算并发数</title>
+    <link href="/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/"/>
+    <url>/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="一、经典公式"><a href="#一、经典公式" class="headerlink" title="一、经典公式"></a>一、经典公式</h1><p>一般来说，利用以下经验公式进行估算系统的平均并发用户数和峰值数据 </p><p> 1）平均并发用户数为 C &#x3D; nL&#x2F;T</p><p> 2）并发用户数峰值 C‘ &#x3D; C + 3*根号C</p><p>  C是平均并发用户数，n是login session的数量，L是login session的平均长度，T是值考察的时间长度</p><p>  C’是并发用户数峰值</p><h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>假设系统A，该系统有3000个用户，平均每天大概有400个用户要访问该系统（可以从系统日志从获得），对于一个典型用户来说，一天之内用户从登陆到退出的平均时间为4小时，而在一天之内，用户只有在8小时之内会使用该系统。</p><p> 那么，</p><p> 平均并发用户数为：C &#x3D; 400*4&#x2F;8 &#x3D; 200</p><p> 并发用户数峰值为：C‘ &#x3D; 200 + 3*根号200 &#x3D; 243</p><h1 id="二、通用公式："><a href="#二、通用公式：" class="headerlink" title="二、通用公式："></a>二、通用公式：</h1><p> 对绝大多数场景，我们用（用户总量&#x2F;统计时间）*影响因子（一般为3）来进行估算并发量。</p><h2 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h2><figure class="highlight text"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs text">以乘坐地铁为例子，每天乘坐人数为5万人次，每天早高峰是7到9点，晚高峰是6到7点，<br><br>根据8/2原则，80%的乘客会在高峰期间乘坐地铁，<br>则每秒到达地铁检票口的人数为50000*80%/（3*60*60）=3.7，约4人/S，<br>考虑到安检，入口关闭等因素，实际堆积在检票口的人数肯定比这个要大，<br>假定每个人需要3秒才能进站，那实际并发应为4人/s*3s=12，当然影响因子可以根据实际情况增大！<br></code></pre></td></tr></table></figure><h1 id="三、根据PV计算公式："><a href="#三、根据PV计算公式：" class="headerlink" title="三、根据PV计算公式："></a>三、根据PV计算公式：</h1><p>Page Views一般指页面浏览量</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">比如一个网站，每天的PV大概1000w，根据2/8原则，<br>我们可以认为这1000w pv的80%是在一天的9个小时内完成的（人的精力有限），<br><br>那么TPS为： 1000w*80%/(9*3600)=246.92个/s,取经验因子3，<br><br>则并发量应为： 246.92*3=740<br></code></pre></td></tr></table></figure><h1 id="四、根据TPS估计："><a href="#四、根据TPS估计：" class="headerlink" title="四、根据TPS估计："></a>四、根据TPS估计：</h1><p>Transcation Per Second 每秒进行的事务的数目。（整体定义事务的 请求、操作、返回）。</p><p>Think Time是一个真实的用户动作之间的等待时间。</p><p>  公式为 C &#x3D; (Think time + 1)*TPS</p><h1 id="五、根据系统用户数计算："><a href="#五、根据系统用户数计算：" class="headerlink" title="五、根据系统用户数计算："></a>五、根据系统用户数计算：</h1><p>并发用户数 &#x3D; 系统最大在线用户数的5%到10%</p><h1 id="六、服务的调用方的数量"><a href="#六、服务的调用方的数量" class="headerlink" title="六、服务的调用方的数量"></a>六、服务的调用方的数量</h1><h2 id="拿什么来做为并发数"><a href="#拿什么来做为并发数" class="headerlink" title="拿什么来做为并发数"></a>拿什么来做为并发数</h2><ol><li>并发的用户数。有一部分用户使用业务，另外一部分用户 挂机，没有具体操作。</li><li>并发连接数。用户和服务器之间的连接。一部分连接在传输数据，一部分连接 仅仅连接而已。</li><li>并发请求数。有可能请求静态数据，有可能是写操作 这两者消耗性能不一样。</li><li>并发线程数。系统内，并发的线程数目。线程多不一定是用户造成的，有可能是系统复杂。</li></ol><p>以上都不能准确的表示。没有并发数的统一标准。</p><p>一般在公司使用：同时服务的调用方的数量。</p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>以上都是预估的。所以都不准确，只能当做参考。真正的线上还是要做好扩容、限流等。</p><p>然后才能使用监控服务，对某个服务进行监控。比如淘宝的双11，商户详情服务、订单服务。才能知道峰值的并发数。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>系统设计</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何从新手迅速成长为高手</title>
     <link href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/"/>
     <url>/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/</url>

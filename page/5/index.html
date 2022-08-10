@@ -191,6 +191,53 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
+          如何保证数据库与缓存的数据一致性
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
+          
+          前置Mysql 做数据库   redis做缓存 如何保证数据库与缓存的数据一致性?cache aside pattern 1.命中：程序先从缓存中读取数据，如果命中，则直接返回 2.失效：程序先从缓存中读取数据，如果没有命中，则从数据库中读取，成功之后将数据放到缓存中 3.更新：程序先更新数据库，在删缓存。 先更新数据库，再删除缓存, 是不是就没有问题？假设这会有两个请求，一个请求A做查询操作，一
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/redis/">redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/redis/">redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/05/17/redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/" target="_self">
           Redis持久化
         </a>
@@ -601,53 +648,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/nginx/">nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/maven/ant%E5%AE%89%E8%A3%85/" target="_self">
-          ant安装
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/maven/ant%E5%AE%89%E8%A3%85/" target="_self">
-          
-          下载https:&#x2F;&#x2F;ant.apache.org&#x2F; 解压： 1tar -xvzf apache-ant-1.9.16-bin.tar.gz  配置1vi ~&#x2F;.bash_profile  12export ANT_HOME&#x3D;&#x2F;Applications&#x2F;apache-ant-1.9.16export PATH&#x3D;$ANT_HOME&#x2F;bin:$PATH  环境变量生效： 1source ~&#x2F;.bash_
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 13:16" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/ant/">ant</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ant/">ant</a>
             
           </div>
         
