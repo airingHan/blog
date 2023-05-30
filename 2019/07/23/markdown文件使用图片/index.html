@@ -24,7 +24,7 @@
 <meta property="og:description" content="1.markdown添加图片的基础格式1![Alt text](图片链接 &quot;optional title&quot;)  Alt text：图片的Alt标签，用来描述图片的关键词，可以不写。最初的本意是当图片因为某种原因不能被显示时而出现的替代文字，后来又被用于SEO，可以方便搜索引擎根据Alt text里面的关键词搜索到图片。  图片链接：可以是图片的本地地址或者是网址。 “optio">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
-<meta property="article:modified_time" content="2022-05-06T01:55:46.188Z">
+<meta property="article:modified_time" content="2023-05-30T01:15:21.029Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="markdown">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      undefined 字
+      535 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      NaN 分钟
+      5 分钟
     </span>
   
 
@@ -238,23 +238,23 @@
             <h1 style="display: none">markdown文件使用图片</h1>
             
             <div class="markdown-body">
-              <h2 id="1-markdown添加图片的基础格式"><a href="#1-markdown添加图片的基础格式" class="headerlink" title="1.markdown添加图片的基础格式"></a>1.markdown添加图片的基础格式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![Alt text](图片链接 &quot;optional title&quot;)</span><br></pre></td></tr></table></figure>
+              <h2 id="1-markdown添加图片的基础格式"><a href="#1-markdown添加图片的基础格式" class="headerlink" title="1.markdown添加图片的基础格式"></a>1.markdown添加图片的基础格式</h2><figure class="highlight applescript"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs applescript">![Alt <span class="hljs-built_in">text</span>](图片链接 <span class="hljs-string">&quot;optional title&quot;</span>)<br></code></pre></td></tr></table></figure>
 
 <p>Alt text：图片的Alt标签，用来描述图片的关键词，可以不写。最初的本意是当图片因为某种原因不能被显示时而出现的替代文字，后来又被用于SEO，可以方便搜索引擎根据Alt text里面的关键词搜索到图片。 </p>
 <p>图片链接：可以是图片的本地地址或者是网址。</p>
 <p>“optional title”：鼠标悬置于图片上会出现的标题文字，可以不写。</p>
 <p>使用：</p>
 <p>本地图片</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![avatar](/home/picture/1.png)</span><br></pre></td></tr></table></figure>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">![avatar](<span class="hljs-regexp">/home/</span>picture/<span class="hljs-number">1.</span>png)<br></code></pre></td></tr></table></figure>
 
 <p>网络图片</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![avatar](http://baidu.com/pic/doge.png)</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">![avatar](http:<span class="hljs-regexp">//</span>baidu.com<span class="hljs-regexp">/pic/</span>doge.png)<br></code></pre></td></tr></table></figure>
 
 <h2 id="2-把图片存入markdown文件"><a href="#2-把图片存入markdown文件" class="headerlink" title="2.把图片存入markdown文件"></a>2.把图片存入markdown文件</h2><p>用base64转码工具把图片转成一段字符串，然后把字符串填到基础格式中链接的那个位置。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![avatar](data:image/png;base64,iVBORw0......)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">![avatar](data:image/png;<span class="hljs-built_in">base64</span>,iVBORw0......)<br></code></pre></td></tr></table></figure>
 
 <p>把base64的图片放到文章末尾：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">![avatar][base64str]</span><br><span class="line">[base64str]:data:image/png;base64,iVBORw0......</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css">!<span class="hljs-selector-attr">[avatar]</span><span class="hljs-selector-attr">[base64str]</span><br><span class="hljs-selector-attr">[base64str]</span>:data:image/png;base64,iVBORw0......<br></code></pre></td></tr></table></figure>
 
 <h2 id="3-typora图片设置"><a href="#3-typora图片设置" class="headerlink" title="3.typora图片设置"></a>3.typora图片设置</h2><p>mac 系统</p>
 <p>偏好设置</p>

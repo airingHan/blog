@@ -24,7 +24,7 @@
 <meta property="og:description" content="1. 使用 git checkout 撤销本地修改即放弃对本地已修改但尚未提交的文件的修改，还原其到未修改前的状态。注意： 已 add&#x2F; commit 的文件不适用个方法，应该用本文提到的第二种方法。 命令如下： 1234git checkout .      # 撤销对所有已修改但未提交的文件的修改，但不包括新增的文件git checkout [filename]     # 撤销对指">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
-<meta property="article:modified_time" content="2022-04-25T07:58:01.586Z">
+<meta property="article:modified_time" content="2023-05-30T01:15:20.982Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      undefined 字
+      468 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      NaN 分钟
+      4 分钟
     </span>
   
 
@@ -240,12 +240,12 @@
             <div class="markdown-body">
               <h2 id="1-使用-git-checkout-撤销本地修改"><a href="#1-使用-git-checkout-撤销本地修改" class="headerlink" title="1. 使用 git checkout 撤销本地修改"></a>1. 使用 <code>git checkout</code> 撤销本地修改</h2><p>即放弃对本地已修改但尚未提交的文件的修改，还原其到未修改前的状态。<br>注意： 已 add&#x2F; commit 的文件不适用个方法，应该用本文提到的第二种方法。</p>
 <p>命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git checkout .      # 撤销对所有已修改但未提交的文件的修改，但不包括新增的文件</span><br><span class="line">git checkout [filename]     # 撤销对指定文件的修改，[filename]为文件名</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs nginx"><br><span class="hljs-attribute">git</span> checkout .      <span class="hljs-comment"># 撤销对所有已修改但未提交的文件的修改，但不包括新增的文件</span><br>git checkout [filename]     <span class="hljs-comment"># 撤销对指定文件的修改，[filename]为文件名</span><br><br></code></pre></td></tr></table></figure>
 
 <p>##2.使用 git reset 回退项目版本</p>
 <p>可以回退到任意已经提交过的版本。已 add &#x2F; commit 但未 push 的文件也适用。</p>
 <p>命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard [commit-hashcode]</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">git reset <span class="hljs-attr">--hard</span> <span class="hljs-selector-attr">[commit-hashcode]</span><br></code></pre></td></tr></table></figure>
 <p>commit-hashcode是某个 commit 的哈希值，可以用 git log 查看。<br>因此一般用法是先用 Git log 查看具体commit的哈希值，然后 reset 到那个版本。</p>
 <p>说明：<br>这两个命令都不会对新增文件起作用。因为新增的文件是还未加到 git 的记录里面的，即属于未被 tracked 的状态，所以撤销修改和回退均对其不影响。我们直接手动删除文件就行了。</p>
 

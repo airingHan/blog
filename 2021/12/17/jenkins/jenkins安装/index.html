@@ -24,7 +24,7 @@
 <meta property="og:description" content="1.下载地址http:&#x2F;&#x2F;mirrors.jenkins-ci.org&#x2F;redhat&#x2F; 2.安装1rpm -ivh jenkins-2.325-1.1.noarch.rpm  出现错误： 12错误：依赖检测失败：        daemonize 被 jenkins-2.325-1.1.noarch 需要 解决错误： 1yum -y install epel-release  1yum -y in">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-12-17T08:05:00.000Z">
-<meta property="article:modified_time" content="2022-04-25T07:58:01.587Z">
+<meta property="article:modified_time" content="2023-05-30T01:15:21.013Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="jenkins">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      undefined 字
+      1.7k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      NaN 分钟
+      15 分钟
     </span>
   
 
@@ -239,46 +239,46 @@
             
             <div class="markdown-body">
               <h3 id="1-下载地址"><a href="#1-下载地址" class="headerlink" title="1.下载地址"></a>1.下载地址</h3><p><a target="_blank" rel="noopener" href="http://mirrors.jenkins-ci.org/redhat/">http://mirrors.jenkins-ci.org/redhat/</a></p>
-<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh jenkins-2.325-1.1.noarch.rpm</span><br></pre></td></tr></table></figure>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs shell">rpm -ivh jenkins-2.325-1.1.noarch.rpm<br></code></pre></td></tr></table></figure>
 
 <p>出现错误：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">错误：依赖检测失败：</span><br><span class="line">        daemonize 被 jenkins-2.325-1.1.noarch 需要</span><br></pre></td></tr></table></figure>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs subunit">错误：依赖检测失败：<br>        daemonize 被 jenkins<span class="hljs-string">-2</span>.325<span class="hljs-string">-1</span>.1.noarch 需要<br></code></pre></td></tr></table></figure>
 <p>解决错误：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install epel-release</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum -y install epel-release<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install daemonize</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum -y install daemonize<br></code></pre></td></tr></table></figure>
 
 <h3 id="3-配置"><a href="#3-配置" class="headerlink" title="3.配置"></a>3.配置</h3><p>vim &#x2F;etc&#x2F;sysconfig&#x2F;jenkins</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#配置端口</span><br><span class="line">JENKINS_PORT=&quot;10000&quot;</span><br><span class="line">#配置用户</span><br><span class="line">JENKINS_USER=&quot;root&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment">#配置端口</span><br><span class="hljs-attr">JENKINS_PORT</span>=<span class="hljs-string">&quot;10000&quot;</span><br><span class="hljs-comment">#配置用户</span><br><span class="hljs-attr">JENKINS_USER</span>=<span class="hljs-string">&quot;root&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>修改目录权限</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown -R root:root /var/lib/jenkins</span><br><span class="line">chown -R root:root /var/cache/jenkins</span><br><span class="line">chown -R root:root /var/log/jenkins</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">chown -R root:root <span class="hljs-regexp">/var/</span>lib/jenkins<br>chown -R root:root <span class="hljs-regexp">/var/</span>cache/jenkins<br>chown -R root:root <span class="hljs-regexp">/var/</span>log/jenkins<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-启动"><a href="#4-启动" class="headerlink" title="4.启动"></a>4.启动</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service jenkins start</span><br></pre></td></tr></table></figure>
+<h3 id="4-启动"><a href="#4-启动" class="headerlink" title="4.启动"></a>4.启动</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">service jenkins <span class="hljs-literal">start</span><br></code></pre></td></tr></table></figure>
 
 <p>出现：</p>
 <p>Starting jenkins (via systemctl):  Job for jenkins.service failed because the control process exited with error code. See “systemctl status jenkins.service” and “journalctl -xe” for details. [FAILED]</p>
 <p>查看错误详情：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status jenkins.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs fortran">systemctl <span class="hljs-keyword">status</span> jenkins.service<br></code></pre></td></tr></table></figure>
 
 <p>出现：</p>
 <p>Starting Jenkins File “&#x2F;usr&#x2F;bin&#x2F;java” is not executable.</p>
 <p>解决：</p>
 <p>查看java安装目录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">which java</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">which</span> java<br></code></pre></td></tr></table></figure>
 
 <p>创建软连接：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/local/jdk1.8/bin/java /usr/bin/java</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">ln -s <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/jdk1.8/</span>bin<span class="hljs-regexp">/java /u</span>sr<span class="hljs-regexp">/bin/</span>java<br></code></pre></td></tr></table></figure>
 
 <p>启动：service jenkins start</p>
 <p>设置开机启动：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig jenkins on</span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">chkconfig</span> jenkins <span class="hljs-literal">on</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="5-访问及配置"><a href="#5-访问及配置" class="headerlink" title="5.访问及配置"></a>5.访问及配置</h3><p><a target="_blank" rel="noopener" href="http://8.142.19.12:10000/">http://8.142.19.12:10000/</a></p>
-<h4 id="5-1创建第一个管理用户："><a href="#5-1创建第一个管理用户：" class="headerlink" title="5.1创建第一个管理用户："></a>5.1创建第一个管理用户：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jenkinsadmin</span><br></pre></td></tr></table></figure>
+<h4 id="5-1创建第一个管理用户："><a href="#5-1创建第一个管理用户：" class="headerlink" title="5.1创建第一个管理用户："></a>5.1创建第一个管理用户：</h4><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">jenkinsadmin</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="5-2配置插件更新源"><a href="#5-2配置插件更新源" class="headerlink" title="5.2配置插件更新源"></a>5.2配置插件更新源</h4><p>Dashboard –&gt; Manage Jenkins –&gt; Manage Plugins –&gt; Advances –&gt; Update Site</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/jenkins/u</span>pdates/update-center.json<br></code></pre></td></tr></table></figure>
 
 <h4 id="5-3安装权限插件"><a href="#5-3安装权限插件" class="headerlink" title="5.3安装权限插件"></a>5.3安装权限插件</h4><p>Role-based Authorization Strategy   权限的插件（百度一下如何使用）</p>
 <p>git 插件</p>
@@ -292,7 +292,7 @@
 <p>构建（build）： Goals and options: clean install -Dmaven.test.skip&#x3D;true</p>
 <p>Post Steps: 选择Run only if build succeeds </p>
 <p>选择“执行shell”:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cp $&#123;WORKSPACE&#125;/trans-admin/target/trans-admin.jar /usr/local/pro/trans-core/</span><br><span class="line">if [$? -ne 0]; then </span><br><span class="line">    echo &quot;拷贝jar包失败&quot;</span><br><span class="line">else</span><br><span class="line">  cd /usr/local/pro/trans-core/</span><br><span class="line">  BUILD_ID=dontKillMe</span><br><span class="line">  sh ./script.sh restart</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">cp $&#123;WORKSPACE&#125;/trans-admin/target/trans-admin.jar /usr/local/pro/trans-core/<br>if [$? -ne 0]; then <br>    echo &quot;拷贝jar包失败&quot;<br>else<br>  cd /usr/local/pro/trans-core/<br>  BUILD_ID=dontKillMe<br>  sh ./script.sh restart<br>fi<br></code></pre></td></tr></table></figure>
 
 <p>必须要加上BUILD_ID&#x3D;dontKillMe，不然后不能启动成功</p>
 

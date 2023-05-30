@@ -24,7 +24,7 @@
 <meta property="og:description" content="常用命令登录命令 1mysql -h$ip -P$port -u$user -p  查看mysql版本号 1select version();   按客户端 IP 分组，看哪个客户端的链接数最多 1234567891011121314SELECT	client_ip,	count(client_ip) AS client_numFROM	(		SELECT			substring_index(HO">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-06-08T05:40:12.000Z">
-<meta property="article:modified_time" content="2022-04-25T07:58:01.588Z">
+<meta property="article:modified_time" content="2023-05-30T01:15:21.076Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="mysql">
 <meta property="article:tag" content="sql">
@@ -198,7 +198,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      undefined 字
+      955 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      NaN 分钟
+      8 分钟
     </span>
   
 
@@ -240,32 +240,32 @@
             
             <div class="markdown-body">
               <h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>登录命令</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql <span class="operator">-</span>h$ip <span class="operator">-</span>P$port <span class="operator">-</span>u$<span class="keyword">user</span> <span class="operator">-</span>p</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs sql">mysql <span class="hljs-operator">-</span>h$ip <span class="hljs-operator">-</span>P$port <span class="hljs-operator">-</span>u$<span class="hljs-keyword">user</span> <span class="hljs-operator">-</span>p<br></code></pre></td></tr></table></figure>
 
 <p>查看mysql版本号</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> version(); </span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> version(); <br></code></pre></td></tr></table></figure>
 
 <p>按客户端 IP 分组，看哪个客户端的链接数最多</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	client_ip,</span><br><span class="line">	<span class="built_in">count</span>(client_ip) <span class="keyword">AS</span> client_num</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">		<span class="keyword">SELECT</span></span><br><span class="line">			substring_index(HOST, <span class="string">&#x27;:&#x27;</span>, <span class="number">1</span>) <span class="keyword">AS</span> client_ip</span><br><span class="line">		<span class="keyword">FROM</span></span><br><span class="line">			information_schema. PROCESSLIST</span><br><span class="line">	) <span class="keyword">AS</span> connect_info</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">	client_ip</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	client_num <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span><br>	client_ip,<br>	<span class="hljs-built_in">count</span>(client_ip) <span class="hljs-keyword">AS</span> client_num<br><span class="hljs-keyword">FROM</span><br>	(<br>		<span class="hljs-keyword">SELECT</span><br>			substring_index(HOST, <span class="hljs-string">&#x27;:&#x27;</span>, <span class="hljs-number">1</span>) <span class="hljs-keyword">AS</span> client_ip<br>		<span class="hljs-keyword">FROM</span><br>			information_schema. PROCESSLIST<br>	) <span class="hljs-keyword">AS</span> connect_info<br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span><br>	client_ip<br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span><br>	client_num <span class="hljs-keyword">DESC</span>;<br></code></pre></td></tr></table></figure>
 
 <p>查看正在执行的线程，并按 Time 倒排序，看看有没有执行时间特别长的线程</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	information_schema. PROCESSLIST</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	Command <span class="operator">!=</span> <span class="string">&#x27;Sleep&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	<span class="type">Time</span> <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span><br>	<span class="hljs-operator">*</span><br><span class="hljs-keyword">FROM</span><br>	information_schema. PROCESSLIST<br><span class="hljs-keyword">WHERE</span><br>	Command <span class="hljs-operator">!=</span> <span class="hljs-string">&#x27;Sleep&#x27;</span><br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span><br>	<span class="hljs-type">Time</span> <span class="hljs-keyword">DESC</span>;<br></code></pre></td></tr></table></figure>
 
 <p>找出所有执行时间超过 5 分钟的线程，拼凑出 kill 语句，方便后面查杀 （此处 5分钟 可根据自己的需要调整SQL）</p>
 <p>可复制查询结果到控制台，直接执行，杀死堵塞进程</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	concat(<span class="string">&#x27;kill &#x27;</span>, id, <span class="string">&#x27;;&#x27;</span>)</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	information_schema. PROCESSLIST</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	Command <span class="operator">!=</span> <span class="string">&#x27;Sleep&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> <span class="type">Time</span> <span class="operator">&gt;</span> <span class="number">300</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	<span class="type">Time</span> <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sql"><br><br><span class="hljs-keyword">SELECT</span><br>	concat(<span class="hljs-string">&#x27;kill &#x27;</span>, id, <span class="hljs-string">&#x27;;&#x27;</span>)<br><span class="hljs-keyword">FROM</span><br>	information_schema. PROCESSLIST<br><span class="hljs-keyword">WHERE</span><br>	Command <span class="hljs-operator">!=</span> <span class="hljs-string">&#x27;Sleep&#x27;</span><br><span class="hljs-keyword">AND</span> <span class="hljs-type">Time</span> <span class="hljs-operator">&gt;</span> <span class="hljs-number">300</span><br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span><br>	<span class="hljs-type">Time</span> <span class="hljs-keyword">DESC</span>;<br></code></pre></td></tr></table></figure>
 
 <p>查看mysql隔离级别</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> VARIABLES <span class="keyword">like</span> &quot;%ISOLATION&quot;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> VARIABLES <span class="hljs-keyword">like</span> &quot;%ISOLATION&quot;;<br></code></pre></td></tr></table></figure>
 
 <p>查看msyql redo log的刷新</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> VARIABLES <span class="keyword">like</span> &quot;innodb_flush_log_at_trx_commit&quot;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> VARIABLES <span class="hljs-keyword">like</span> &quot;innodb_flush_log_at_trx_commit&quot;;<br></code></pre></td></tr></table></figure>
 
 <p>查看msyql bin log的刷新</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> VARIABLES <span class="keyword">like</span> &quot;sync_binlog&quot;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> VARIABLES <span class="hljs-keyword">like</span> &quot;sync_binlog&quot;;<br></code></pre></td></tr></table></figure>
 
 <p>查看持续时间超过60S的事务</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	information_schema.INNODB_TRX</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	TIME_TO_SEC(</span><br><span class="line">		TIMEDIFF(now(), trx_started)</span><br><span class="line">	) <span class="operator">&gt;</span> <span class="number">60</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span><br>	<span class="hljs-operator">*</span><br><span class="hljs-keyword">FROM</span><br>	information_schema.INNODB_TRX<br><span class="hljs-keyword">WHERE</span><br>	TIME_TO_SEC(<br>		TIMEDIFF(now(), trx_started)<br>	) <span class="hljs-operator">&gt;</span> <span class="hljs-number">60</span><br></code></pre></td></tr></table></figure>
 
 
             </div>

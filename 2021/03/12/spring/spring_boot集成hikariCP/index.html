@@ -24,7 +24,7 @@
 <meta property="og:description" content="一、spring boot版本使用的数据库连接池 Spring Boot 1.x 默认使用的是 Tomcat 连接池，需要移除 tomcat-jdbc，配置 spring.datasource.type&#x3D;com.zaxxer.hikari.hIkari.HikariDatasource Spring Boot 2.x 默认使用 HikariCP  二、spring boot 2.x使用123456">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-12T02:25:00.000Z">
-<meta property="article:modified_time" content="2022-04-25T07:58:01.589Z">
+<meta property="article:modified_time" content="2023-05-30T01:15:21.155Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="spring">
 <meta property="article:tag" content="spring boot">
@@ -198,7 +198,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      undefined 字
+      543 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      NaN 分钟
+      5 分钟
     </span>
   
 
@@ -243,7 +243,7 @@
 <li>Spring Boot 1.x 默认使用的是 Tomcat 连接池，需要移除 <code>tomcat-jdbc</code>，配置 <code>spring.datasource.type=com.zaxxer.hikari.hIkari.HikariDatasource</code></li>
 <li>Spring Boot 2.x 默认使用 HikariCP</li>
 </ul>
-<h3 id="二、spring-boot-2-x使用"><a href="#二、spring-boot-2-x使用" class="headerlink" title="二、spring boot 2.x使用"></a>二、spring boot 2.x使用</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://127.0.0.1:3306/crm?useSSL=true\</span></span><br><span class="line"><span class="string">  &amp;useUnicode=true\</span></span><br><span class="line"><span class="string">  &amp;characterEncoding=UTF-8\</span></span><br><span class="line"><span class="string">  &amp;useServerPrepStmts=true\</span></span><br><span class="line"><span class="string">  &amp;serverTimezone=Asia/Shanghai\</span></span><br><span class="line"><span class="string">  &amp;zeroDateTimeBehavior=CONVERT_TO_NULL</span></span><br><span class="line"><span class="attr">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">spring.datasource.password</span>=<span class="string">你的密码</span></span><br><span class="line"><span class="attr">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+<h3 id="二、spring-boot-2-x使用"><a href="#二、spring-boot-2-x使用" class="headerlink" title="二、spring boot 2.x使用"></a>二、spring boot 2.x使用</h3><figure class="highlight properties"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">spring.datasource.url</span>=<span class="hljs-string">jdbc:mysql://127.0.0.1:3306/crm?useSSL=true\</span><br><span class="hljs-string">  &amp;useUnicode=true\</span><br><span class="hljs-string">  &amp;characterEncoding=UTF-8\</span><br><span class="hljs-string">  &amp;useServerPrepStmts=true\</span><br><span class="hljs-string">  &amp;serverTimezone=Asia/Shanghai\</span><br><span class="hljs-string">  &amp;zeroDateTimeBehavior=CONVERT_TO_NULL</span><br><span class="hljs-attr">spring.datasource.username</span>=<span class="hljs-string">root</span><br><span class="hljs-attr">spring.datasource.password</span>=<span class="hljs-string">你的密码</span><br><span class="hljs-attr">spring.datasource.driver-class-name</span>=<span class="hljs-string">com.mysql.cj.jdbc.Driver</span><br></code></pre></td></tr></table></figure>
 
 <p>其他的就是一些配置了，用时在说吧</p>
 
