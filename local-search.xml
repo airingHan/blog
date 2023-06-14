@@ -4,6 +4,291 @@
   
   
   <entry>
+    <title>java非框架使用rabbitmq</title>
+    <link href="/2023/06/14/mq/java%E9%9D%9E%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8rabbitmq/"/>
+    <url>/2023/06/14/mq/java%E9%9D%9E%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8rabbitmq/</url>
+    
+    <content type="html"><![CDATA[<h2 id="如果英语好"><a href="#如果英语好" class="headerlink" title="如果英语好"></a>如果英语好</h2><p><a href="https://www.rabbitmq.com/">https://www.rabbitmq.com/</a></p><p>点击Developer Experience</p><p><a href="https://www.rabbitmq.com/devtools.html">https://www.rabbitmq.com/devtools.html</a></p><p>这里是普通java客户端：</p><p>点击<a href="https://www.rabbitmq.com/api-guide.html">developer guide</a></p><p>这里是spring Framework:</p><p><a href="https://spring.io/projects/spring-amqp">https://spring.io/projects/spring-amqp</a></p><h2 id="普通java版"><a href="#普通java版" class="headerlink" title="普通java版"></a>普通java版</h2><figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.example;<br><br><span class="hljs-keyword">import</span> com.rabbitmq.client.*;<br><br><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.util.concurrent.TimeoutException;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RabbitMqMain</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Connection <span class="hljs-title function_">getConnection</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException, TimeoutException &#123;<br>        <span class="hljs-comment">//1.创建连接工厂</span><br>        <span class="hljs-type">ConnectionFactory</span> <span class="hljs-variable">factory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConnectionFactory</span>();<span class="hljs-comment">//MQ采用工厂模式来完成连接的创建</span><br>        <span class="hljs-comment">//2.在工厂对象中设置连接信息(ip,port,virtualhost,username,password)</span><br>        factory.setHost(<span class="hljs-string">&quot;127.0.0.1&quot;</span>);<span class="hljs-comment">//设置MQ安装的服务器ip地址</span><br>        factory.setPort(<span class="hljs-number">5672</span>);<span class="hljs-comment">//设置端口号</span><br>        factory.setVirtualHost(<span class="hljs-string">&quot;/&quot;</span>);<span class="hljs-comment">//设置虚拟主机名称</span><br>        <span class="hljs-comment">//MQ通过用户来管理</span><br>        factory.setUsername(<span class="hljs-string">&quot;admin&quot;</span>);<span class="hljs-comment">//设置用户名称</span><br>        factory.setPassword(<span class="hljs-string">&quot;123456&quot;</span>);<span class="hljs-comment">//设置用户密码</span><br>        <span class="hljs-comment">//3.通过工厂对象获取连接</span><br>        <span class="hljs-type">Connection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> factory.newConnection();<br>        <span class="hljs-keyword">return</span> connection;<br>    &#125;<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sendMsg</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException, TimeoutException &#123;<br>        <span class="hljs-comment">//获取连接</span><br>        <span class="hljs-type">Connection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> getConnection();<br>        <span class="hljs-comment">//mq提供Channel来将处理消息</span><br>        <span class="hljs-comment">//创建Channel</span><br>        <span class="hljs-type">Channel</span> <span class="hljs-variable">channel</span> <span class="hljs-operator">=</span> connection.createChannel();<br>        <span class="hljs-comment">//通道绑定对应消息队列</span><br>        <span class="hljs-comment">//参数1:  队列名称 如果队列不存在自动创建</span><br>        <span class="hljs-comment">//参数2:  用来定义队列特性是否要持久化 true 持久化队列   false 不持久化</span><br>        <span class="hljs-comment">//参数3:  exclusive 是否独占队列，表示声明的当前队列只允许当前的连接所使用  true 独占队列   false  不独占</span><br>        <span class="hljs-comment">//参数4:  autoDelete: 是否在消费完成后自动删除队列  true 自动删除  false 不自动删除</span><br>        <span class="hljs-comment">//参数5:  额外附加参数</span><br>        channel.queueDeclare(<span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">null</span>);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;hello world&quot;</span>;<br>        <span class="hljs-comment">//basicPublish将消息发送到指定的交换机</span><br>        <span class="hljs-comment">//发布消息</span><br>        <span class="hljs-comment">//参数1: 交换机名称 参数2:队列名称  参数3:传递息额外设置（MessageProperties.PERSISTENT_TEXT_PLAIN 设置消息持久化）  参数4:消息的具体内容</span><br>        channel.basicPublish(<span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;hello&quot;</span>, MessageProperties.PERSISTENT_TEXT_PLAIN, <span class="hljs-string">&quot;hello rabbitmq&quot;</span>.getBytes());<br>        <span class="hljs-comment">//关闭连接</span><br>        channel.close();<br>        connection.close();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">consumerMsg</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException, TimeoutException &#123;<br>        <span class="hljs-comment">//获取与MQ的连接</span><br>        <span class="hljs-type">Connection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> getConnection();<br>        <span class="hljs-comment">//创建Channel</span><br>        <span class="hljs-type">Channel</span> <span class="hljs-variable">channel</span> <span class="hljs-operator">=</span> connection.createChannel();<br>        <span class="hljs-comment">//通道绑定队列：与生产端一致</span><br>        channel.queueDeclare(<span class="hljs-string">&quot;hello&quot;</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">null</span>);<br>        <span class="hljs-comment">//获取Consumer</span><br>        <span class="hljs-type">Consumer</span> <span class="hljs-variable">consumer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultConsumer</span>(channel)&#123;<br>            <span class="hljs-comment">//重写handleDelivery方法（这个方法是消息的处理过程）</span><br>            <span class="hljs-comment">//body参数就是接受到的消息</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleDelivery</span><span class="hljs-params">(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, <span class="hljs-type">byte</span>[] body)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>                <span class="hljs-comment">//将消息转换成String类型然后打印</span><br>                <span class="hljs-type">String</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(body);<br>                System.out.println(msg);<br>            &#125;<br>        &#125;;<br>        <span class="hljs-comment">//通过basicConsumer方法从指定队列中获取消息，消息生产者会通过ex2交换机中的key值将消息发送到queue6中，因为在创建queue6时绑定到交换机ex3中，指定的路由键为a。</span><br>        <span class="hljs-comment">//consumer参数是消息接收之后的处理方法</span><br>        channel.basicConsume(<span class="hljs-string">&quot;hello&quot;</span>,<span class="hljs-literal">true</span>,consumer);<br><br>    &#125;<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, TimeoutException &#123;<br>        consumerMsg();<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>rabbitmq</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mq</tag>
+      
+      <tag>rabbitmq</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>rabbitmq内存不足触发内存告警</title>
+    <link href="/2023/06/13/mq/rabbitmq%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E8%A7%A6%E5%8F%91%E5%86%85%E5%AD%98%E5%91%8A%E8%AD%A6/"/>
+    <url>/2023/06/13/mq/rabbitmq%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E8%A7%A6%E5%8F%91%E5%86%85%E5%AD%98%E5%91%8A%E8%AD%A6/</url>
+    
+    <content type="html"><![CDATA[<h2 id="启因"><a href="#启因" class="headerlink" title="启因"></a>启因</h2><p>因为项目是直接拿过来的(有生产无测试环境)，需要搭建测试环境，但是测试环境与生产环境的配置不一致。</p><p>启动项目时提示</p><figure class="highlight livecodeserver"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs livecodeserver">Consumer failed <span class="hljs-built_in">to</span> <span class="hljs-built_in">start</span> <span class="hljs-keyword">in</span> <span class="hljs-number">60000</span> <span class="hljs-built_in">milliseconds</span>; does <span class="hljs-keyword">the</span> task executor have enough threads <span class="hljs-built_in">to</span> support <span class="hljs-keyword">the</span> container concurrency?<br></code></pre></td></tr></table></figure><h2 id="网上查询说是rabbitmq内存告警"><a href="#网上查询说是rabbitmq内存告警" class="headerlink" title="网上查询说是rabbitmq内存告警"></a>网上查询说是rabbitmq内存告警</h2><p>在rabbitmq的配置文件里加入</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">vm_memory_high_watermark.absolute</span> = <span class="hljs-number">1073741824</span><br></code></pre></td></tr></table></figure><p>配置文件需要创建。</p><p>查看配置文件路径：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> rabbitmq-defaults<br></code></pre></td></tr></table></figure><p>一般都在&#x2F;etc&#x2F;rabbitmq&#x2F;</p><p>vim rabbitmq.conf</p><p>添加上面的内容。</p><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stata">配置文件 rabbitmq.<span class="hljs-keyword">conf</span><br>环境变量文件 rabbitmq-env.<span class="hljs-keyword">conf</span><br>补充配置文件 advanced.config<br></code></pre></td></tr></table></figure><h2 id="了解"><a href="#了解" class="headerlink" title="了解"></a>了解</h2><p>RabbitMQ服务器，会在启动时以及执行 rabbitmqctl set_vm_memory_high_watermark 命令时，检测计算机安装的RAM总量。默认情况下，当RabbitMQ服务器使用超过40%的可用RAM空间时，它便会触发告警，并阻塞所有正在发布消息的连接。一旦内存告警被解除（例如，服务器将内存中的消息持久化到磁盘，或者将消息交付给消费者并得到消费者确认），便会恢复正常服务。</p><p>默认的内存阈值，被设置为系统安装RAM的40%。请注意，这不会阻止RabbitMQ使用超过40%的内存，这仅仅是指消息发布者会被限制。在最坏的情况下，Erlang的垃圾回收器可能导致使用的内存量增加一倍（默认情况下，为80%）。所以强烈建议，启用操作系统的swap（linux）或分页文件（windows）。</p><p>32位体系结构倾向于对每个进程施加2GB的内存限制。64位体系结构（例如，AMD64和Intel EM64T）的常见实现是，每个进程仅允许微不足道的256TB。64位Windows将其进一步限制为8TB。但是，请注意，即使在64位操作系统下，一个32位进程也经常只有2GB的最大地址空间可用。</p><p>所有 32 位应用程序都有 4 GB 的进程地址空间（32 位地址最多可以映射 4 GB 的内存）。对于 Microsoft Windows 操作系统，应用程序可以访问 2 GB 的进程地址空间，称为用户模式虚拟地址空间。应用程序拥有的所有线程都共享同一个用户模式虚拟地址空间。其余 2 GB 为操作系统保留（也称为内核模式地址空间）。所有操作系统版本（从 Windows 2000 Server 开始，包括 Windows Server 2003）都有一个 boot.ini 开关，可以为应用程序提供访问 3 GB 的进程地址空间的权限，从而将内核模式地址空间限定为 1 GB。</p><h3 id="配置内存阈值"><a href="#配置内存阈值" class="headerlink" title="配置内存阈值"></a>配置内存阈值</h3><p>可以通过编辑配置文件，来调整触发流控的内存阈值。</p><p>下面的示例，将内存阈值设置为默认的0.4：</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">vm_memory_high_watermark</span>.relative = <span class="hljs-number">0</span>.<span class="hljs-number">4</span><br></code></pre></td></tr></table></figure><p>默认值0.4代表40%的可用内存（监测到的），或者可用虚拟地址空间的40%，以较小者为准。例如，在安装了4GiB RAM的32位平台上，4GiB的40%是1.6GiB，但是32位Windows通常将进程限制为2GiB，因此阈值实际上是2GiB的40%（也就是820MiB）。</p><p>或者，可以通过设置一个节点使用的RAM的绝对限制，来调整内存阈值。下面的示例，将阈值设置为1073741824 bytes（1024 MiB）：</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">vm_memory_high_watermark.absolute</span> = <span class="hljs-number">1073741824</span><br></code></pre></td></tr></table></figure><p>或者，使用存储单位表示：</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">vm_memory_high_watermark.absolute</span> = <span class="hljs-number">1024</span>MiB<br></code></pre></td></tr></table></figure><p>如果设置的绝对限制值，比安装的RAM大，或者比可用的虚拟地址空间大，则阈值被设置为限制值较小的那个。RabbitMQ节点启动时，会将内存阈值配置追加到日志文件，如下：</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">2023</span>-<span class="hljs-number">06</span>-<span class="hljs-number">13</span> <span class="hljs-number">10</span>:<span class="hljs-number">06</span>:<span class="hljs-number">34</span>.<span class="hljs-number">692754</span>+<span class="hljs-number">08</span>:<span class="hljs-number">00</span><span class="hljs-meta"> [info] &lt;0.379.0&gt; Memory high watermark set to 1024 MiB (1073741824 bytes) of 3646 MiB (3823181824 bytes) total</span><br></code></pre></td></tr></table></figure><p>也可以使用如下两条命令查询内存限制配置：</p><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">rabbitmq-diagnostics memory_breakdown</span><br><span class="hljs-attribute">rabbitmqctl status</span><br></code></pre></td></tr></table></figure><p>在代理运行时，可以使用如下两条命令更改阈值：</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs xml">rabbitmqctl set_vm_memory_high_watermark <span class="hljs-tag">&lt;<span class="hljs-name">fraction</span>&gt;</span><br>rabbitmqctl set_vm_memory_high_watermark absolute <span class="hljs-tag">&lt;<span class="hljs-name">memory_limit</span>&gt;</span><br></code></pre></td></tr></table></figure><p>例如：</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">rabbitmqctl</span> set_vm_memory_high_watermark <span class="hljs-number">0</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">rabbitmqctl</span> set_vm_memory_high_watermark absolute “<span class="hljs-number">4</span>G”<br></code></pre></td></tr></table></figure><p>这两个命令都将起作用，直到节点停止运行。要使该设置在节点重启后仍然有效，可以使用配置设置代替。执行此命令时，即使未修改阈值，在具有可热插拔RAM的系统上，内存限制值可能还是会变化，因为查询的是系统RAM的总量。</p><ul><li>M，MiB，兆字节（2 ^ 20字节，1024 * 1024）</li><li>G，GiB，gibibytes（2 ^ 30字节，1024 * 1024 * 1024）</li><li>MB，兆字节（10 ^ 6字节，1000 * 1000）</li><li>GB，千兆字节（10 ^ 9字节， 1000 * 1000 * 1000）</li></ul><p>对于单位的使用，原文使用了G，GiB，也使用了GB，感觉上是有点乱的。</p><p>Gibibyte（giga binary byte的缩写）是信息或计算机硬盘存储的一个单位，简称GiB。由来“GiB”、“KiB”、“MiB”等是于1999年由国际电工协会（IEC）拟定了”KiB”、“MiB”、“GiB”的二进制单位，专用来标示“1024进位”的数据大小。而后，这一标注规范又于2008年并入国际标准化组织（ISO）文件。具体的来说,1GiB&#x3D;1024MiB，1MiB&#x3D;1024KiB。他们与GB、MB、KB是不一样的，GB等则是1000进位的数据单位。根据Wikipedia的注译，GB（gigabyte）是十进制的容量单位，1GB等于1,000,000,000 Bytes。而二进制的容量单位则是用GiB（Gibibyte）就是Giga Binary Byte，相等于1,073,741,824 Bytes。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>rabbitmq</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mq</tag>
+      
+      <tag>rabbitmq</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>rabbitmq安装延时队列插件</title>
+    <link href="/2023/06/12/mq/rabbitmq%E5%AE%89%E8%A3%85%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97%E6%8F%92%E4%BB%B6/"/>
+    <url>/2023/06/12/mq/rabbitmq%E5%AE%89%E8%A3%85%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97%E6%8F%92%E4%BB%B6/</url>
+    
+    <content type="html"><![CDATA[<h2 id="下载插件"><a href="#下载插件" class="headerlink" title="下载插件"></a>下载插件</h2><p><a href="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases">https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases</a></p><p>版本号需要对应</p><figure class="highlight apache"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">v3</span>.<span class="hljs-number">11</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">This</span> release targets RabbitMQ <span class="hljs-number">3</span>.<span class="hljs-number">11</span>.x and as such, requires Erlang <span class="hljs-number">25</span>.<br></code></pre></td></tr></table></figure><h2 id="解压并启用插件"><a href="#解压并启用插件" class="headerlink" title="解压并启用插件"></a>解压并启用插件</h2><p>把下载的插件直接放到rabbitmq的plugins目录下。</p><p>启用插件</p><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">rabbitmq-plugins <span class="hljs-built_in">enable</span> rabbitmq_delayed_message_exchange<br></code></pre></td></tr></table></figure><h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>进入图形管理界面，exchanges, 点击添加交换机，选择type发现有x-delayed-message选项。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>rabbitmq</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mq</tag>
+      
+      <tag>rabbitmq</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>linux的zcat</title>
+    <link href="/2023/06/09/linux/linux%E7%9A%84zcat%E5%91%BD%E4%BB%A4/"/>
+    <url>/2023/06/09/linux/linux%E7%9A%84zcat%E5%91%BD%E4%BB%A4/</url>
+    
+    <content type="html"><![CDATA[<h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>zcat命令用于不真正解压缩文件，就能显示压缩包中文件的内容的场合。zcat是一个命令行实用程序，用于查看压缩文件的内容，而无需对其进行解压缩。 它将压缩文件扩展为标准输出，使您可以查看其内容。 另外，zcat与运行gunzip -c命令完全相同。</p><h3 id="语法格式"><a href="#语法格式" class="headerlink" title="语法格式"></a>语法格式</h3><p>zcat [参数]</p><table><thead><tr><th>-S</th><th>当后缀不是标准压缩包后缀时使用此选项</th></tr></thead><tbody><tr><td>-c</td><td>将文件内容写到标注输出</td></tr><tr><td>-d</td><td>执行解压缩操作</td></tr><tr><td>-l</td><td>显示压缩包中文件的列表</td></tr><tr><td>-L</td><td>显示软件许可信息</td></tr><tr><td>-q</td><td>禁用警告信息</td></tr><tr><td>-r</td><td>在目录上执行递归操作</td></tr><tr><td>-t</td><td>测试压缩文件的完整性</td></tr><tr><td>-V</td><td>显示指令的版本信息</td></tr><tr><td>-l</td><td>更快的压缩速度</td></tr><tr><td>-9</td><td>更高的压缩比</td></tr></tbody></table><h3 id="参考实例"><a href="#参考实例" class="headerlink" title="参考实例"></a>参考实例</h3><p>不解压缩文件的情况下，显示压缩包中文件的内容：</p><figure class="highlight applescript"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs applescript">zcat <span class="hljs-built_in">file</span>.gz<br></code></pre></td></tr></table></figure><p>查看多个压缩文件：</p><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">zcat</span> file1.gz file2.gz<br></code></pre></td></tr></table></figure><p>查看普通文件的内容：</p><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">zcat -f <span class="hljs-built_in">file</span><br></code></pre></td></tr></table></figure><p>获取压缩文件的属性（压缩大小，未压缩大小，比率 – 压缩率）：</p><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">zcat -l <span class="hljs-built_in">file</span>.gz<br></code></pre></td></tr></table></figure><p>禁止所有警告：</p><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">zcat -q <span class="hljs-built_in">file</span>.gz<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+      <tag>zcat</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>windows安装rabbitmq</title>
+    <link href="/2023/06/09/mq/windows%E5%AE%89%E8%A3%85rabbitmq/"/>
+    <url>/2023/06/09/mq/windows%E5%AE%89%E8%A3%85rabbitmq/</url>
+    
+    <content type="html"><![CDATA[<h3 id="安装Erlang"><a href="#安装Erlang" class="headerlink" title="安装Erlang"></a>安装Erlang</h3><p><a href="https://www.erlang.org/">https://www.erlang.org/</a></p><p>点击download</p><p><a href="https://www.erlang.org/downloads">https://www.erlang.org/downloads</a></p><p>下载安装即可</p><h3 id="安装rabbitmq-server"><a href="#安装rabbitmq-server" class="headerlink" title="安装rabbitmq-server"></a>安装rabbitmq-server</h3><p><a href="https://www.rabbitmq.com/">https://www.rabbitmq.com/</a></p><p>搜索 Download</p><p>点击 Download + installation</p><p>点击 install windows</p><p>下载<a href="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.0/rabbitmq-server-3.12.0.exe">rabbitmq-server-3.12.0.exe</a></p><p>图形化的安装。</p><p>安装完成后，这时windows服务已经启动。</p><p>执行 rabbitmqctl.bat status</p><p>有可能会出现</p><figure class="highlight pgsql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs pgsql">Error: unable <span class="hljs-keyword">to</span> <span class="hljs-keyword">perform</span> an operation <span class="hljs-keyword">on</span> node <span class="hljs-string">&#x27;rabbit@DESKTOP-UVTEHFR&#x27;</span>. Please see <span class="hljs-keyword">diagnostics</span> information <span class="hljs-keyword">and</span> suggestions below.<br></code></pre></td></tr></table></figure><p>rabbitmq在报错信息之后给出了一些建议的解决办法</p><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs vhdl">Most common reasons <span class="hljs-keyword">for</span> this are:<br><br> * Target node <span class="hljs-keyword">is</span> unreachable (e.g. due <span class="hljs-keyword">to</span> hostname resolution, TCP connection <span class="hljs-keyword">or</span> firewall issues)<br><br> * CLI tool fails <span class="hljs-keyword">to</span> authenticate <span class="hljs-keyword">with</span> the server (e.g. due <span class="hljs-keyword">to</span> CLI tool<span class="hljs-symbol">&#x27;s</span> Erlang cookie <span class="hljs-keyword">not</span> matching that <span class="hljs-keyword">of</span> the server)<br><br> * Target node <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> running<br><br><span class="hljs-keyword">In</span> addition <span class="hljs-keyword">to</span> the diagnostics info below:<br><br> * See the CLI, clustering <span class="hljs-keyword">and</span> networking guides <span class="hljs-keyword">on</span> http://rabbitmq.com/documentation.html <span class="hljs-keyword">to</span> learn more<br></code></pre></td></tr></table></figure><p>一般是第二条</p><figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vbnet">CLI tool fails <span class="hljs-keyword">to</span> authenticate <span class="hljs-keyword">with</span> the server (e.g. due <span class="hljs-keyword">to</span> CLI tool<span class="hljs-comment">&#x27;s Erlang cookie not matching that of the server)</span><br></code></pre></td></tr></table></figure><p>Erlangcookie不匹配</p><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">C:\Windows\System32\config\systemprofile\<span class="hljs-selector-class">.erlang</span><span class="hljs-selector-class">.cookie</span><br>与<br>C:\用户\你的用户名\<span class="hljs-selector-class">.erlang</span><span class="hljs-selector-class">.cookie</span><br>不匹配，把这两个改成一个就可以了，覆盖就可以了<br></code></pre></td></tr></table></figure><p>这时右键我的电脑-&gt;管理-&gt;服务和应用程序  停止rabbitmq服务  启动rabbitmq服务。</p><p>这时再一执行rabbitmqctl.bat status， 显示正常。</p><h4 id="启用web管理"><a href="#启用web管理" class="headerlink" title="启用web管理"></a>启用web管理</h4><p>rabbitmq-plugins enable rabbitmq_management</p><p>浏览器访问：<a href="http://localhost:15672/%EF%BC%8C%E9%BB%98%E8%AE%A4%E8%B4%A6%E5%8F%B7%E5%92%8C%E5%AF%86%E7%A0%81%E4%B8%BA%EF%BC%9Aguest">http://localhost:15672/，默认账号和密码为：guest</a></p><p>登录进去后就可以看到交换机和队列了。</p><p>也可以点击admin添加用户</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>rabbitmq</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mq</tag>
+      
+      <tag>rabbitmq</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>git改分支名master改main</title>
+    <link href="/2023/06/08/git/git%E6%94%B9%E5%88%86%E6%94%AF%E5%90%8Dmaster%E6%94%B9main/"/>
+    <url>/2023/06/08/git/git%E6%94%B9%E5%88%86%E6%94%AF%E5%90%8Dmaster%E6%94%B9main/</url>
+    
+    <content type="html"><![CDATA[<figure class="highlight pgsql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs pgsql">GitHub <span class="hljs-keyword">is</span> working <span class="hljs-keyword">on</span> replacing the term “master” <span class="hljs-keyword">on</span> its service <span class="hljs-keyword">with</span> a neutral term <span class="hljs-keyword">like</span> “main” <span class="hljs-keyword">to</span> avoid <span class="hljs-keyword">any</span> unnecessary <span class="hljs-keyword">references</span> <span class="hljs-keyword">to</span> slavery<br></code></pre></td></tr></table></figure><p>github觉得<strong>master</strong>有点slavery那味。</p><p>我们将本地仓库的<strong>master</strong>分支改名为**main</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git branch -m master main<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>git</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>趣谈网络协议网络分层</title>
+    <link href="/2023/06/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82/"/>
+    <url>/2023/06/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82/</url>
+    
+    <content type="html"><![CDATA[<p>  计算机网络有一个显著的特点，就是这是一个仅需要背诵，而且特别需要将原理烂熟于心的学科。</p><p>网络为什么要分层？</p><p>因为是个复杂的程序都要分层。</p><p>复杂的程序都要分层，这是程序设计的要求。</p><p>只要在网络上跑的包，都是完整的。可以有下层没有上层，绝对不可能有上层没下层。</p><p>所以，对TCP协议来说，三次握手也好，重试也好，只要想发出去包，就要有IP层和MAC层，不然发不出去。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>网络协议</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>网络协议</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>趣谈网络协议开始</title>
+    <link href="/2023/06/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%BC%80%E5%A7%8B/"/>
+    <url>/2023/06/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%BC%80%E5%A7%8B/</url>
+    
+    <content type="html"><![CDATA[<p> 从计算机出现后，就出现了协议的概念。</p><p>代码就是人和计算机沟通的协议，只有通过这种协议 ，计算机才知道我们想让它做什么。</p><p>协议三要素：</p><p>语法：规则</p><p>语义：函义</p><p>顺序：先做啥，后干啥。</p><p>网络协议：如何让一片机器做什么。</p><p>只有通过网络协议，才能使一片机器互相协作、共同完成一件事。</p><p>网络协议：</p><p>应用层：DHCP&#x2F;HTTP&#x2F;HTTPS&#x2F;RTMP&#x2F;P2P&#x2F;DNS&#x2F;GTP&#x2F;RPC</p><p>传输层：UDP&#x2F;TCP</p><p>网络层：ICMP&#x2F;IP&#x2F;OSRF&#x2F;BGP&#x2F;IPSec&#x2F;GRE</p><p>链路层：ARP&#x2F;VLAN&#x2F;STP</p><p>物理层:网络跳线</p><p>URL</p><p>DNS</p><p>HTTPDNS</p><p>IP</p><p>HTTP</p><p>HTTPS</p><p>UDP</p><p>TCP</p><p>DHCP</p><p>ARP</p><p>网卡</p><p>网关</p><p>路由表</p><p>路由协议：OSPF和BGP</p><p>TCP重试</p><p>RPC</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>网络协议</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>网络协议</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>文件上传413错误</title>
+    <link href="/2023/05/31/linux/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0413%E9%94%99%E8%AF%AF/"/>
+    <url>/2023/05/31/linux/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0413%E9%94%99%E8%AF%AF/</url>
+    
+    <content type="html"><![CDATA[<h2 id="上传文件报413错误"><a href="#上传文件报413错误" class="headerlink" title="上传文件报413错误"></a>上传文件报413错误</h2><p>其实不是上传文件的问题。查看请求body的大小，在Content-Length后显示，nginx默认的request body 为1M,  content-length单位为b。</p><p>在nginx配置文件nginx.cnf中在http{}段中加入 client_max_body_size 20m。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>nginx</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>nginx</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>git强制提交忽略文件到远程</title>
+    <link href="/2023/05/31/git/git%E5%BC%BA%E5%88%B6%E6%8F%90%E4%BA%A4%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E5%88%B0%E8%BF%9C%E7%A8%8B/"/>
+    <url>/2023/05/31/git/git%E5%BC%BA%E5%88%B6%E6%8F%90%E4%BA%A4%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E5%88%B0%E8%BF%9C%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>平时使用git时都会把项目中的target目录屏蔽掉，但是有时候就是需要用这个目录怎么办呢？</p><h3 id="1-方法一"><a href="#1-方法一" class="headerlink" title="1.方法一"></a>1.方法一</h3><p>之前我都是直接把.gitignore文件中的&#x2F;target目录去掉，等把需要的这个target文件提交后再把.gitignore改回来，这样比较麻烦。</p><h3 id="2-方法二"><a href="#2-方法二" class="headerlink" title="2.方法二"></a>2.方法二</h3><p>强制提交忽略的文件到git。</p><p>如下，找到文件位置，使用git add -f 文件名 命令来强制提交该文件到git，</p><p>并且以后再次提交的时候就已经可以正常提交，不需要强制提交。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>git</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>git强制提交忽略文件到远程</title>
+    <link href="/2023/05/31/git/git%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
+    <url>/2023/05/31/git/git%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>你们有没有在使用git的时候会遇到这种情况。在开发过程中，我们会在 .gitignore 文件中添加一些忽略项，然而当我们push到远程的时候会出现一个问题,那就是我们在 .gitignore 添加的文件仍然push到了远程。</p><h2 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h2><p>我们首次将项目push到远程的时候,没有创建 .gitignore 文件。之后我们想创建 .gitignore 文件并添加忽略项时,发现并不会起作用.  为什么我们后来添加不会起作用呢?  是因为我们在项目第一次push 之前已经将项目的所有文件在本地进行了缓存(commit)或者说是所有的项目已经被跟踪(track)纳入版本管理中。所以我们再添加忽略项的时候没有作用。</p><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>切记一定要按步骤完成, 不要清除本地缓存后,直接commit,否则你会发现远程仓库文件全没了。</p><p>一定要      清除缓存 &#x3D;&#x3D;&gt;  add .  &#x3D;&#x3D;&gt;  commit &#x3D;&#x3D;&gt; push </p><figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">1. git <span class="hljs-built_in">rm</span> -r --cached .     <br>或者<br>1. git <span class="hljs-built_in">rm</span> -r --cached  不需要跟踪的文件名  <br><br>2. git add .<br>3. git commit -m <span class="hljs-string">&quot;update .gitignore&quot;</span><br>4. git push origin 远程分支名<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>git</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>nginx地址截断</title>
     <link href="/2023/05/30/linux/nginx%E5%9C%B0%E5%9D%80%E6%88%AA%E6%96%AD/"/>
     <url>/2023/05/30/linux/nginx%E5%9C%B0%E5%9D%80%E6%88%AA%E6%96%AD/</url>
@@ -1987,7 +2272,7 @@
     <link href="/2021/12/17/shell/springboot%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/"/>
     <url>/2021/12/17/shell/springboot%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/</url>
     
-    <content type="html"><![CDATA[<figure class="highlight shell"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></div></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">本脚本基本无需改动，注意要点均已用中文说明</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">1. 请将本脚本放到Linux系统的path路径下，最好是/bin目录下</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">2. 请给本脚本设备可执行权限</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">3. 启动示例         sh ./script.sh  start</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">4. 重启示例         sh ./script.sh  restart</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">5. 停止示例         sh ./script.sh  stop</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">6. 查看状态示例     sh ./script.sh  status</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 获取 java 命令的路径</span></span><br>JAVA_CMD=`which java`<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 脚本名称</span></span><br>APP_NAME=&quot;trans-admin.jar&quot;;<br><br>if [ -z &quot;$&#123;JAVA_CMD&#125;&quot; ];then<br>  echo &quot;Please install the Java environment&quot;;<br>  exit 1;<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 输出本命令的使用方法 并退出</span></span><br>usage() &#123;<br>    echo &quot;Usage: sh ./script.sh [start|stop|restart|status]&quot;<br>    exit 1<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 判断是否输入了两个参数</span></span><br>if [ $# -lt 1 ]; then<br>    usage<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 操作</span></span><br>OPERATION=$1;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 判断目标程序是否已经启动</span></span><br>is_running()&#123;<br><span class="hljs-meta prompt_">  #</span><span class="language-bash"><span class="hljs-comment"># 尝试获取已经运行程序的PID</span></span><br>  PID=`ps -ef|grep $&#123;APP_NAME&#125;|grep -v grep|awk &#x27;&#123;print $2&#125;&#x27;`<br>  if [ -z &quot;$&#123;PID&#125;&quot; ]; then<br>    return 0<br>  else<br>    return 1<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 启动程序</span></span><br>start()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;$&#123;APP_NAME&#125; is already running. pid is $&#123;PID&#125; .&quot;<br>  else<br>    ## 启动 jar 包<br>    echo &quot;$&#123;APP_NAME&#125; starting ...... &quot;<br>    nohup $&#123;JAVA_CMD&#125; -jar $&#123;APP_NAME&#125; &gt; /dev/null 2&gt;&amp;1 &amp;<br>    echo &quot;nohup $&#123;JAVA_CMD&#125; -jar   $&#123;APP_NAME&#125; &gt; /dev/null 2&gt;&amp;1 &amp;&quot;<br>    sleep 1<br>    echo &quot;$&#123;APP_NAME&#125; started  completed &quot;<br>    echo &quot;&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 停止程序</span></span><br>stop()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;PID is $&#123;PID&#125;, $&#123;APP_NAME&#125; stopping ...... &quot;<br>    kill $&#123;PID&#125;<br>    if [ $? -ne &quot;0&quot; ]; then<br>        echo &quot;kill $&#123;PID&#125; failed，execute kill -9 $&#123;PID&#125;&quot;<br>        kill -9 $&#123;PID&#125;<br>    fi<br>    sleep 1<br>    echo &quot;$&#123;APP_NAME&#125; stopped completed &quot;<br>  else<br>    echo &quot;$&#123;APP_NAME&#125; is not running&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 输出程序运行状态</span></span><br>status()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;$&#123;APP_NAME&#125; is running. pid is $&#123;PID&#125;&quot;<br>  else<br>    echo &quot;$&#123;APP_NAME&#125; is NOT running.&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 重启程序</span></span><br>restart()&#123;<br>  stop<br>  start<br>&#125;<br><br><br>case &quot;$OPERATION&quot; in<br>  &quot;start&quot;)<br>    start ;;<br>  &quot;stop&quot;)<br>    stop ;;<br>  &quot;status&quot;)<br>    status ;;<br>  &quot;restart&quot;)<br>    restart ;;<br>  *)<br>    usage ;;<br>esac<br>exit 0<br></code></pre></td></tr></table></figure><p>windows创建文件传到Linux需要把回车符转换：</p><p>用notepad++中“编辑”菜单中“文档格式转换”中“转换为UNIX”</p>]]></content>
+    <content type="html"><![CDATA[<figure class="highlight shell"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></div></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">本脚本基本无需改动，注意要点均已用中文说明</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">1. 请将本脚本放到Linux系统的path路径下，最好是/bin目录下</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">2. 请给本脚本设备可执行权限</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">3. 启动示例         sh ./script.sh  start</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">4. 重启示例         sh ./script.sh  restart</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">5. 停止示例         sh ./script.sh  stop</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">6. 查看状态示例     sh ./script.sh  status</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 获取 java 命令的路径</span></span><br>JAVA_CMD=`which java`<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 脚本名称</span></span><br>APP_NAME=&quot;trans-admin.jar&quot;;<br><br>if [ -z &quot;$&#123;JAVA_CMD&#125;&quot; ];then<br>  echo &quot;Please install the Java environment&quot;;<br>  exit 1;<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 输出本命令的使用方法 并退出</span></span><br>usage() &#123;<br>    echo &quot;Usage: sh ./script.sh [start|stop|restart|status]&quot;<br>    exit 1<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 判断是否输入了两个参数</span></span><br>if [ $# -lt 1 ]; then<br>    usage<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 操作</span></span><br>OPERATION=$1;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 判断目标程序是否已经启动</span></span><br>is_running()&#123;<br><span class="hljs-meta prompt_">  #</span><span class="language-bash"><span class="hljs-comment"># 尝试获取已经运行程序的PID</span></span><br>  PID=`ps -ef|grep $&#123;APP_NAME&#125;|grep -v grep|awk &#x27;&#123;print $2&#125;&#x27;`<br>  if [ -z &quot;$&#123;PID&#125;&quot; ]; then<br>    return 0<br>  else<br>    return 1<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 启动程序</span></span><br>start()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;$&#123;APP_NAME&#125; is already running. pid is $&#123;PID&#125; .&quot;<br>  else<br>    ## 启动 jar 包<br>    echo &quot;$&#123;APP_NAME&#125; starting ...... &quot;<br>    nohup $&#123;JAVA_CMD&#125; -jar $&#123;APP_NAME&#125; &gt; /dev/null 2&gt;&amp;1 &amp;<br>    echo &quot;nohup $&#123;JAVA_CMD&#125; -jar   $&#123;APP_NAME&#125; &gt; /dev/null 2&gt;&amp;1 &amp;&quot;<br>    sleep 1<br>    echo &quot;$&#123;APP_NAME&#125; started  completed &quot;<br>    echo &quot;&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 停止程序</span></span><br>stop()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;PID is $&#123;PID&#125;, $&#123;APP_NAME&#125; stopping ...... &quot;<br>    kill $&#123;PID&#125;<br>    if [ $? -ne &quot;0&quot; ]; then<br>        echo &quot;kill $&#123;PID&#125; failed，execute kill -9 $&#123;PID&#125;&quot;<br>        kill -9 $&#123;PID&#125;<br>    fi<br>    sleep 1<br>    echo &quot;$&#123;APP_NAME&#125; stopped completed &quot;<br>  else<br>    echo &quot;$&#123;APP_NAME&#125; is not running&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 输出程序运行状态</span></span><br>status()&#123;<br>  is_running<br>  if [ $? -eq &quot;1&quot; ]; then<br>    echo &quot;$&#123;APP_NAME&#125; is running. pid is $&#123;PID&#125;&quot;<br>  else<br>    echo &quot;$&#123;APP_NAME&#125; is NOT running.&quot;<br>  fi<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 重启程序</span></span><br>restart()&#123;<br>  stop<br>  start<br>&#125;<br><br><br>case &quot;$OPERATION&quot; in<br>  &quot;start&quot;)<br>    start ;;<br>  &quot;stop&quot;)<br>    stop ;;<br>  &quot;status&quot;)<br>    status ;;<br>  &quot;restart&quot;)<br>    restart ;;<br>  *)<br>    usage ;;<br>esac<br>exit 0<br></code></pre></td></tr></table></figure><p>windows创建文件传到Linux需要把回车符转换：</p><p>用notepad++中“编辑”菜单中“文档格式转换”中“转换为UNIX”</p><p>如果需要记录gc日志与多环境启动：</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">nohup</span> <span class="hljs-variable">$&#123;JAVA_CMD&#125;</span> -jar <span class="hljs-variable">$&#123;APP_NAME&#125;</span> --spring.profiles.active=<span class="hljs-built_in">test</span> -Xms1280m -Xmx2560m -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCCause -XX:+PrintHeapAtGC -Xloggc:/home/trans/logs/gc.log &gt; /dev/null 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure><p>如果项目里有netty服务，好像kill是不好使的，只有kill -9才可以。</p><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">## 停止程序</span><br><span class="hljs-function"><span class="hljs-title">stop</span></span>()&#123;<br>  is_running<br>  <span class="hljs-keyword">if</span> [ $? -eq <span class="hljs-string">&quot;1&quot;</span> ]; <span class="hljs-keyword">then</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;execute kill -9 <span class="hljs-variable">$&#123;PID&#125;</span>&quot;</span><br><span class="hljs-built_in">kill</span> -9 <span class="hljs-variable">$&#123;PID&#125;</span><br>    <span class="hljs-built_in">sleep</span> 1<br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;APP_NAME&#125;</span> stopped completed &quot;</span><br>  <span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;APP_NAME&#125;</span> is not running&quot;</span><br>  <span class="hljs-keyword">fi</span><br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
     
     
     <categories>

@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-          maven引用的过期的jar包问题
+        <a href="/2022/02/14/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E4%BD%BF%E7%94%A8kettle%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%A1%A8%E5%8F%98%E6%9B%B4%E7%9A%84%E8%B0%83%E7%A0%94/" target="_self">
+          使用kettle对数据库类型及表变更的调研
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/10/12/maven/maven%E5%BC%95%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E7%9A%84jar%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
+        <a href="/2022/02/14/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E4%BD%BF%E7%94%A8kettle%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B%E5%8F%8A%E8%A1%A8%E5%8F%98%E6%9B%B4%E7%9A%84%E8%B0%83%E7%A0%94/" target="_self">
           
-          1.问题因为项目里引用了过期的jar包，阿里云仓库及很多仓库都没有了，也就是下载不下来了，私服也没有，但是别人那里有这个包，这时maven打包一直下载不了这包，如何解决？ 2.解决方案方案一 把这个jar安装到本地仓库mvn install:install-file -Dfile&#x3D;”D:\artemis-http-client-1.0.0.jar” -DgroupId&#x3D;com.
+          需求MS sql server 到 mysql 数据表结构的变更，由数据库A为sql server、数据库B为mysql, 1.A的表test_a 转换为 B的表test_a; 2.A的表test_a 转换为B的表test_a及test_b 3.A的表test_a及test_b转换为B的test_a kettle的安装下载地址：http:&#x2F;&#x2F;www.kettle.be&#x2F; 配合的mysql的驱动：
         </a>
       </p>
 
@@ -207,8 +207,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-10-12 17:16" pubdate>
-              2021-10-12
+            <time datetime="2022-02-14 16:00" pubdate>
+              2022-02-14
             </time>
           </div>
         
@@ -216,7 +216,47 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/maven/">maven</a>
+              <a href="/categories/kettle/">kettle</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/09/spring/spring_boot%E9%85%8D%E7%BD%AE%E5%BC%95%E7%94%A8yml/" target="_self">
+          spring boot配置引用yml
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/09/spring/spring_boot%E9%85%8D%E7%BD%AE%E5%BC%95%E7%94%A8yml/" target="_self">
+          
+          引用spring boot 项目有以下配置文档： application.yml application-druid.yml application-redis.yml 当需要在springboot中引用其他的yml文件时，需要在application.yml里配置: 123spring:  profiles:    include: druid,redis
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-09 16:11" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-boot/">spring boot</a>
             
           </div>
         
@@ -224,7 +264,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/maven/">maven</a>
+              <a href="/tags/spring-boot/">spring boot</a>
             
           </div>
         
@@ -238,15 +278,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
-          小滴课堂首页版心banner
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc5.0%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          动态创建月维度表及sharding-jdbc单库分表实现
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/04/26/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E7%89%88%E5%BF%83banner/" target="_self">
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc5.0%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
           
-          一.思路及布局版心分为：banner区、课程区 二.编写1.html编写 12345678910111213141516&lt;div class&#x3D;&quot;content&quot;&gt;    &lt;div class&#x3D;&quot;banner clearfix&quot;&gt;        &lt;ul class&#x3D;&quot;l-category fl&quot;&gt;
+          单库分表一张表数据达到一定级别后，查询、插入、修改、DDL等效率降低，需要优化。这时可以使用单库分表，进行数据的拆分。 主要解决单表数据量过大的问题。 未解决：CPU、内存、带宽等单库的资源限制。 sharding-jdbc固定actual-data-nodes问题，需要动态生成表，采用定时任务实现创建配置文件：application-shardingjdbc.yml 123# 分表的表名用于定时
         </a>
       </p>
 
@@ -254,8 +294,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-26 11:29" pubdate>
-              2021-04-26
+            <time datetime="2022-02-09 11:28" pubdate>
+              2022-02-09
             </time>
           </div>
         
@@ -263,7 +303,87 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
+              <a href="/categories/sharding-jdbc/">sharding-jdbc</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          动态创建月维度表及sharding-jdbc单库分表实现
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/09/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E6%9C%88%E7%BB%B4%E5%BA%A6%E8%A1%A8%E5%8F%8Asharding-jdbc%E5%8D%95%E5%BA%93%E5%88%86%E8%A1%A8%E5%AE%9E%E7%8E%B0/" target="_self">
+          
+          单库分表一张表数据达到一定级别后，查询、插入、修改、DDL等效率降低，需要优化。这时可以使用单库分表，进行数据的拆分。 主要解决单表数据量过大的问题。 未解决：CPU、内存、带宽等单库的资源限制。 sharding-jdbc固定actual-data-nodes问题，需要动态生成表，采用定时任务实现创建配置文件：application-shardingjdbc.yml 123# 分表的表名用于定时
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-09 11:28" pubdate>
+              2022-02-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/sharding-jdbc/">sharding-jdbc</a>
+            
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/08/java/log%E7%9A%84mdc%E7%94%9F%E6%88%90traceId/" target="_self">
+          log的mdc生成traceId
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/08/java/log%E7%9A%84mdc%E7%94%9F%E6%88%90traceId/" target="_self">
+          
+          spring 添加拦截器12345678910111213141516171819202122&#x2F;** * MDC * * 为每个请求添加traceId *&#x2F;@Componentpublic class MDCFilter extends OncePerRequestFilter &amp;#123;    private static final String TRACEID &#x3D; &quot;traceI
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-08 15:33" pubdate>
+              2022-02-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mdc/">mdc</a>
             
           </div>
         
@@ -271,62 +391,197 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/css/">css</a>
+              <a href="/tags/mdc/">mdc</a>
             
-              <a href="/tags/html/">html</a>
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/07/mysql/mysql%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F/" target="_self">
+          mysql主备延迟
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/07/mysql/mysql%E4%B8%BB%E5%A4%87%E5%BB%B6%E8%BF%9F/" target="_self">
+          
+          什么是主备延迟1.主库 A 执行完成一个事务，写入 binlog，我们把这个时刻记为 T1; 2.之后传给备库 B，我们把备库 B 接收完这个 binlog 的时刻记为 T2; 3.备库 B 执行完成这个事务，我们把这个时刻记为 T3 所谓主备延迟，就是同一个事务，在备库执行完成的时间和主库执行完成的时间之间的差值，也就是 T3-T1。 什么情况会导致主备延迟情况一：备库所在机器的性能要比主库所在
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-07 10:53" pubdate>
+              2022-02-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
+          mycat与sharding-sphere对比
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
+          
+          参考文档： https:&#x2F;&#x2F;dbaplus.cn&#x2F;news-11-1854-1.html 1.方案对比mycat是db 代理的分库分表解决方案。 sharding-sphere中sharding-jdbc是对jdbc 代理的分库分表解决方案。 从解决方案&#x2F;架构来看sharding-jdbc更符合分布式架构的设计，直连数据库，没有中间应用，理论性能是最高的（实际性能需要结合具体的代码实现
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-02-07 09:23" pubdate>
+              2022-02-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
+          elk安装
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
+          
+          1.创建linux用户与组12345678910添加工作组groupadd elastic创建elastic用户useradd -g elastic elastic设置密码passwd elastic修改目录权限chown -R elastic:elastic &#x2F;usr&#x2F;local&#x2F;elk切换用户su elastic  2. 安装elasticsearch 7.6下载解压： 123cd &#x2F;usr&#x2F;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-21 16:23" pubdate>
+              2022-01-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/elk/">elk</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/elk/">elk</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/04/%E5%89%8D%E7%AB%AF/javascript%E5%88%9D%E5%AD%A6/" target="_self">
+          javascript初学
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/04/%E5%89%8D%E7%AB%AF/javascript%E5%88%9D%E5%AD%A6/" target="_self">
+          
+          1.目标掌握javascript的标准ECMAScript（ES） 掌握javascript页面交互 掌握javascript操作DOM（文档对象模型） 掌握javascript操作BOM（浏览器对象模型） 掌握javascript常见面试题 掌握前端与后端的数据交互
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-04 13:55" pubdate>
+              2022-01-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/javascript/">javascript</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
             
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/23/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B0%BE%E9%83%A8/" target="_self">
-          小滴课堂首页尾部
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/23/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B0%BE%E9%83%A8/" target="_self">
-          
-          一.思路及布局尾部：分为图标区、连接区、备案区 二.编写1.html编写 12345678910111213141516171819&lt;div class&#x3D;&quot;_container&quot;&gt;    &lt;div class&#x3D;&quot;_social&quot;&gt;        &lt;a href&#x3D;&quot;javascript:void(0)&quot;&gt;
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-23 11:46" pubdate>
-              2021-04-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
+              <a href="/tags/javascript/">javascript</a>
             
           </div>
         
@@ -340,15 +595,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/04/22/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%A4%B4%E9%83%A8/" target="_self">
-          小滴课堂首页头部
+        <a href="/2021/12/17/jenkins/jenkins%E5%AE%89%E8%A3%85/" target="_self">
+          jenkins安装
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/04/22/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%A4%B4%E9%83%A8/" target="_self">
+        <a href="/2021/12/17/jenkins/jenkins%E5%AE%89%E8%A3%85/" target="_self">
           
-          一.思路及布局头部分为logo区、横向导航区、搜索区、用户区 logo区就放图片，然后放在左边 横向导航区放一个列表，列表左浮动 搜索区一个搜索输入框，上面有示例方案，有一个搜索图标 用户区有可点击文案及头像，向右浮动 header左右设置间隙(padding) 1padding: 0 20px;  二.logo区1.html编写 123&lt;div class&#x3D;&quot;logo fl&amp;qu
+          1.下载地址http:&#x2F;&#x2F;mirrors.jenkins-ci.org&#x2F;redhat&#x2F; 2.安装1rpm -ivh jenkins-2.325-1.1.noarch.rpm  出现错误： 12错误：依赖检测失败：        daemonize 被 jenkins-2.325-1.1.noarch 需要 解决错误： 1yum -y install epel-release  1yum -y in
         </a>
       </p>
 
@@ -356,8 +611,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-22 10:23" pubdate>
-              2021-04-22
+            <time datetime="2021-12-17 16:05" pubdate>
+              2021-12-17
             </time>
           </div>
         
@@ -365,7 +620,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
+              <a href="/categories/jenkins/">jenkins</a>
             
           </div>
         
@@ -373,297 +628,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/21/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B8%83%E5%B1%80/" target="_self">
-          小滴课堂首页布局
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/21/%E5%89%8D%E7%AB%AF/%E5%B0%8F%E6%BB%B4%E8%AF%BE%E5%A0%82%E9%A6%96%E9%A1%B5%E5%B8%83%E5%B1%80/" target="_self">
-          
-          html在网页中的作用：定义页面结构，定义有什么 css在网页中的作用：修饰页面结构和样式 1.html编写分为头部、中间内容、底部；中间内容又包含版心 12345678910111213&lt;body&gt;    &lt;div class&#x3D;&quot;header&quot;&gt;           &lt;&#x2F;div&gt;    &lt;div class&#x3D;&quot;main&amp;qu
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-21 13:55" pubdate>
-              2021-04-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/html-css%E5%85%A5%E9%97%A8/">html+css入门</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/css/">css</a>
-            
-              <a href="/tags/html/">html</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E4%BE%BF%E5%88%A9%E8%9C%82/" target="_self">
-          便利蜂
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E4%BE%BF%E5%88%A9%E8%9C%82/" target="_self">
-          
-          1.总体通过“中央大脑”来数字化运营新零售便利店，通过输入到中央大脑的区域位置、不同时间段的消费者喜好，从而实现千店千面。 2.对员工的管理培训员工成本，普通员工两周，店长45天(两个月)。 降低员工的决策权，监督员工的服务质量(露齿率”)。 3.生产、运输、销售的数字化控制便利蜂招聘技术人才，将算法驱动模式注入到生产、运输到销售的全流程。 热餐： ​	配送环节：在冷链运输车上安装了蓝牙温度计和G
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-20 10:48" pubdate>
-              2021-04-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E4%B8%AD%E5%9B%BD%E5%B9%B3%E5%AE%89/" target="_self">
-          中国平安
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E4%B8%AD%E5%9B%BD%E5%B9%B3%E5%AE%89/" target="_self">
-          
-          1.企业文化愿景：国际领先的科技型个人金融生活服务集团 使命：对客户负责、对股东负责、对员工负责、对社会负责 价值观：价值最大化是检验平安经营管理一切工作的标准 核心理念：专业创造价值 品牌口号：危机意识、包容、简单 公司训导：专业领先、诚信服务、创造价值、回馈社会 2.经营范围国内、国际业务 保险、银行、投资、金融科技、共享 3.如何挣钱盈利&#x3D;（投资收益率-保单成本）*资产规模 保险公
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-20 10:48" pubdate>
-              2021-04-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E5%9F%BA%E9%87%91%E5%85%AC%E5%8F%B8/" target="_self">
-          基金公司
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E5%9F%BA%E9%87%91%E5%85%AC%E5%8F%B8/" target="_self">
-          
-          一.收入来源1.运作费：管理费、销售服务费 2.申购费：前端，买入时收 3.赎回费：卖出时收
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-20 10:48" pubdate>
-              2021-04-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E6%96%B9%E5%9C%86%E4%BC%97%E5%90%88/" target="_self">
-          方圆众合
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E6%96%B9%E5%9C%86%E4%BC%97%E5%90%88/" target="_self">
-          
-          1.总体是一家做法考培训、法硕培训、图书发行、法律实务培训的教育公司。 主要是以法考培训为主，以头部IP导师、开办学校点、销售进行盈利。 商品分为线上授课、线下授课、直播课(营销)、图书(赠品) 众合在线app(商城模式)、竹马app(引流、刷题、商城) 2.主要点销售力、营销力 IP导师影响力 平台营销能力 3.需求解决了法律工作者考证的需求(通过率) 4.差异化无差异 5.壁垒app排名、头部
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-20 10:48" pubdate>
-              2021-04-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E8%AF%81%E5%88%B8%E5%85%AC%E5%8F%B8/" target="_self">
-          证券公司
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/20/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/%E8%AF%81%E5%88%B8%E5%85%AC%E5%8F%B8/" target="_self">
-          
-          1.收入来源佣金收入：客户每一笔买卖股票都需要抽成—券商以前最大的收入来源，这两年佣金从千三下滑到万2.5，收入占比逐年下滑； 息差收入：借钱给客户去买卖股票（融资融券）或者做其他事情（股权质押），证券公司赚利息—这块收入占比逐年提升 代销金融产品收入：客户在券商这里买卖各种金融理财产品，券商都有代销费收入； 投资咨询收入：券商给你提供推荐股票、投资理财等各方面建议后收取的费用。这块很低，可以忽略
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-20 10:48" pubdate>
-              2021-04-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%95%86%E4%B8%9A%E6%A8%A1%E5%BC%8F/">商业模式</a>
+              <a href="/tags/jenkins/">jenkins</a>
             
           </div>
         
@@ -675,7 +640,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/#board">16</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/#board">17</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
