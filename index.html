@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/06/14/mq/java%E9%9D%9E%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8rabbitmq/" target="_self">
-          java非框架使用rabbitmq
+        <a href="/2023/06/20/mq/rabbitmq%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%8E%E9%AB%98%E5%8F%AF%E9%9D%A0/" target="_self">
+          rabbitmq高可用与高可靠
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2023/06/14/mq/java%E9%9D%9E%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8rabbitmq/" target="_self">
+        <a href="/2023/06/20/mq/rabbitmq%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%8E%E9%AB%98%E5%8F%AF%E9%9D%A0/" target="_self">
           
-          如果英语好https:&#x2F;&#x2F;www.rabbitmq.com&#x2F; 点击Developer Experience https:&#x2F;&#x2F;www.rabbitmq.com&#x2F;devtools.html 这里是普通java客户端： 点击developer guide 这里是spring Framework: https:&#x2F;&#x2F;spring.io&#x2F;projects&#x2F;spring-amqp 普通java版12345678
+          高可用单机模式单机存在单点故障，随时可能发生宕机。 普通集群模式   broker1 broker2 broker3    queue1、2、3的元数据 queue1、2、3的元数据 queue1、2、3的元数据   queue1 queue2 queue3   1.queue的元数据包含了queue的具体信息，例如queue放在哪台broker上，是否持久化等，但不包含发送到queue里的消息;
         </a>
       </p>
 
@@ -207,8 +207,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-14 13:25" pubdate>
-              2023-06-14
+            <time datetime="2023-06-20 14:11" pubdate>
+              2023-06-20
             </time>
           </div>
         
@@ -227,6 +227,343 @@
               <a href="/tags/mq/">mq</a>
             
               <a href="/tags/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/20/mq/JMS%E4%B8%8EAMQP%E4%B8%8EMQTT/" target="_self">
+          JMS与AMQP与MQTT
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/20/mq/JMS%E4%B8%8EAMQP%E4%B8%8EMQTT/" target="_self">
+          
+          JMS Java消息服务（Java Message Service),Java平 台中关于⾯向消息中间件的接⼝。 JMS是⼀种与⼚商⽆关的 API，⽤来访问消息收发系统 消息，它类似于JDBC(Java Database Connectivity)。 这⾥，JDBC 是可以⽤来访问许多不同关系数据库的 API。 是由Sun公司早期提出的消息标准，旨在为java应⽤提 供统⼀的消息操作，包括crea
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-20 13:46" pubdate>
+              2023-06-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/16/mq/springboot%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8rabbitmq/" target="_self">
+          springboot简单使用rabbitmq
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/16/mq/springboot%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8rabbitmq/" target="_self">
+          
+          初体验新建一个maven项目。 添加父pom： 123456&lt;parent&gt;    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;spring-boot-starter-parent&lt;&#x2F;artifactId&gt;    &lt;version&gt;2.6.1&lt;&#x2F;v
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-16 17:21" pubdate>
+              2023-06-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/15/mq/%E8%B7%9F%E7%9D%80rabbit%E5%AE%98%E7%BD%91%E6%95%99%E7%A8%8B%E7%BB%83%E4%B9%A0/" target="_self">
+          跟着rabbit官网教程练习
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/15/mq/%E8%B7%9F%E7%9D%80rabbit%E5%AE%98%E7%BD%91%E6%95%99%E7%A8%8B%E7%BB%83%E4%B9%A0/" target="_self">
+          
+          教程进入官网https:&#x2F;&#x2F;www.rabbitmq.com&#x2F; 点击get started 点击 RabbitMQ Tutorials 里面有7种教程。 网上有很多资料都说几种模式，好多图都是从这里来的。 hello word12345678910111213141516171819202122232425262728import java.io.IOException;import java.u
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-15 17:46" pubdate>
+              2023-06-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/15/mq/rabbitmq%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+          rabbitmq性能测试
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/15/mq/rabbitmq%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+          
+          下载rabbitmq提供了测试项目rabbitmq-perf-test https:&#x2F;&#x2F;github.com&#x2F;rabbitmq&#x2F;rabbitmq-perf-test 查看帮助1java -jar perf-test-latest.jar --help  测试一个消费，一个生产 默认12字节的消息大小 接收和发送有1w+ msg&#x2F;s 1java -jar perf-test-latest.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-15 11:46" pubdate>
+              2023-06-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/15/mq/rabbitmq%E6%A6%82%E5%BF%B5/" target="_self">
+          rabbitmq概念
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/15/mq/rabbitmq%E6%A6%82%E5%BF%B5/" target="_self">
+          
+          概述RabbitMQ：http:&#x2F;&#x2F;www.rabbitmq.com&#x2F; 是⼀个开源的AMQP实现，服务器端⽤Erlang语⾔编写，⽀持多种客户端，如：Python、Ruby、.NET、Java、C、⽤于在分布式系统中存储转发消息，在易⽤性、扩展性、⾼可⽤性等⽅⾯表现不错，与SpringAMQP完美的整合、API丰富易⽤。⽂档：https:&#x2F;&#x2F;www.rabbitmq.com&#x2F;getstarted.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-15 11:46" pubdate>
+              2023-06-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rabbitmq/">rabbitmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/15/mq/mq%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
+          mq的应用场景
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/15/mq/mq%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
+          
+          概述“消息队列”是在消息的传输过程中保存消息的容器。 “消息”是在两台计算机间传送的数据单位。消息可以非常简单，例如只包含文本字符串；也可以更复杂，可能包含嵌入对象。消息被发送到队列中。 “消息队列”是在消息的传输过程中保存消息的容器。 消息队列管理器在将消息从它的源中继到它的目标时充当中间人。队列的主要目的是提供路由并保证消息的传递；如果发送消息时接收者不可用，消息队列会保留消息，直到可以成功地
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-15 11:39" pubdate>
+              2023-06-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/14/git/github%E4%B9%8B%E5%89%8D%E8%AE%BE%E7%BD%AE%E8%BF%87%E4%BB%A3%E7%90%86%E5%90%8E%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A%E9%97%AE%E9%A2%98/" target="_self">
+          github之前设置过代理后连接不上问题
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/14/git/github%E4%B9%8B%E5%89%8D%E8%AE%BE%E7%BD%AE%E8%BF%87%E4%BB%A3%E7%90%86%E5%90%8E%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A%E9%97%AE%E9%A2%98/" target="_self">
+          
+          提示fatal: unable to access ‘https:&#x2F;&#x2F;github.com&#x2F;.git&#x2F;‘: Failed to conne拒绝连接 解决12git config --global --unset http.proxy git config --global --unset https.proxy
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-14 13:42" pubdate>
+              2023-06-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/git/">git</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/git/">git</a>
             
           </div>
         
@@ -332,344 +669,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/09/linux/linux%E7%9A%84zcat%E5%91%BD%E4%BB%A4/" target="_self">
-          linux的zcat
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/06/09/linux/linux%E7%9A%84zcat%E5%91%BD%E4%BB%A4/" target="_self">
-          
-          描述zcat命令用于不真正解压缩文件，就能显示压缩包中文件的内容的场合。zcat是一个命令行实用程序，用于查看压缩文件的内容，而无需对其进行解压缩。 它将压缩文件扩展为标准输出，使您可以查看其内容。 另外，zcat与运行gunzip -c命令完全相同。 语法格式zcat [参数]    -S 当后缀不是标准压缩包后缀时使用此选项    -c 将文件内容写到标注输出   -d 执行解压缩操作   -
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-09 13:06" pubdate>
-              2023-06-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-              <a href="/tags/zcat/">zcat</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/09/mq/windows%E5%AE%89%E8%A3%85rabbitmq/" target="_self">
-          windows安装rabbitmq
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/06/09/mq/windows%E5%AE%89%E8%A3%85rabbitmq/" target="_self">
-          
-          安装Erlanghttps:&#x2F;&#x2F;www.erlang.org&#x2F; 点击download https:&#x2F;&#x2F;www.erlang.org&#x2F;downloads 下载安装即可 安装rabbitmq-serverhttps:&#x2F;&#x2F;www.rabbitmq.com&#x2F; 搜索 Download 点击 Download + installation 点击 install windows 下载rabbitmq-serve
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-09 10:42" pubdate>
-              2023-06-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/rabbitmq/">rabbitmq</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/mq/">mq</a>
-            
-              <a href="/tags/rabbitmq/">rabbitmq</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/08/git/git%E6%94%B9%E5%88%86%E6%94%AF%E5%90%8Dmaster%E6%94%B9main/" target="_self">
-          git改分支名master改main
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/06/08/git/git%E6%94%B9%E5%88%86%E6%94%AF%E5%90%8Dmaster%E6%94%B9main/" target="_self">
-          
-          1GitHub is working on replacing the term “master” on its service with a neutral term like “main” to avoid any unnecessary references to slavery  github觉得master有点slavery那味。 我们将本地仓库的master分支改名为**main 1g
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-08 15:52" pubdate>
-              2023-06-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/git/">git</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/git/">git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82/" target="_self">
-          趣谈网络协议网络分层
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/06/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82/" target="_self">
-          
-          计算机网络有一个显著的特点，就是这是一个仅需要背诵，而且特别需要将原理烂熟于心的学科。 网络为什么要分层？ 因为是个复杂的程序都要分层。 复杂的程序都要分层，这是程序设计的要求。 只要在网络上跑的包，都是完整的。可以有下层没有上层，绝对不可能有上层没下层。 所以，对TCP协议来说，三次握手也好，重试也好，只要想发出去包，就要有IP层和MAC层，不然发不出去。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-07 13:13" pubdate>
-              2023-06-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%BC%80%E5%A7%8B/" target="_self">
-          趣谈网络协议开始
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/06/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%BC%80%E5%A7%8B/" target="_self">
-          
-          从计算机出现后，就出现了协议的概念。 代码就是人和计算机沟通的协议，只有通过这种协议 ，计算机才知道我们想让它做什么。 协议三要素： 语法：规则 语义：函义 顺序：先做啥，后干啥。 网络协议：如何让一片机器做什么。 只有通过网络协议，才能使一片机器互相协作、共同完成一件事。 网络协议： 应用层：DHCP&#x2F;HTTP&#x2F;HTTPS&#x2F;RTMP&#x2F;P2P&#x2F;D
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-06 09:32" pubdate>
-              2023-06-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/05/31/linux/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0413%E9%94%99%E8%AF%AF/" target="_self">
-          文件上传413错误
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/05/31/linux/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0413%E9%94%99%E8%AF%AF/" target="_self">
-          
-          上传文件报413错误其实不是上传文件的问题。查看请求body的大小，在Content-Length后显示，nginx默认的request body 为1M,  content-length单位为b。 在nginx配置文件nginx.cnf中在http{}段中加入 client_max_body_size 20m。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-05-31 10:40" pubdate>
-              2023-05-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/nginx/">nginx</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/nginx/">nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/05/31/git/git%E5%BC%BA%E5%88%B6%E6%8F%90%E4%BA%A4%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E5%88%B0%E8%BF%9C%E7%A8%8B/" target="_self">
-          git强制提交忽略文件到远程
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/05/31/git/git%E5%BC%BA%E5%88%B6%E6%8F%90%E4%BA%A4%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E5%88%B0%E8%BF%9C%E7%A8%8B/" target="_self">
-          
-          问题描述平时使用git时都会把项目中的target目录屏蔽掉，但是有时候就是需要用这个目录怎么办呢？ 1.方法一之前我都是直接把.gitignore文件中的&#x2F;target目录去掉，等把需要的这个target文件提交后再把.gitignore改回来，这样比较麻烦。 2.方法二强制提交忽略的文件到git。 如下，找到文件位置，使用git add -f 文件名 命令来强制提交该文件到git，
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-05-31 09:52" pubdate>
-              2023-05-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/git/">git</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/git/">git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/#board">17</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/#board">18</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
