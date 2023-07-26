@@ -24,7 +24,7 @@
 <meta property="og:description" content="1. 禁止向集成分支执行push -f操作push -f 是强制提交 如果本地与远程分支不一致或有冲突时，使用push -f 操作会以当前本地分支的代码提交到远程，这时是会丢失代码。 1.多人分发时，你bug fix并已经提交到远程分支，测试验证了这个bug,但是过一会儿，测试又反应这个bug又出现了，你pull代码后，发现你本地这个bug fix commit 未提交到本地，就要注意是不是有人使">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-07T07:52:00.000Z">
-<meta property="article:modified_time" content="2023-05-30T01:15:20.982Z">
+<meta property="article:modified_time" content="2023-07-26T02:28:07.076Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      322 字
+      320 字
     </span>
   
 
@@ -242,8 +242,7 @@
 <p>如果本地与远程分支不一致或有冲突时，使用push -f 操作会以当前本地分支的代码提交到远程，这时是会丢失代码。</p>
 <p>1.多人分发时，你bug fix并已经提交到远程分支，测试验证了这个bug,但是过一会儿，测试又反应这个bug又出现了，你pull代码后，发现你本地这个bug fix commit 未提交到本地，就要注意是不是有人使用了push -f.</p>
 <p>2.gitlab禁用向远程分支 push -f</p>
-<p>##2.禁止向集成分支执行变理历史的操作</p>
-<p>git rebase  会修改commit的id,多人开发时，你执行git rebase,其他人还是在原来的commit 上进行fastforward,这时就会出现代码布署问题。</p>
+<h2 id="2-禁止向集成分支执行变理历史的操作"><a href="#2-禁止向集成分支执行变理历史的操作" class="headerlink" title="2.禁止向集成分支执行变理历史的操作"></a>2.禁止向集成分支执行变理历史的操作</h2><p>git rebase  会修改commit的id,多人开发时，你执行git rebase,其他人还是在原来的commit 上进行fastforward,这时就会出现代码布署问题。</p>
 
             </div>
             <hr>

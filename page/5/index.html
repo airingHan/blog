@@ -191,15 +191,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/06/08/java/exception%E4%B8%8D%E6%89%93%E5%8D%B0%E5%A0%86%E6%A0%88%E4%BF%A1%E6%81%AF/" target="_self">
-          exception不打印堆栈信息
+        <a href="/2023/05/30/linux/nginx%E5%9C%B0%E5%9D%80%E6%88%AA%E6%96%AD/" target="_self">
+          nginx地址截断
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/06/08/java/exception%E4%B8%8D%E6%89%93%E5%8D%B0%E5%A0%86%E6%A0%88%E4%BF%A1%E6%81%AF/" target="_self">
+        <a href="/2023/05/30/linux/nginx%E5%9C%B0%E5%9D%80%E6%88%AA%E6%96%AD/" target="_self">
           
-          不出现堆栈信息情况1.使用问题 1log.error(&quot;xxxxx&amp;#123;&amp;#125;&quot;, e.message());  应使用 1log.error(&quot;xxxx&quot;, e);   jvm的优化（fast throw）  白话一点来说，就是：当一些异常类型（空指针、下标越界、算术运算等…）在代码里的固定位置被抛出多次，虚拟机（HotSpot VM）会直接
+          地址截断使用location上的路径location 中的 root 和 alias  root 指令只是将搜索的根设置为 root 设定的目录，即不会截断 uri，而是使用原始 uri 跳转该目录下查找文件 aias 指令则会截断匹配的 uri，然后使用 alias 设定的路径加上剩余的 uri 作为子路径进行查找  示例 1：root 12345678910111213#-----------
         </a>
       </p>
 
@@ -207,8 +207,55 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-06-08 16:03" pubdate>
-              2022-06-08
+            <time datetime="2023-05-30 10:40" pubdate>
+              2023-05-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/nginx/">nginx</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nginx/">nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/30/java/session%E5%85%B1%E4%BA%AB/" target="_self">
+          session共享
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/30/java/session%E5%85%B1%E4%BA%AB/" target="_self">
+          
+          session共享问题的由来session共享是因为架构演变而出现的问题。 项目由初期直接使用一台tomcat做为web服务器，这时是没有session问题。 项目到nginx做动静分离，还是一台tomcat做为web服务器，这时是没有session问题。 项目到nginx做负载均衡，后端是多台tomcat时，还使用tomcat的session，这时就会出现session问题。 session共享
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-30 09:15" pubdate>
+              2023-05-30
             </time>
           </div>
         
@@ -238,15 +285,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/06/07/spring_cloud/spring_cloud_eureka%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
-          spring_cloud_eureka源码分析
+        <a href="/2022/08/10/devops/docker%E5%85%A5%E9%97%A8/" target="_self">
+          docker入门
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/06/07/spring_cloud/spring_cloud_eureka%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+        <a href="/2022/08/10/devops/docker%E5%85%A5%E9%97%A8/" target="_self">
           
-          服务端入口从使用上来说： 需要在pom.xml中添加eureka-server的依赖。 根据spring boot的自动配置机制。 在eureka-server的jar包中spring.factories中包含org.springframework.cloud.netflix.eureka.server.EurekaServerAutoConfiguration 查看类： 1@Conditiona
+          历史演化物理机时代   —&gt;   虚拟化时代 			—&gt;    容器化时代 物理机时代部署非常慢 成本很高 资源浪费 难于扩展与迁移 受制于硬件 虚拟化时代多部署 资源池 资源隔离 很容易扩展 VM需要安装操作系统 容器化时代容器架构降低了硬件成本 更快速的部署开发&#x2F;测试&#x2F;生产环境 更简便的维护开发&#x2F;测试&#x2F;生产环境 与微服务架构更为契合 容器化技
         </a>
       </p>
 
@@ -254,8 +301,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-06-07 15:16" pubdate>
-              2022-06-07
+            <time datetime="2022-08-10 16:05" pubdate>
+              2022-08-10
             </time>
           </div>
         
@@ -263,9 +310,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/spring-cloud/">spring_cloud</a>
-            
-              <a href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a>
+              <a href="/categories/devops/">devops</a>
             
           </div>
         
@@ -273,9 +318,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/spring-cloud/">spring_cloud</a>
-            
-              <a href="/tags/spring-cloud-eureka/">spring_cloud_eureka</a>
+              <a href="/tags/devops/">devops</a>
             
           </div>
         
@@ -289,15 +332,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/06/06/spring_cloud/spring_cloud_eureka%E5%AE%9E%E8%B7%B5/" target="_self">
-          spring_cloud_eureka实践
+        <a href="/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/" target="_self">
+          如何计算并发数
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/06/06/spring_cloud/spring_cloud_eureka%E5%AE%9E%E8%B7%B5/" target="_self">
+        <a href="/2022/08/10/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%8F%91%E6%95%B0/" target="_self">
           
-          创建eureka-server1.官网生成 https:&#x2F;&#x2F;start.spring.io&#x2F; 添加依赖 eureka-server 2.使用idea的spring initializr 添加依赖eureka-server 生成后的pom.xml为 1234567891011121314151617181920212223242526272829303132333435363738394041424
+          一、经典公式一般来说，利用以下经验公式进行估算系统的平均并发用户数和峰值数据   1）平均并发用户数为 C &#x3D; nL&#x2F;T  2）并发用户数峰值 C‘ &#x3D; C + 3*根号C   C是平均并发用户数，n是login session的数量，L是login session的平均长度，T是值考察的时间长度   C’是并发用户数峰值 举例假设系统A，该系统有3000个用户，平均
         </a>
       </p>
 
@@ -305,8 +348,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-06-06 19:25" pubdate>
-              2022-06-06
+            <time datetime="2022-08-10 16:00" pubdate>
+              2022-08-10
             </time>
           </div>
         
@@ -314,9 +357,47 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/spring-cloud/">spring_cloud</a>
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
             
-              <a href="/categories/spring-cloud/spring-cloud-eureka/">spring_cloud_eureka</a>
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/" target="_self">
+          如何从新手迅速成长为高手
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E8%BF%85%E9%80%9F%E6%88%90%E9%95%BF%E4%B8%BA%E9%AB%98%E6%89%8B/" target="_self">
+          
+          新手与高手的差距新手和高手的差距集中体现在解决问题上。 问题分为：常规问题、非常规问题、简单问题、复杂问题(由多个简单问题组合成的) 高手： 快速解决问题 识别细微的差异 识别情景 有效监控问题解决的策略和过程 准确性高 看问题的深度 产生差距的原因是什么？知识、经验、技巧 知识 + 经验 + 技巧  &#x3D; 模式 什么是模式： 以某个问题为核心，将与之相关的知识、经验及技巧组合在一起的块状
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-08 09:11" pubdate>
+              2022-08-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -324,9 +405,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/spring-cloud/">spring_cloud</a>
-            
-              <a href="/tags/spring-cloud-eureka/">spring_cloud_eureka</a>
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -340,15 +419,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/06/06/maven/maven%E8%81%9A%E5%90%88%E5%B7%A5%E7%A8%8B/" target="_self">
-          maven聚合工程
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/" target="_self">
+          时间管理
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/06/06/maven/maven%E8%81%9A%E5%90%88%E5%B7%A5%E7%A8%8B/" target="_self">
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/" target="_self">
           
-          为什么要使用聚合工程在项目初期，人员较少，但是还是需要协作开发。这时如果使用一个整体项目。会有冲突等问题。 dependencies与dependencyManagement的区别在我们项⽬顶层的POM⽂件中，我们会看到dependencyManagement元素。通过它来管理jar包的版本，让⼦项⽬中引⽤⼀个依赖⽽不⽤显⽰的列出版本号。Maven会沿着⽗⼦层次向上⾛，直到找到⼀个拥有depend
+          对不同的事务进行分类重要并紧迫的事务  A类 重要不紧迫的事务 B类 不重要但紧迫的事务 C类 不重要不紧迫的事务D类 A类事务 ： 危机事务、急迫问题 有期限压务的计划 B类事务： 建立人际关系 撰写使命宣言 规划长期目标 改进产能 防患于未然 发掘新机会 C类事务 不速之客的来访 处理某些电话、邮件和报告 某些没有议题的会议 D类事务 繁琐、浪费时间的事情 提高时间效能的方法A类  立即处理
         </a>
       </p>
 
@@ -356,8 +435,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-06-06 15:10" pubdate>
-              2022-06-06
+            <time datetime="2022-08-08 09:11" pubdate>
+              2022-08-08
             </time>
           </div>
         
@@ -365,9 +444,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/maven/">maven</a>
-            
-              <a href="/categories/maven/spring-boot/">spring boot</a>
+              <a href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -375,9 +452,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/maven/">maven</a>
-            
-              <a href="/tags/spring-boot/">spring boot</a>
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -391,15 +466,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/30/spring/spring_boot_logback%E8%AF%A6%E8%A7%A3/" target="_self">
-          spring_boot_logback详解
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/KJ%E6%B3%95%E6%94%B6%E9%9B%86%E5%92%8C%E5%88%86%E6%9E%90%E4%BF%A1%E6%81%AF/" target="_self">
+          KJ法收集和分析信息
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/30/spring/spring_boot_logback%E8%AF%A6%E8%A7%A3/" target="_self">
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/KJ%E6%B3%95%E6%94%B6%E9%9B%86%E5%92%8C%E5%88%86%E6%9E%90%E4%BF%A1%E6%81%AF/" target="_self">
           
-          Spring boot官网https:&#x2F;&#x2F;spring.io&#x2F; 点击projects中的spring boot 点击learn中Reference Doc 点击Core Features 点击logging 配置spring boot 默认是使用Logback日志记录。 输出日志：配置方式、输出位置、输出格式、级别控制 配置方式1.使用spring boot 的配置文件 如application.
+          KJ法收集和分析信息KJ分析法又叫亲和图法,为川喜田二郎所创。是将收集到的资料和信息，根据他们之间的相近性分类综合分析的一种方法，又称为卡片法。 kj法的适用范围了解市场状况时 问题比较复杂，情况混淆不清，牵涉部门众多时 探索未知领域，比如研发新品时 KJ法运用流程组织团队组织团队进行讨论 建立共识定义挑战开展头脑风景汇集问题分类整理编排卡片划分责任构思方案效果确认与跟进标准化KJ法的优势与难点
         </a>
       </p>
 
@@ -407,8 +482,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-30 09:54" pubdate>
-              2022-05-30
+            <time datetime="2022-08-08 09:11" pubdate>
+              2022-08-08
             </time>
           </div>
         
@@ -416,7 +491,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/spring-boot/">spring boot</a>
+              <a href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -424,7 +499,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/spring-boot/">spring boot</a>
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
             
           </div>
         
@@ -438,15 +513,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/28/java/logback%E6%BA%90%E7%A0%81%E5%8F%8A%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" target="_self">
-          logback源码及原理分析
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E4%BD%BF%E7%94%A8PLAN%E6%B3%95%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E5%8A%9B/" target="_self">
+          使用PLAN法提升执行力
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/28/java/logback%E6%BA%90%E7%A0%81%E5%8F%8A%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" target="_self">
+        <a href="/2022/08/08/%E6%96%B9%E6%B3%95%E8%AE%BA/%E4%BD%BF%E7%94%A8PLAN%E6%B3%95%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E5%8A%9B/" target="_self">
           
-          如何看源码及原理分析原理及源码查看是相辅相成。只能了解原理才能更好的了解源码；只有相应的了解源码才能知道是怎么原理实现。 原理： ​	自已设计一个。配合源码查看，验证框架设计者是怎么设计的。 源码： ​	只要知道入口。使用时分几步。分别查看。 logback简单使用加入依赖 1234567891011121314151617&lt;dependencies&gt;    &lt;dependenc
+          什么是PLAN法P(plan)  : 制定执行计划 L(launch) : 快速行动 A(adjustment) : 及时调整 N(network) : 充分沟通 制定执行计划计划模板： 时间 ： 执行计划的进度安排 事件： 将工作计划分为若干目标以及达到目标要做的事情 人力：计划执行人员、配合人员以及监督人员等 资源：为达到目标及事件所需财力、物力的情况 预案：遇到突然情况可实施的后备方案 长期
         </a>
       </p>
 
@@ -454,8 +529,55 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-28 14:28" pubdate>
-              2022-05-28
+            <time datetime="2022-08-08 09:11" pubdate>
+              2022-08-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/07/12/java/java%E7%9A%84IO/" target="_self">
+          java的IO
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/07/12/java/java%E7%9A%84IO/" target="_self">
+          
+          linux文件系统linux中常说的一句话  “ 一切皆文件” 数据块： 硬盘分成相同大小的单元，我们称为块（Block）。一块的大小是扇区大小的整数倍，默认是 4K。 Inode: index  node,  linux中文件抽象出来的一个数据结构(class), index就是索引，就是去哪找组成文件的数据块。 文件描述符 fd（File Descriptor）: 当使用系统调用 open 打
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-07-12 13:46" pubdate>
+              2022-07-12
             </time>
           </div>
         
@@ -485,15 +607,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/05/23/linux/linux%E6%9F%A5%E7%9C%8BCPU%E6%88%96%E5%86%85%E5%AD%98%E5%A4%9A%E7%9A%84%E8%BF%9B%E7%A8%8B/" target="_self">
-          linux查看CPU或内存多的进程
+        <a href="/2022/07/11/java/java%E9%9B%86%E5%90%88/" target="_self">
+          java集合
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/05/23/linux/linux%E6%9F%A5%E7%9C%8BCPU%E6%88%96%E5%86%85%E5%AD%98%E5%A4%9A%E7%9A%84%E8%BF%9B%E7%A8%8B/" target="_self">
+        <a href="/2022/07/11/java/java%E9%9B%86%E5%90%88/" target="_self">
           
-          CPU占用最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k3|head -10  内存消耗最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k4|head -10  虚拟内存使用最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k5|head -10  ps出显示参数含义%MEM
+          集合集合类存放于 Java.util 包中，主要有 3 种：set(集）、list(列表包含 Queue）和 map(映射)。  Collection：Collection 是集合 List、Set、Queue 的最基本的接口。  Iterator：迭代器，可以通过迭代器遍历集合中的数据 Map：是映射表的基础接口  listArrayList排列有序，可重复 底层使用数组 查询速度快，增删慢，g
         </a>
       </p>
 
@@ -501,8 +623,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-23 19:25" pubdate>
-              2022-05-23
+            <time datetime="2022-07-11 11:22" pubdate>
+              2022-07-11
             </time>
           </div>
         
@@ -510,7 +632,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/linux/">linux</a>
+              <a href="/categories/java/">java</a>
             
           </div>
         
@@ -518,148 +640,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/linux/">linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/21/spring/spring%20boot%E8%B7%A8%E5%9F%9F/" target="_self">
-          spring boot跨域
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/21/spring/spring%20boot%E8%B7%A8%E5%9F%9F/" target="_self">
-          
-          前置同源策略是什么？同源策略是一种约定，它是浏览器最核心也最基本的安全功能如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。它是一个安全策略。所有支持JavaScript的浏览器都会使用这个策略 满足同源的三个条件：所谓同源是指，域名、协议、端口相同。 为什么要同源限制？同源策略存在的意义：  非同源下的 cookie
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-21 15:01" pubdate>
-              2022-05-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-boot/">spring boot</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-boot/">spring boot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/20/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/spring%20security%E5%AE%9E%E8%B7%B5/" target="_self">
-          spring security实践
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/20/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/spring%20security%E5%AE%9E%E8%B7%B5/" target="_self">
-          
-          官网操作及阅读https:&#x2F;&#x2F;spring.io&#x2F; 点击 projects 选择 spring security 首先看到的overview下有简介和特色或者功能还有快速开始。 Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。它是保护基于 Spring 的应用程序的事实标准。 Spring Security 是一个专注于为 Java 应用程序提供身份验证和授权的
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-20 11:18" pubdate>
-              2022-05-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring/">spring</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring/">spring</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/19/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/oauth/" target="_self">
-          oauth参考
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/19/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/oauth/" target="_self">
-          
-          https:&#x2F;&#x2F;oauth.net&#x2F; 官网 http:&#x2F;&#x2F;blog.csdn.net&#x2F;dreamkid0924&#x2F;article&#x2F;details&#x2F;53284863 OAuth完全手册_国内篇 https:&#x2F;&#x2F;huoding.com&#x2F;2011&#x2F;11&#x2F;08&#x2F;126 OAuth的改变
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-19 16:23" pubdate>
-              2022-05-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/oauth/">oauth</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/oauth/">oauth</a>
+              <a href="/tags/java/">java</a>
             
           </div>
         
@@ -671,7 +652,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/#board">18</a><a class="extend next" rel="next" href="/page/6/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/#board">20</a><a class="extend next" rel="next" href="/page/6/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

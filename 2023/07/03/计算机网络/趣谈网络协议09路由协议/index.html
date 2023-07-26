@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="路由表路由器就是一台网络设备，它有多张网卡。当一个入口的网络包送到路由器时，它会根据一个本地的转发信息库，来决定如何正确地转发流量。这个转发信息库通常被称为路由表。 一张路由表中会有多条路由规则。每一条规则至少包含这三项信息。 目的网络：这个包想去哪儿？ 出口设备：将包从哪个口扔出去？ 下一跳网关：下一个路由器的地址。 通过 route 命令和 ip route 命令都可以进行查询或者配置。 例如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="趣谈网络协议09路由协议">
+<meta property="og:url" content="http://hanqichuan.com/2023/07/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE09%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="路由表路由器就是一台网络设备，它有多张网卡。当一个入口的网络包送到路由器时，它会根据一个本地的转发信息库，来决定如何正确地转发流量。这个转发信息库通常被称为路由表。 一张路由表中会有多条路由规则。每一条规则至少包含这三项信息。 目的网络：这个包想去哪儿？ 出口设备：将包从哪个口扔出去？ 下一跳网关：下一个路由器的地址。 通过 route 命令和 ip route 命令都可以进行查询或者配置。 例如">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanqichuan.com/.com//%E5%AE%B6%E9%87%8C%E5%BF%AB%E6%85%A2%E7%BD%91%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1.webp">
+<meta property="og:image" content="http://hanqichuan.com/.com//%E5%A4%96%E7%BD%91%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE.webp">
+<meta property="article:published_time" content="2023-07-03T02:41:00.000Z">
+<meta property="article:modified_time" content="2023-07-03T06:29:55.793Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="网络协议">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hanqichuan.com/.com//%E5%AE%B6%E9%87%8C%E5%BF%AB%E6%85%A2%E7%BD%91%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1.webp">
+  
+  
+  <title>趣谈网络协议09路由协议 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="趣谈网络协议09路由协议">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-07-03 10:41" pubdate>
+        2023年7月3日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      30 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">趣谈网络协议09路由协议</h1>
+            
+            <div class="markdown-body">
+              <h2 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h2><p>路由器就是一台网络设备，它有多张网卡。当一个入口的网络包送到路由器时，它会根据一个本地的转发信息库，来决定如何正确地转发流量。这个转发信息库通常被称为路由表。</p>
+<p>一张路由表中会有多条路由规则。每一条规则至少包含这三项信息。</p>
+<p>目的网络：这个包想去哪儿？</p>
+<p>出口设备：将包从哪个口扔出去？</p>
+<p>下一跳网关：下一个路由器的地址。</p>
+<p>通过 route 命令和 ip route 命令都可以进行查询或者配置。</p>
+<p>例如，我们设置 ip route add 10.176.48.0&#x2F;20 via 10.173.32.1 dev eth0，就说明要去 10.176.48.0&#x2F;20 这个目标网络，要从 eth0 端口出去，经过 10.173.32.1。</p>
+<p>网关上的路由策略就是按照这三项配置信息进行配置的。这种配置方式的一个核心思想是：根据目的 IP 地址来配置路由。</p>
+<h2 id="策略路由"><a href="#策略路由" class="headerlink" title="策略路由"></a>策略路由</h2><p>在真实的复杂的网络环境中，除了可以根据目的 ip 地址配置路由外，还可以根据多个参数来配置路由，这就称为策略路由。</p>
+<p>可以配置多个路由表，可以根据源 IP 地址、入口设备、TOS 等选择路由表，然后在路由表中查找路由。这样可以使得来自不同来源的包走不同的路由。</p>
+<p>例如，我们设置：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs pgsql">ip <span class="hljs-keyword">rule</span> <span class="hljs-keyword">add</span> <span class="hljs-keyword">from</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> <span class="hljs-keyword">table</span> <span class="hljs-number">10</span> <br>ip <span class="hljs-keyword">rule</span> <span class="hljs-keyword">add</span> <span class="hljs-keyword">from</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> <span class="hljs-keyword">table</span> <span class="hljs-number">20</span><br></code></pre></td></tr></table></figure>
+
+<p>表示从 192.168.1.10&#x2F;24 这个网段来的，使用 table 10 中的路由表，而从 192.168.2.0&#x2F;24 网段来的，使用 table20 的路由表。</p>
+<p>在一条路由规则中，也可以走多条路径。例如，在下面的路由规则中：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ip</span> route add default scope global nexthop via <span class="hljs-number">100.100.100.1</span> weight <span class="hljs-number">1</span> nexthop via <span class="hljs-number">200.200.200.1</span> weight <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>下一跳有两个地方，分别是 100.100.100.1 和 200.200.200.1，权重分别为 1 比 2。</p>
+<p>例子：家里从运营商拉了两条网线，一条快，一条慢。</p>
+<p><img src="/.com//%E5%AE%B6%E9%87%8C%E5%BF%AB%E6%85%A2%E7%BD%91%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1.webp" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs accesslog">ip route list table main <br><span class="hljs-number">60.190.27.189</span>/<span class="hljs-number">30</span> dev eth3  proto kernel  scope link  src <span class="hljs-number">60</span>.<span class="hljs-number">190</span>.<span class="hljs-number">27</span>.<span class="hljs-number">190</span><br><span class="hljs-number">183.134.188.1</span> dev eth2  proto kernel  scope link  src <span class="hljs-number">183</span>.<span class="hljs-number">134</span>.<span class="hljs-number">189</span>.<span class="hljs-number">34</span><br><span class="hljs-number">192.168.1.0</span>/<span class="hljs-number">24</span> dev eth1  proto kernel  scope link  src <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">1</span><br><span class="hljs-number">127.0.0.0</span>/<span class="hljs-number">8</span> dev lo  scope link<br>default via <span class="hljs-number">183</span>.<span class="hljs-number">134</span>.<span class="hljs-number">188</span>.<span class="hljs-number">1</span> dev eth2<br></code></pre></td></tr></table></figure>
+
+<p>当路由这样配置的时候，就告诉这个路由器如下的规则：</p>
+<p>如果去运营商二，就走 eth3；</p>
+<p>如果去运营商一呢，就走 eth2；</p>
+<p>如果访问内网，就走 eth1；</p>
+<p>如果所有的规则都匹配不上，默认走运营商一，也即走快的网络。</p>
+<p>上面说的都是静态的路由，一般来说网络环境简单的时候，在自己的可控范围之内，自己捣鼓还是可以的。但是有时候网络环境复杂并且多变，如果总是用静态路由，一旦网络结构发生变化，让网络管理员手工修改路由太复杂了，因而需要动态路由算法。</p>
+<h2 id="动态路由算法"><a href="#动态路由算法" class="headerlink" title="动态路由算法"></a>动态路由算法</h2><p>使用动态路由路由器，可以根据路由协议算法生成动态路由表，随网络运行状况的变化而变化。</p>
+<p>我们把可以把网络抽象为一种叫作图的数据结构。网络传输路越少越好，道路越短越好。因而这就转化成为如何在图中找到最短路径的问题。</p>
+<h3 id="1-距离矢量路由算法"><a href="#1-距离矢量路由算法" class="headerlink" title="1. 距离矢量路由算法"></a>1. 距离矢量路由算法</h3><p>第一大类的算法称为距离矢量路由（distance vector routing）。它是基于 Bellman-Ford 算法的。</p>
+<p>这种算法的基本思路是，每个路由器都保存一个路由表，包含多行，每行对应网络中的一个路由器，每一行包含两部分信息，一个是要到目标路由器，从那条线出去，另一个是到目标路由器的距离。</p>
+<p>由此可以看出，每个路由器都是知道全局信息的。那这个信息如何更新呢？每个路由器都知道自己和邻居之间的距离，每过几秒，每个路由器都将自己所知的到达所有的路由器的距离告知邻居，每个路由器也能从邻居那里得到相似的信息。</p>
+<p>每个路由器根据新收集的信息，计算和其他路由器的距离，比如自己的一个邻居距离目标路由器的距离是 M，而自己距离邻居是 x，则自己距离目标路由器是 x+M。</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>问题1：好消息传得快，坏消息传得慢。</p>
+<p>如果有个路由器加入了这个网络，它的邻居就能很快发现它，然后将消息广播出去。要不了多久，整个网络就都知道了。但是一旦一个路由器挂了，挂的消息是没有广播的。当每个路由器发现原来的道路到不了这个路由器的时候，感觉不到它已经挂了，而是试图通过其他的路径访问，直到试过了所有的路径，才发现这个路由器是真的挂了。</p>
+<p>问题2：每次发送的时候，要发送整个全局路由表。</p>
+<p>网络大了，谁也受不了，所以最早的路由协议 RIP 就是这个算法。它适用于小型网络（小于 15 跳）。当网络规模都小的时候，没有问题。现在一个数据中心内部路由器数目就很多，因而不适用了。</p>
+<p>所以上面的两个问题，限制了距离矢量路由的网络规模。</p>
+<h3 id="2-链路状态路由算法"><a href="#2-链路状态路由算法" class="headerlink" title="2. 链路状态路由算法"></a>2. 链路状态路由算法</h3><p>第二大类算法是链路状态路由（link state routing），基于 Dijkstra 算法。</p>
+<p>这种算法的基本思路是：当一个路由器启动的时候，首先是发现邻居，向邻居 say hello，邻居都回复。然后计算和邻居的距离，发送一个 echo，要求马上返回，除以二就是距离。然后将自己和邻居之间的链路状态包广播出去，发送到整个网络的每个路由器。这样每个路由器都能够收到它和邻居之间的关系的信息。因而，每个路由器都能在自己本地构建一个完整的图，然后针对这个图使用 Dijkstra 算法，找到两点之间的最短路径。</p>
+<p>不像距离距离矢量路由协议那样，更新时发送整个路由表。链路状态路由协议只广播更新的或改变的网络拓扑，这使得更新信息更小，节省了带宽和 CPU 利用率。而且一旦一个路由器挂了，它的邻居都会广播这个消息，可以使得坏消息迅速收敛。</p>
+<h2 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a>动态路由协议</h2><h3 id="1-基于链路状态路由算法的-OSPF"><a href="#1-基于链路状态路由算法的-OSPF" class="headerlink" title="1. 基于链路状态路由算法的 OSPF"></a>1. 基于链路状态路由算法的 OSPF</h3><p>OSPF（Open Shortest Path First，开放式最短路径优先）就是这样一个基于链路状态路由协议，广泛应用在数据中心中的协议。由于主要用在数据中心内部，用于路由决策，因而称为内部网关协议（Interior Gateway Protocol，简称 IGP）。</p>
+<p>内部网关协议的重点就是找到最短的路径。在一个组织内部，路径最短往往最优。当然有时候 OSPF 可以发现多个最短的路径，可以在这多个路径中进行负载均衡，这常常被称为等价路由。</p>
+<p>这一点非常重要。有了等价路由，到一个地方去可以有相同的两个路线，可以分摊流量，还可以当一条路不通的时候，走另外一条路。这个在后面我们讲数据中心的网络的时候，一般应用的接入层会有负载均衡 LVS。它可以和 OSPF 一起，实现高吞吐量的接入层设计。</p>
+<h3 id="2-基于距离矢量路由算法的-BGP"><a href="#2-基于距离矢量路由算法的-BGP" class="headerlink" title="2. 基于距离矢量路由算法的 BGP"></a>2. 基于距离矢量路由算法的 BGP</h3><p>我们称为外网路由协议（Border Gateway Protocol，简称 BGP）。外网的路由协议。</p>
+<p>对于网络包同样，每个数据中心都设置自己的 Policy。例如，哪些外部的 IP 可以让内部知晓，哪些内部的 IP 可以让外部知晓，哪些可以通过，哪些不能通过。这就好比，虽然从我家里到目的地最近，但是不能谁都能从我家走啊！</p>
+<p>在网络世界，这一个个国家成为自治系统 AS（Autonomous System）。自治系统分几种类型。</p>
+<p>Stub AS：对外只有一个连接。这类 AS 不会传输其他 AS 的包。例如，个人或者小公司的网络。</p>
+<p>Multihomed AS：可能有多个连接连到其他的 AS，但是大多拒绝帮其他的 AS 传输包。例如一些大公司的网络。</p>
+<p>Transit AS：有多个连接连到其他的 AS，并且可以帮助其他的 AS 传输包。例如主干网。</p>
+<p>每个自治系统都有边界路由器，通过它和外面的世界建立联系。</p>
+<p><img src="/.com//%E5%A4%96%E7%BD%91%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE.webp" srcset="/img/loading.gif" lazyload></p>
+<p>BGP 又分为两类，eBGP 和 iBGP。自治系统间，边界路由器之间使用 eBGP 广播路由。内部网络也需要访问其他的自治系统。边界路由器如何将 BGP 学习到的路由导入到内部网络呢？就是通过运行 iBGP，使得内部的路由器能够找到到达外网目的地的最好的边界路由器。</p>
+<p>BGP 协议使用的算法是路径矢量路由协议（path-vector protocol）。它是距离矢量路由协议的升级版。</p>
+<p>前面说了距离矢量路由协议的缺点。其中一个是收敛慢。在 BGP 里面，除了下一跳 hop 之外，还包括了自治系统 AS 的路径，从而可以避免坏消息传得慢的问题，也即上面所描述的，B 知道 C 原来能够到达 A，是因为通过自己，一旦自己都到达不了 A 了，就不用假设 C 还能到达 A 了。</p>
+<p>另外，在路径中将一个自治系统看成一个整体，不区分自治系统内部的路由器，这样自治系统的数目是非常有限的。就像大家都能记住出去玩，从中国出发先到韩国然后到日本，只要不计算细到具体哪一站，就算是发送全局信息，也是没有问题的。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/07/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE08%E7%BD%91%E5%85%B3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">趣谈网络协议08网关</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE10UDP%E4%B8%8ETCP%E4%B8%BB%E8%AE%B2UDP/">
+                        <span class="hidden-mobile">趣谈网络协议10UDP与TCP主讲UDP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
