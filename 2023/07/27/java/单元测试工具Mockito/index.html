@@ -1,0 +1,515 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="为什么使用Mockito项目中代码需要进行单元测试。测试人员用黑盒测试的软件功能，无法完全覆盖代码中的逻辑，所以要有代码的单元测试。 spring 的单元测试有以下缺点： 1.每次执行测试方法都必须启动spring容器。当项目规模较大、配置较为复杂时，会很慢。 2.如果使用数据库如mysql, 还会涉及插入数据、数据库自增ID增加问题、bug引起的大量脏数据 3.如果使用数据库，需要根据ID查询数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单元测试工具Mockito">
+<meta property="og:url" content="http://hanqichuan.com/2023/07/27/java/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7Mockito/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="为什么使用Mockito项目中代码需要进行单元测试。测试人员用黑盒测试的软件功能，无法完全覆盖代码中的逻辑，所以要有代码的单元测试。 spring 的单元测试有以下缺点： 1.每次执行测试方法都必须启动spring容器。当项目规模较大、配置较为复杂时，会很慢。 2.如果使用数据库如mysql, 还会涉及插入数据、数据库自增ID增加问题、bug引起的大量脏数据 3.如果使用数据库，需要根据ID查询数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-27T06:29:00.000Z">
+<meta property="article:modified_time" content="2023-07-28T02:52:42.274Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>单元测试工具Mockito - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="单元测试工具Mockito">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-07-27 14:29" pubdate>
+        2023年7月27日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      56 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">单元测试工具Mockito</h1>
+            
+            <div class="markdown-body">
+              <h2 id="为什么使用Mockito"><a href="#为什么使用Mockito" class="headerlink" title="为什么使用Mockito"></a>为什么使用Mockito</h2><p>项目中代码需要进行单元测试。测试人员用黑盒测试的软件功能，无法完全覆盖代码中的逻辑，所以要有代码的单元测试。</p>
+<p>spring 的单元测试有以下缺点：</p>
+<p>1.每次执行测试方法都必须启动spring容器。当项目规模较大、配置较为复杂时，会很慢。</p>
+<p>2.如果使用数据库如mysql, 还会涉及插入数据、数据库自增ID增加问题、bug引起的大量脏数据</p>
+<p>3.如果使用数据库，需要根据ID查询数据，必须要插入一条数据，每次执行单元测试都需要</p>
+<p>如果只想测试service代码的正确性，使用Mockito就可以解决。</p>
+<p>spring 的单元测试也是有用的，对容器、对组件的验证还是需要的。想要测试哪里选择不同的单元测试工具。</p>
+<h2 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h2><figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestDomain</span> &#123;<br><br>    <span class="hljs-keyword">private</span> Long id;<br><br>    <span class="hljs-keyword">private</span> String name;<br><br>    <span class="hljs-keyword">public</span> Long <span class="hljs-title function_">getId</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setId</span><span class="hljs-params">(Long id)</span> &#123;<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> name;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setName</span><span class="hljs-params">(String name)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestMapper</span> &#123;<br><br>    Long <span class="hljs-title function_">getMax</span><span class="hljs-params">()</span>;<br><br>    TestDomain <span class="hljs-title function_">getById</span><span class="hljs-params">(Long id)</span>;<br><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">save</span><span class="hljs-params">(TestDomain testDomain)</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestService</span> &#123;<br><br>    <span class="hljs-keyword">private</span> TestMapper testMapper;<br><br>    <span class="hljs-keyword">public</span> Long <span class="hljs-title function_">method1</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">Long</span> <span class="hljs-variable">id</span> <span class="hljs-operator">=</span> testMapper.getMax();<br>        <span class="hljs-keyword">return</span> id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">save</span><span class="hljs-params">(TestDomain testDomain)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> testMapper.save(testDomain);<br>        <span class="hljs-keyword">if</span> (i &lt;= <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;插入失败&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> TestDomain <span class="hljs-title function_">getById</span><span class="hljs-params">(Long id)</span> &#123;<br>        <span class="hljs-keyword">return</span> testMapper.getById(id);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用Mockito"><a href="#使用Mockito" class="headerlink" title="使用Mockito"></a>使用Mockito</h2><p><a target="_blank" rel="noopener" href="https://github.com/mockito/mockito">https://github.com/mockito/mockito</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mockito<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mockito-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.23.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.12<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.junit.Assert;<br><span class="hljs-keyword">import</span> org.junit.Test;<br><span class="hljs-keyword">import</span> org.junit.runner.RunWith;<br><span class="hljs-keyword">import</span> org.mockito.InjectMocks;<br><span class="hljs-keyword">import</span> org.mockito.Mock;<br><span class="hljs-keyword">import</span> org.mockito.Mockito;<br><span class="hljs-keyword">import</span> org.mockito.junit.MockitoJUnitRunner;<br><br><span class="hljs-meta">@RunWith(MockitoJUnitRunner.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestServiceTest</span> &#123;<br><br>    <span class="hljs-meta">@InjectMocks</span><br>    <span class="hljs-keyword">private</span> TestService testService;<br><br>    <span class="hljs-meta">@Mock</span><br>    <span class="hljs-keyword">public</span> TestMapper testMapper;<br><br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method1</span><span class="hljs-params">()</span> &#123;<br>        Mockito.when(testMapper.getMax()).thenReturn(<span class="hljs-number">20L</span>);<br>        <span class="hljs-type">long</span> <span class="hljs-variable">id</span> <span class="hljs-operator">=</span> testService.method1();<br>        Assert.assertEquals(id, <span class="hljs-number">20L</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">save</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TestDomain</span>();<br>        testDomain.setId(<span class="hljs-number">39L</span>);<br>        testDomain.setName(<span class="hljs-string">&quot;39&quot;</span>);<br>        Mockito.when(testMapper.save(testDomain)).thenReturn(<span class="hljs-number">1</span>);<br>        testService.save(testDomain);<br><br>        Mockito.when(testMapper.save(testDomain)).thenReturn(<span class="hljs-number">0</span>);<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            testService.save(testDomain);<br>        &#125; <span class="hljs-keyword">catch</span> (RuntimeException e) &#123;<br>            Assert.assertEquals(<span class="hljs-string">&quot;插入失败&quot;</span>, e.getMessage());<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getById</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TestDomain</span>();<br>        testDomain.setId(<span class="hljs-number">39L</span>);<br>        testDomain.setName(<span class="hljs-string">&quot;39&quot;</span>);<br>        Mockito.when(testMapper.getById(<span class="hljs-number">39L</span>)).thenReturn(testDomain);<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain1</span> <span class="hljs-operator">=</span> testService.getById(<span class="hljs-number">39L</span>);<br>        Assert.assertEquals(testDomain, testDomain1);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用powermock"><a href="#使用powermock" class="headerlink" title="使用powermock"></a>使用powermock</h2><p>去掉mockito-core、junit依赖，在pom.xml中添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">maven.compiler.source</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">maven.compiler.source</span>&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">maven.compiler.target</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">maven.compiler.target</span>&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">powermock.version</span>&gt;</span>2.0.2<span class="hljs-tag">&lt;/<span class="hljs-name">powermock.version</span>&gt;</span><br>   <span class="hljs-tag">&lt;/<span class="hljs-name">properties</span>&gt;</span><br><br>   <span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.powermock<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>powermock-module-junit4<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>$&#123;powermock.version&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>       <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.powermock<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>powermock-api-mockito2<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>$&#123;powermock.version&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>           <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>       <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>   <span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>因为powermock内已经依赖这两个包了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.junit.Assert;<br><span class="hljs-keyword">import</span> org.junit.Test;<br><span class="hljs-keyword">import</span> org.junit.runner.RunWith;<br><span class="hljs-keyword">import</span> org.mockito.InjectMocks;<br><span class="hljs-keyword">import</span> org.mockito.Mock;<br><span class="hljs-keyword">import</span> org.mockito.Mockito;<br><span class="hljs-keyword">import</span> org.powermock.modules.junit4.PowerMockRunner;<br><br><span class="hljs-meta">@RunWith(PowerMockRunner.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestServiceTest</span> &#123;<br><br>    <span class="hljs-meta">@InjectMocks</span><br>    <span class="hljs-keyword">private</span> TestService testService;<br><br>    <span class="hljs-meta">@Mock</span><br>    <span class="hljs-keyword">public</span> TestMapper testMapper;<br><br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method1</span><span class="hljs-params">()</span> &#123;<br>        Mockito.when(testMapper.getMax()).thenReturn(<span class="hljs-number">20L</span>);<br>        <span class="hljs-type">long</span> <span class="hljs-variable">id</span> <span class="hljs-operator">=</span> testService.method1();<br>        Assert.assertEquals(id, <span class="hljs-number">20L</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">save</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TestDomain</span>();<br>        testDomain.setId(<span class="hljs-number">39L</span>);<br>        testDomain.setName(<span class="hljs-string">&quot;39&quot;</span>);<br>        Mockito.when(testMapper.save(testDomain)).thenReturn(<span class="hljs-number">1</span>);<br>        testService.save(testDomain);<br><br>        Mockito.when(testMapper.save(testDomain)).thenReturn(<span class="hljs-number">0</span>);<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            testService.save(testDomain);<br>        &#125; <span class="hljs-keyword">catch</span> (RuntimeException e) &#123;<br>            Assert.assertEquals(<span class="hljs-string">&quot;插入失败&quot;</span>, e.getMessage());<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getById</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TestDomain</span>();<br>        testDomain.setId(<span class="hljs-number">39L</span>);<br>        testDomain.setName(<span class="hljs-string">&quot;39&quot;</span>);<br>        Mockito.when(testMapper.getById(<span class="hljs-number">39L</span>)).thenReturn(testDomain);<br>        <span class="hljs-type">TestDomain</span> <span class="hljs-variable">testDomain1</span> <span class="hljs-operator">=</span> testService.getById(<span class="hljs-number">39L</span>);<br>        Assert.assertEquals(testDomain, testDomain1);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="spring-boot-与powermock整合"><a href="#spring-boot-与powermock整合" class="headerlink" title="spring boot 与powermock整合"></a>spring boot 与powermock整合</h2><p>因为spring boot的父pom中已经引入了mockito，所以要注意，如果运行时报类不存在问题，可以明确加入mockito及版本解决。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><h3 id="org-mockito-Mockito"><a href="#org-mockito-Mockito" class="headerlink" title="org.mockito.Mockito"></a>org.mockito.Mockito</h3><p>org.mockito.Mockito是mockito提供的核心api，提供了大量的静态方法，用于帮助我们来mock对象，验证行为等等，然后需要注意的是，很多方法都被封装在了MockitoCore类里面，下面对一些常用的方法做一些介绍。</p>
+<p>mock：构建一个我们需要的对象；可以mock具体的对象，也可以mock接口。<br>spy：构建监控对象<br>verify：验证某种行为<br>when：当执行什么操作的时候，一般配合thenXXX 一起使用。表示执行了一个操作之后产生什么效果。<br>doReturn：返回什么结果<br>doThrow：抛出一个指定异常<br>doAnswer：做一个什么相应，需要我们自定义Answer；<br>times：某个操作执行了多少次<br>atLeastOnce：某个操作至少执行一次<br>atLeast：某个操作至少执行指定次数<br>atMost：某个操作至多执行指定次数<br>atMostOnce：某个操作至多执行一次<br>doNothing：不做任何处理<br>doReturn：返回一个结果<br>doThrow：抛出一个指定异常<br>doAnswer：指定一个操作，传入Answer<br>doCallRealMethod：返回真实业务执行的结果，只能用于监控对象</p>
+<h3 id="ArgumentMatchers"><a href="#ArgumentMatchers" class="headerlink" title="ArgumentMatchers"></a>ArgumentMatchers</h3><p>用于进行参数匹配，减少很多不必要的代码</p>
+<p>anyInt：任何int类型的参数，类似的还有anyLong&#x2F;anyByte等等。<br>eq：等于某个值的时候，如果是对象类型的，则看toString方法<br>isA：匹配某种类型<br>matches：使用正则表达式进行匹配</p>
+<h3 id="OngoingStubbing"><a href="#OngoingStubbing" class="headerlink" title="OngoingStubbing"></a>OngoingStubbing</h3><p>OngoingStubbing用于返回操作的结果。</p>
+<p>thenReturn：指定一个返回的值<br>thenThrow：抛出一个指定异常<br>then：指定一个操作，需要传入自定义Answer；<br>thenCallRealMethod：返回真实业务执行的结果，只能用于监控对象。</p>
+<h3 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h3><p>@RunWith<br>在测试类类名上添加 @RunWith(PowerMockRunner.class) 注解代表该测试类使用 PowerMock。必须添加。</p>
+<p>@PrepareForTest</p>
+<p>这个注解的作用就是告诉 PowerMock 哪些类是需要在字节码级别上进行操作的。也就是需要 mock 某些包含 final、static 等方法的类时使用，使用方法：@PrepareForTest({System.class, LogUtils.class})，在方法中有new对象的时候也需要在@PrepareForTest中声明。</p>
+<p>@PowerMockIgnore</p>
+<p>PowerMock 是使用自定义的类加载器来加载被修改过的类，从而达到打桩的目的。@PowerMockIgnore 注解告诉 PowerMock 忽略哪些包下的类，从而消除类加载器引入的 ClassCastException。使用方法：@PowerMockIgnore({“javax.management.”, “javax.net.ssl.”, “javax.script.*”})</p>
+<p>@SuppressStaticInitializationFor</p>
+<p>告诉 PowerMock 哪些包下的类需要被抑制静态初始化，包括 static 代码块或者 static 变量的初始化。防止因静态初始化导致的错误。使用方法：</p>
+<p>@SuppressStaticInitializationFor({“com.xxx.SmsServiceImpl”})</p>
+<p>@Mock</p>
+<p>mock 待测类的普通属性，最常见的就是通过 Spring @Autowired 自动注入的 bean。这类属性并非 final，也并非 static，只需要在测试类中使用 @Mock 注解，Pwermock 框架就能自动生成 mock 对象，并自动注入到 @InjectMock 修饰的待测类中。<br>也可以使用比较通用的 mock() 方法，调用 mock(XXX.class)，能生成一个 mock 的 XXX 对象，然后通过反射获取待测类的字段，再将 mock 对象赋给字段。一般用于不是由 Spring @Autowired 注入的普通属性。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/java/">java</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/09/spring/%E4%BD%BF%E7%94%A8springboot%E6%97%B6kill%E4%B8%8D%E6%8E%89%E6%83%85%E5%86%B5/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用springboot时kill不掉情况</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%B6%A3%E8%B0%88%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE19HTTPDNS/">
+                        <span class="hidden-mobile">趣谈网络协议19HTTPDNS</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
