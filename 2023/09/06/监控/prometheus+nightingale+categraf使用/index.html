@@ -1,0 +1,587 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="prometheus安装prometheus在此次的使用中，当做时序库。使用版本prometheus-2.45.0.linux-amd64.tar.gz。 下载及解压1234mkdir -p &#x2F;opt&#x2F;prometheus可以使用wget 下载 prometheus-2.45.0.linux-amd64.tar.gztar xf prometheus-2.45.0.linux-amd64.tar.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="prometheus+nightingale+categraf使用">
+<meta property="og:url" content="http://hanqichuan.com/2023/09/06/%E7%9B%91%E6%8E%A7/prometheus+nightingale+categraf%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="prometheus安装prometheus在此次的使用中，当做时序库。使用版本prometheus-2.45.0.linux-amd64.tar.gz。 下载及解压1234mkdir -p &#x2F;opt&#x2F;prometheus可以使用wget 下载 prometheus-2.45.0.linux-amd64.tar.gztar xf prometheus-2.45.0.linux-amd64.tar.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-09-06T05:43:00.000Z">
+<meta property="article:modified_time" content="2023-09-06T07:47:39.596Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="监控">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>prometheus+nightingale+categraf使用 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="prometheus+nightingale+categraf使用">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-09-06 13:43" pubdate>
+        2023年9月6日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      64 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">prometheus+nightingale+categraf使用</h1>
+            
+            <div class="markdown-body">
+              <h2 id="prometheus安装"><a href="#prometheus安装" class="headerlink" title="prometheus安装"></a>prometheus安装</h2><p>prometheus在此次的使用中，当做时序库。使用版本prometheus-2.45.0.linux-amd64.tar.gz。</p>
+<h3 id="下载及解压"><a href="#下载及解压" class="headerlink" title="下载及解压"></a>下载及解压</h3><figure class="highlight stylus"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs stylus">mkdir -<span class="hljs-selector-tag">p</span> /opt/prometheus<br>可以使用wget 下载 prometheus-<span class="hljs-number">2.45</span>.<span class="hljs-number">0</span><span class="hljs-selector-class">.linux-amd64</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span><br>tar xf prometheus-<span class="hljs-number">2.45</span>.<span class="hljs-number">0</span><span class="hljs-selector-class">.linux-amd64</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span><br>cp -far prometheus-<span class="hljs-number">2.45</span>.<span class="hljs-number">0</span>.linux-amd64<span class="hljs-comment">/*  /opt/prometheus/</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="添加至服务"><a href="#添加至服务" class="headerlink" title="添加至服务"></a>添加至服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> &lt;&lt;<span class="hljs-string">EOF &gt;/etc/systemd/system/prometheus.service</span><br><span class="hljs-string">[Unit]</span><br><span class="hljs-string">Description=&quot;prometheus&quot;</span><br><span class="hljs-string">Documentation=https://prometheus.io/</span><br><span class="hljs-string">After=network.target</span><br><span class="hljs-string"></span><br><span class="hljs-string">[Service]</span><br><span class="hljs-string">Type=simple</span><br><span class="hljs-string"></span><br><span class="hljs-string">ExecStart=/opt/prometheus/prometheus  --config.file=/opt/prometheus/prometheus.yml --storage.tsdb.path=/opt/prometheus/data --web.enable-lifecycle --enable-feature=remote-write-receiver --query.lookback-delta=2m </span><br><span class="hljs-string"></span><br><span class="hljs-string">Restart=on-failure</span><br><span class="hljs-string">SuccessExitStatus=0</span><br><span class="hljs-string">LimitNOFILE=65536</span><br><span class="hljs-string">StandardOutput=syslog</span><br><span class="hljs-string">StandardError=syslog</span><br><span class="hljs-string">SyslogIdentifier=prometheus</span><br><span class="hljs-string"></span><br><span class="hljs-string"></span><br><span class="hljs-string">[Install]</span><br><span class="hljs-string">WantedBy=multi-user.target</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 重新加载 systemd 守护程序配置</span><br>systemctl daemon-reload<br><span class="hljs-comment"># 启用 systemd 服务，使其在系统引导时自动启动</span><br>systemctl <span class="hljs-built_in">enable</span> prometheus<br><span class="hljs-comment"># 重启</span><br>systemctl restart prometheus<br><span class="hljs-comment"># 状态</span><br>systemctl status prometheus<br></code></pre></td></tr></table></figure>
+
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><h5 id="多行文本"><a href="#多行文本" class="headerlink" title="多行文本"></a>多行文本</h5><p>cat &lt;&lt;EOF 创建文本块的命令，允许在终端中输入多行文本，直到输入特定终止符(EOF)为止。一旦输入终止符，所有输入的文本将被传递给cat命令。</p>
+<p>然后又使用 &gt; 输入到prometheus.service文件中。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs gradle">--config.<span class="hljs-keyword">file</span>=<span class="hljs-regexp">/opt/</span>prometheus/prometheus.yml<br>指定 Prometheus 的配置文件路径<br><br>--storage.tsdb.path=<span class="hljs-regexp">/opt/</span>prometheus/data<br>指定 Prometheus 时序数据的硬盘存储路径<br><br>--web.enable-lifecycle<br>启用生命周期管理相关的 API，比如调用 <span class="hljs-regexp">/-/</span>reload 接口就需要启用该项<br><br>--enable-feature=remote-<span class="hljs-keyword">write</span>-receiver<br>启用 remote <span class="hljs-keyword">write</span> 接收数据的接口，启用该项之后，categraf、grafana-agent 等 agent 就可以通过 <span class="hljs-regexp">/api/</span>v1/<span class="hljs-keyword">write</span> 接口推送数据给 Prometheus<br><br>--query.lookback-delta=<span class="hljs-number">2</span>m<br>即时查询在查询当前最新值的时候，只要发现这个参数指定的时间段内有数据，就取最新的那个点返回，这个时间段内没数据，就不返回了<br><br>--web.enable-admin-api<br>启用管理性 API，比如删除时间序列数据的 <span class="hljs-regexp">/api/</span>v1<span class="hljs-regexp">/admin/</span>tsdb/delete_series 接口<br></code></pre></td></tr></table></figure>
+
+<h3 id="启动后验证"><a href="#启动后验证" class="headerlink" title="启动后验证"></a>启动后验证</h3><p>启动后，如有防火墙，需要开放9090端口。</p>
+<p>输入：<a target="_blank" rel="noopener" href="http://192.168.80.3:9090/">http://192.168.80.3:9090/</a>  后进入web控制台页面。</p>
+<p>在首页点击搜索框右边的小地球，输入prometheus，随便选择一个，点击execute，发现下面会有搜索结果。</p>
+<p>因为prometheus启动配置中，把自己做为一个监控任务，在配置文件&#x2F;opt&#x2F;prometheus&#x2F;prometheus.yml可以看到如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">scrape_configs:</span><br>  <span class="hljs-comment"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">&quot;prometheus&quot;</span><br><br>    <span class="hljs-comment"># metrics_path defaults to &#x27;/metrics&#x27;</span><br>    <span class="hljs-comment"># scheme defaults to &#x27;http&#x27;.</span><br><br>    <span class="hljs-attr">static_configs:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&quot;localhost:9090&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>以后需要prometheus直接拉取的，就在这里配置。</p>
+<h2 id="nightingale安装"><a href="#nightingale安装" class="headerlink" title="nightingale安装"></a>nightingale安装</h2><p>夜莺在此次使用中，当做监控的显示与告警管理，使用版本为n9e-5.8.0.tar.gz。</p>
+<p>夜莺V5依赖mysql 、redis，时序库使用prometheus。</p>
+<p>prometheus开启–enable-feature&#x3D;remote-write-receiver。</p>
+<h3 id="下载及解压-1"><a href="#下载及解压-1" class="headerlink" title="下载及解压"></a>下载及解压</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">mkdir -p <span class="hljs-regexp">/opt/</span>n9e &amp;&amp; cd <span class="hljs-regexp">/opt/</span>n9e<br>tarball=n9e-<span class="hljs-number">5.8</span>.<span class="hljs-number">0</span>.tar.gz<br>urlpath=https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/didi/</span>nightingale<span class="hljs-regexp">/releases/</span>download<span class="hljs-regexp">/v5.8.0/</span><span class="hljs-variable">$&#123;tarball&#125;</span><br>wget <span class="hljs-variable">$urlpath</span> || <span class="hljs-keyword">exit</span> <span class="hljs-number">1</span><br>tar zxvf <span class="hljs-variable">$&#123;tarball&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>把&#x2F;opt&#x2F;n9e&#x2F;docker&#x2F;initsql&#x2F;a-n9e.sql导入至mysql中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /opt/n9e/etc<br></code></pre></td></tr></table></figure>
+
+<p>修改server.conf、 webapi.conf中mysql和redis中的地址及用户名密码。</p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">nohup</span> ./n9e server &amp;&gt; server.log &amp;<br><span class="hljs-built_in">nohup</span> ./n9e webapi &amp;&gt; webapi.log &amp;<br></code></pre></td></tr></table></figure>
+
+<p>夜莺V5 服务器端使用的19000， web控制台使用的是18000。</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.80.3:18000/">http://192.168.80.3:18000/</a>  进入首页，同prometheus查询，有结果即为成功。</p>
+<h2 id="categraf安装"><a href="#categraf安装" class="headerlink" title="categraf安装"></a>categraf安装</h2><p>categraf为采集器。使用版本：categraf-v0.2.38-linux-amd64.tar.gz。</p>
+<h3 id="下载及解压-2"><a href="#下载及解压-2" class="headerlink" title="下载及解压"></a>下载及解压</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">mkdir -p <span class="hljs-regexp">/opt/</span>categraf &amp;&amp; cd <span class="hljs-regexp">/opt/</span>categraf<br>tar xf categraf-v0.<span class="hljs-number">2.38</span>-linux-amd64.tar.gz<br>cp -far categraf-v0.<span class="hljs-number">2.38</span>-linux-amd64<span class="hljs-regexp">/*  /</span>opt<span class="hljs-regexp">/categraf/</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="添加至服务-1"><a href="#添加至服务-1" class="headerlink" title="添加至服务"></a>添加至服务</h3><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs nsis">cp categraf.service /etc/<span class="hljs-params">system</span>d/<span class="hljs-params">system</span>/<br><span class="hljs-params">system</span>ctl daemon-reload<br><span class="hljs-comment"># 以服务方式启动</span><br><span class="hljs-params">system</span>ctl start categraf<br><span class="hljs-comment"># 停止服务</span><br><span class="hljs-params">system</span>ctl stop categraf<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./categraf --<span class="hljs-built_in">test</span> --inputs mem:system<br></code></pre></td></tr></table></figure>
+
+<p>使用冒号来分割多个插件。如果某个插件报错可以去安装目录的查看conf&#x2F;input.xxx&#x2F;xxx.toml文件中的配置是否正确。</p>
+<h2 id="机器监控"><a href="#机器监控" class="headerlink" title="机器监控"></a>机器监控</h2><p>在categraf配置文件&#x2F;opt&#x2F;categraf&#x2F;conf&#x2F;config.toml中</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-string">[[writers]]</span><br>url = <span class="hljs-string">&quot;http://127.0.0.1:19000/prometheus/v1/write&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>这里是上送到nightingale,  nightingale上送至prometheus。</p>
+<p>也可以直接上送至prometheus。修改IP端口及地址即可(<a target="_blank" rel="noopener" href="http://127.0.0.1:9090/api/v1/write)%E3%80%82">http://127.0.0.1:9090/api/v1/write)。</a></p>
+<p>重启：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">systemctl restart categraf</span><br></code></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<p>搜索cpu相关指标，可以看到搜索结果。</p>
+<h3 id="导入监控大盘"><a href="#导入监控大盘" class="headerlink" title="导入监控大盘"></a>导入监控大盘</h3><p><a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/system/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/system/dashboard.json</a></p>
+<p>点击监控大盘，更多操作中选择导入监控大盘，选择导入大盘json，填入上面地址中的json，点击导入。</p>
+<p>导入后列表会出现导入的监控大盘(linux host), 点击名称进入查看监控大盘。</p>
+<h3 id="导入告警规则"><a href="#导入告警规则" class="headerlink" title="导入告警规则"></a>导入告警规则</h3><p><a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/system/alerts-linux.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/system/alerts-linux.json</a></p>
+<p>点击告警管理，点击告警规则，更多操作中选择导入告警规则，导入告警规则JSON,填入上面地址中的json，点击确定，点击关闭。</p>
+<p>导入完成后，会出很多告警规则，如机器负载等。点击进入，选择告警接收组，如果人员组织中配置人员中的联系方式可以使用邮件、企业微信、钉钉等。</p>
+<p>修改CPU使用 cpu_usage_idle{cpu&#x3D;”cpu-total”} &lt; 25  改为  cpu_usage_idle{cpu&#x3D;”cpu-total”} &lt; 99， 这时候肯定会告警，测试联系方式可以收到。</p>
+<h2 id="网络监控"><a href="#网络监控" class="headerlink" title="网络监控"></a>网络监控</h2><h3 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h3><p>conf&#x2F;input.ping&#x2F;ping.toml</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-string">[[instances]]</span><br>targets = [ <span class="hljs-string">&quot;192.168.80.3&quot;</span> ]<br></code></pre></td></tr></table></figure>
+
+<p>修改为需要监控的IP地址。</p>
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/ping/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/ping/dashboard.json</a></p>
+<p>告警规则：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/ping/alerts.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/ping/alerts.json</a></p>
+<p>因为服务器一般关闭ping，所以看情况吧。</p>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>conf&#x2F;input.net_response&#x2F;net_response.toml</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-string">[[instances]]</span><br>targets = [<br>    <span class="hljs-string">&quot;10.2.3.4:22&quot;</span>,<br>    <span class="hljs-string">&quot;localhost:6379&quot;</span>,<br>    <span class="hljs-string">&quot;:9090&quot;</span><br>]<br></code></pre></td></tr></table></figure>
+
+<p>10.2.3.4:22 表示探测 10.2.3.4 这个机器的 22 端口是否可以连通。</p>
+<p>localhost:6379 表示探测本机的 6379 端口是否可以连通。</p>
+<p>:9090 表示探测本机的 9090 端口是否可以连通，没有写 IP 或主机名的就默认使用 localhost。</p>
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/net_response/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/net_response/dashboard.json</a></p>
+<p>告警规则：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/net_response/alerts.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/net_response/alerts.json</a></p>
+<h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><p>conf&#x2F;input.http_response&#x2F;http_response.toml</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-string">[[instances]]</span><br>targets = [<br>    <span class="hljs-string">&quot;http://localhost&quot;</span>,<br>    <span class="hljs-string">&quot;https://www.baidu.com&quot;</span><br>]<br></code></pre></td></tr></table></figure>
+
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/http_response/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/http_response/dashboard.json</a></p>
+<p>告警规则：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/http_response/alerts.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/http_response/alerts.json</a></p>
+<h2 id="nginx-监控"><a href="#nginx-监控" class="headerlink" title="nginx 监控"></a>nginx 监控</h2><p>nginx服务需要启用http_stub_status_module模块。</p>
+<p>可以访问到<a target="_blank" rel="noopener" href="http://192.168.80.3/basic_status">http://192.168.80.3/basic_status</a></p>
+<p>&#x2F;conf&#x2F;input.nginx&#x2F;nginx.toml</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[[instances]]</span><br><span class="hljs-comment">## An array of Nginx stub_status URI to gather stats.</span><br><span class="hljs-attr">urls</span> = [<br>        <span class="hljs-string">&quot;http://192.168.80.3/basic_status&quot;</span><br>]<br></code></pre></td></tr></table></figure>
+
+<p>测试： .&#x2F;categraf –test –inputs nginx</p>
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/nginx/dashbaords.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/nginx/dashbaords.json</a></p>
+<h2 id="mysql监控"><a href="#mysql监控" class="headerlink" title="mysql监控"></a>mysql监控</h2><p>conf&#x2F;input.mysql&#x2F;mysql.toml</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[[instances]]</span><br><span class="hljs-attr">address</span> = <span class="hljs-string">&quot;127.0.0.1:3306&quot;</span><br><span class="hljs-attr">username</span> = <span class="hljs-string">&quot;root&quot;</span><br><span class="hljs-attr">password</span> = <span class="hljs-string">&quot;1234&quot;</span><br><br><span class="hljs-attr">extra_status_metrics</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">extra_innodb_metrics</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">gather_processlist_processes_by_state</span> = <span class="hljs-literal">false</span><br><span class="hljs-attr">gather_processlist_processes_by_user</span> = <span class="hljs-literal">false</span><br><span class="hljs-attr">gather_schema_size</span> = <span class="hljs-literal">false</span><br><span class="hljs-attr">gather_table_size</span> = <span class="hljs-literal">false</span><br><span class="hljs-attr">gather_system_table_size</span> = <span class="hljs-literal">false</span><br><span class="hljs-attr">gather_slave_status</span> = <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/mysql/dashboard-by-ident.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/mysql/dashboard-by-ident.json</a></p>
+<p>告警规则：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/mysql/alerts.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/mysql/alerts.json</a></p>
+<h2 id="redis监控"><a href="#redis监控" class="headerlink" title="redis监控"></a>redis监控</h2><p>conf&#x2F;input.redis&#x2F;redis.toml</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[[instances]]</span><br><span class="hljs-attr">address</span> = <span class="hljs-string">&quot;127.0.0.1:6379&quot;</span><br><span class="hljs-comment"># username = &quot;&quot;</span><br><span class="hljs-comment"># password = &quot;&quot;</span><br><span class="hljs-attr">pool_size</span> = <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/redis/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/redis/dashboard.json</a></p>
+<p>告警规则：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/redis/alerts.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/redis/alerts.json</a></p>
+<h2 id="rabbitmq监控"><a href="#rabbitmq监控" class="headerlink" title="rabbitmq监控"></a>rabbitmq监控</h2><p>从 rabbitmq 3.8 版本开始，就内置了 prometheus 的支持，即，如果 rabbitmq 启用了 prometheus，可以直接暴露 metrics 接口。</p>
+<p>在rabbitmq的安装目录(sbin)下，执行rabbitmq-plugins enable rabbitmq_prometheus</p>
+<p>启用成功的话，rabbitmq 默认会在 15692 端口起监听，访问 <a target="_blank" rel="noopener" href="http://localhost:15692/metrics">http://localhost:15692/metrics</a> 即可看到符合 prometheus 协议的监控数据。</p>
+<p>进入prometheus的安装目录，vim prometheus.yml，添加如下：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">- job_name: &#x27;rabbitmq&#x27;<br>  static_configs:<br>    - targets: [&#x27;192.168.80.1:<span class="hljs-number">1569</span>2&#x27;]<br></code></pre></td></tr></table></figure>
+
+<p>在上面prometheus任务之后，要注意格式，拉到文本编辑中看是否对齐。</p>
+<p>监控大盘：<a target="_blank" rel="noopener" href="https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/rabbitmq/dashboard.json">https://github.com/flashcatcloud/categraf/blob/v0.2.39/inputs/rabbitmq/dashboard.json</a></p>
+<h2 id="spring-boot服务监控"><a href="#spring-boot服务监控" class="headerlink" title="spring boot服务监控"></a>spring boot服务监控</h2><p>在spring boot项目中添加依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.micrometer<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>micrometer-registry-prometheus<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>开启端点：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">management:</span><br>  <span class="hljs-attr">endpoints:</span><br>    <span class="hljs-attr">web:</span><br>      <span class="hljs-attr">exposure:</span><br>        <span class="hljs-attr">include:</span> <span class="hljs-string">&#x27;*&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>启动spring boot项目后，访问<a target="_blank" rel="noopener" href="http://192.168.80.1:8080/actuator/prometheus">http://192.168.80.1:8080/actuator/prometheus</a> , 返回指标相关信息。</p>
+<p>进入prometheus的安装目录，vim prometheus.yml，添加如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">&#x27;springboot&#x27;</span><br>  <span class="hljs-attr">metrics_path:</span> <span class="hljs-string">&#x27;/actuator/prometheus&#x27;</span><br>  <span class="hljs-attr">static_configs:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;192.168.80.1:8080&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>没有现成的监控大盘。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>nightingale 使用的还是少，网上信息比较少，监控大盘没有Grafana多，Grafana官网就可以搜索监控大盘。nightingale 的告警还是比较好用的。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%9B%91%E6%8E%A7/">监控</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%9B%91%E6%8E%A7/">监控</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/14/linux/linux%E5%91%BD%E4%BB%A4%E5%85%A5%E9%97%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux命令入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/23/java/java8%E7%9A%84Optional/">
+                        <span class="hidden-mobile">java8的Optional</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

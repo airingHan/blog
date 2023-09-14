@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="地址截断使用location上的路径location 中的 root 和 alias  root 指令只是将搜索的根设置为 root 设定的目录，即不会截断 uri，而是使用原始 uri 跳转该目录下查找文件 aias 指令则会截断匹配的 uri，然后使用 alias 设定的路径加上剩余的 uri 作为子路径进行查找  示例 1：root 12345678910111213#-----------">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx地址截断">
+<meta property="og:url" content="http://hanqichuan.com/2023/05/30/nginx/nginx%E5%9C%B0%E5%9D%80%E6%88%AA%E6%96%AD/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="地址截断使用location上的路径location 中的 root 和 alias  root 指令只是将搜索的根设置为 root 设定的目录，即不会截断 uri，而是使用原始 uri 跳转该目录下查找文件 aias 指令则会截断匹配的 uri，然后使用 alias 设定的路径加上剩余的 uri 作为子路径进行查找  示例 1：root 12345678910111213#-----------">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-30T02:40:00.000Z">
+<meta property="article:modified_time" content="2023-05-30T06:51:32.278Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>nginx地址截断 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="nginx地址截断">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-30 10:40" pubdate>
+        2023年5月30日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">nginx地址截断</h1>
+            
+            <div class="markdown-body">
+              <h2 id="地址截断"><a href="#地址截断" class="headerlink" title="地址截断"></a>地址截断</h2><h3 id="使用location上的路径"><a href="#使用location上的路径" class="headerlink" title="使用location上的路径"></a>使用location上的路径</h3><p><strong>location 中的 root 和 alias</strong></p>
+<ul>
+<li>root 指令只是将搜索的根设置为 root 设定的目录，即不会截断 uri，而是使用原始 uri 跳转该目录下查找文件</li>
+<li>aias 指令则会截断匹配的 uri，然后使用 alias 设定的路径加上剩余的 uri 作为子路径进行查找</li>
+</ul>
+<p>示例 1：root</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment">#------------目录结构----------</span><br><span class="hljs-regexp">/www/</span>x1/index.html<br><span class="hljs-regexp">/www/</span>x2/index.html<br><br><span class="hljs-comment">#--------配置-----------------------</span><br>index index.html index.php;<br>location <span class="hljs-regexp">/x/</span> &#123;<br>    root <span class="hljs-string">&quot;/www/&quot;</span>;<br>&#125;<br><br><span class="hljs-comment">#-------访问--------------</span><br>curl http:<span class="hljs-regexp">//</span>localhost<span class="hljs-regexp">/x1/i</span>ndex.html<br>curl http:<span class="hljs-regexp">//</span>localhost<span class="hljs-regexp">/x2/i</span>ndex.html<br></code></pre></td></tr></table></figure>
+
+<p>示例 2：alias</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment">#----------配置-----------------</span><br>location <span class="hljs-regexp">/y/</span>z/ &#123;<br>    alias <span class="hljs-regexp">/www/</span>x1/;<br>&#125;<br><br><span class="hljs-comment">#---------访问--------------</span><br>curl http:<span class="hljs-regexp">//</span>localhost<span class="hljs-regexp">/y/</span>z/index.html<br></code></pre></td></tr></table></figure>
+
+<p><strong>location 中的 proxy_pass 的 uri</strong></p>
+<p>如果 proxy_pass 的 url 不带 uri</p>
+<p>如果尾部是”&#x2F;“，则会截断匹配的uri</p>
+<p>如果尾部不是”&#x2F;“，则不会截断匹配的uri</p>
+<p>如果proxy_pass的url带uri，则会截断匹配的uri</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#-------servers配置--------------------</span><br>location / &#123;<br>    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$uri</span>    <span class="hljs-comment">#回显请求的uri</span><br>&#125;<br><br><span class="hljs-comment">#--------proxy_pass配置---------------------</span><br>location /t1/ &#123; proxy_pass http://servers; &#125;    <span class="hljs-comment">#正常，不截断</span><br>location /t2/ &#123; proxy_pass http://servers/; &#125;    <span class="hljs-comment">#正常，截断</span><br>location /t3  &#123; proxy_pass http://servers; &#125;    <span class="hljs-comment">#正常，不截断</span><br>location /t4  &#123; proxy_pass http://servers/; &#125;    <span class="hljs-comment">#正常，截断</span><br>location /t5/ &#123; proxy_pass http://servers/test/; &#125;    <span class="hljs-comment">#正常，截断</span><br>location /t6/ &#123; proxy_pass http://servers/test; &#125;    <span class="hljs-comment">#缺&quot;/&quot;，截断</span><br>location /t7  &#123; proxy_pass http://servers/test/; &#125;    <span class="hljs-comment">#含&quot;//&quot;，截断</span><br>location /t8  &#123; proxy_pass http://servers/test; &#125;    <span class="hljs-comment">#正常，截断</span><br><span class="hljs-comment">#---------访问----------------------</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">seq</span> 6)<br><span class="hljs-keyword">do</span><br>    url=http://localhost/t<span class="hljs-variable">$i</span>/doc/index.html<br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;-----------<span class="hljs-variable">$url</span>-----------&quot;</span><br>    curl url<br><span class="hljs-keyword">done</span><br><br><span class="hljs-comment">#--------结果---------------------------</span><br>----------http://localhost:8080/t1/doc/index.html------------<br>/t1/doc/index.html<br><br>----------http://localhost:8080/t2/doc/index.html------------<br>/doc/index.html<br><br>----------http://localhost:8080/t3/doc/index.html------------<br>/t3/doc/index.html<br><br>----------http://localhost:8080/t4/doc/index.html------------<br>/doc/index.html<br><br>----------http://localhost:8080/t5/doc/index.html------------<br>/test/doc/index.html<br><br>----------http://localhost:8080/t6/doc/index.html------------<br>/testdoc/index.html<br><br>----------http://localhost:8080/t7/doc/index.html------------<br>/test//doc/index.html<br><br>----------http://localhost:8080/t8/doc/index.html------------<br>/test/doc/index.html<br></code></pre></td></tr></table></figure>
+
+<h3 id="正则判断"><a href="#正则判断" class="headerlink" title="正则判断"></a>正则判断</h3><p>比如，<a target="_blank" rel="noopener" href="http://baidu.com/sina/search/hello.com">http://baidu.com/sina/search/hello.com</a></p>
+<p>我想截取sina后面的路径作为代理，就可以这么写</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">location</span><span class="hljs-regexp"> ^~</span> /sina/&#123;<br><span class="hljs-attribute">if</span> (<span class="hljs-variable">$request_uri</span> <span class="hljs-regexp">~ /sina/(.+))</span><br>&#123;<br><span class="hljs-attribute">set</span> <span class="hljs-variable">$rightUrl</span> <span class="hljs-variable">$1</span>;<br>&#125;<br><span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:8080/<span class="hljs-variable">$rightUrl</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>假设你想截取两个字符串之间的字符，可以这么写</p>
+<p>我想截取(<a target="_blank" rel="noopener" href="http://baidu.com/test/AcenterB)A%E5%92%8CB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AD%97%E7%AC%A6%EF%BC%9A">http://baidu.com/test/AcenterB)A和B之间的字符：</a></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">location</span><span class="hljs-regexp"> ^~</span> /test/&#123;<br>       <span class="hljs-attribute">if</span> (<span class="hljs-variable">$request_uri</span> <span class="hljs-regexp">~ A(.*?)B</span> )<br>       &#123;<br>               <span class="hljs-attribute">set</span> <span class="hljs-variable">$center</span> <span class="hljs-variable">$1</span>;<br>       &#125;<br>       <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:8080/<span class="hljs-variable">$center</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>location语法规则</p>
+<p>​    location [&#x3D;|<del>|</del>*|^~|@] &#x2F;uri&#x2F; { … } </p>
+<p>location分为两个部分</p>
+<h4 id="第一个部分"><a href="#第一个部分" class="headerlink" title="第一个部分"></a>第一个部分</h4><p>​    [&#x3D;|<del>|</del>*|^~|@] </p>
+<p>​      &#x3D; : 表示精确匹配后面的url<br>​      ~ : 表示正则匹配，但是区分大小写<br>​      <del>* : 正则匹配，不区分大小写<br>​      ^</del> : 表示普通字符匹配，如果该选项匹配,只匹配该选项.不匹配别的选项,一般用来匹配目录<br>​     @ : “@” 定义一个命名的 location，使用在内部定向时，例如 error_page</p>
+<div class="code-wrapper"><pre><code class="hljs">  = 是精确完整匹配, 且优先级最高
+ 正则匹配时，如果 ~ 和 ^~ 同时匹配规则，则 ^~ 优先
+  ^~ 这个不会匹配请求url中后面的路径, 如上面的 /test/hello 没有匹配上
+ ^~ 不支持正则，和=相比，范围更广， hellowo 是可以被^~匹配，但是 = 不会匹配
+ ~ 路径中只要包含就可以匹配，如上面的 /test/hellowo 返回了602
+</code></pre></div>
+<h4 id="第二个部分"><a href="#第二个部分" class="headerlink" title="第二个部分"></a>第二个部分</h4><p>&#x2F;uri&#x2F;  这里主要填的就是需要匹配的path路径,根据前面的符号,这里可以填写精确的path路径.也可以填正则表达式,下面则主要针对正则进行说明</p>
+<p>​      . ： 匹配除换行符以外的任意字符<br>​      ? ： 重复0次或1次<br>​      + ： 重复1次或更多次<br>​      * ： 重复0次或更多次<br>​      \d ：匹配数字<br>​      ^ ： 匹配字符串的开始<br>​     $ ： 匹配字符串的介绍<br>​     {n} ： 重复n次<br>​     {n,} ： 重复n次或更多次<br>​     [c] ： 匹配单个字符c<br>​     [a-z] ： 匹配a-z小写字母的任意一个<br>​    小括号()之间匹配的内容,可以在后面通过$1来引用,$2表示的是前面第二个()里的内容.正则里面容易让人困惑的是\转义特殊字符。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/nginx/">nginx</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/nginx/">nginx</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/31/git/git%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E4%B8%8D%E8%B5%B7%E4%BD%9C%E7%94%A8%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">git忽略文件不起作用的原因及解决办法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/30/java/session%E5%85%B1%E4%BA%AB/">
+                        <span class="hidden-mobile">session共享</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
