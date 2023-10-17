@@ -191,6 +191,292 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2019/07/18/java/%E6%AD%BB%E9%94%81/" target="_self">
+          死锁
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/java/%E6%AD%BB%E9%94%81/" target="_self">
+          
+          什么是死锁是一组互相竞争资源的线程，因互相等待，导致“永久”阻塞的现象。 发生死锁的原因1.互斥条件，共享资源X和Y只能被一个线程占用 2.占有且等待，线程T1已经获取得共享资源X在等待共享资源Y的时候，不释放共享资源X 3.不可抢占，其他线程不能强行抢占线程T1占有的资源 4.循环等待，线程T1等待线程T2占有的资源，线程T2等待线程T1占有的资源 如何避免死锁打破死锁的四个原因。 第一个互斥条
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          接口幂等性设计
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          
+          什么是接口幂等性幂等是一个数学概念。在接口中表示一个接口多次调用没有副作用。 什么情况会出现接口幂等性问题查询请求不会修改数据，所以不会出现幂等性问题。 添加、修改、删除会出现幂等性问题。 什么场景会出现用户重复操作 代码重试 消息重复消费 如何实现接口幂等性1.唯一索引去重 2.token + redis 3.状态机 4.乐观锁 5.悲观锁（分布式锁） rouyi实现12345678910111
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%95%B0%E6%8D%AE%E6%9D%83%E9%99%90/" target="_self">
+          数据权限
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%95%B0%E6%8D%AE%E6%9D%83%E9%99%90/" target="_self">
+          
+          1.什么是数据权限对于系统来说，分为菜单按钮接口权限和数据权限。 菜单按钮接口权限是针对用户是否可以看到使用菜单、按钮的权限及接口访问权限。 数据权限是针对用户，存在于公司的系统架构内，不同部门、不同人数据是否可见、是否可操作的权限。 2.实现方式rouyi项目的方式步骤一： 添加请求实体类的公共类 12345@Datapublic class BaseEntity &amp;#123;    &#x2F;** 请
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-18 11:22" pubdate>
+              2019-07-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/07/16/linux/linux%E8%AE%BE%E7%BD%AEnginx%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/" target="_self">
+          linux设置nginx开机自启动
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/07/16/linux/linux%E8%AE%BE%E7%BD%AEnginx%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/" target="_self">
+          
+          1.进入&#x2F;etc&#x2F;rc.d&#x2F;init.d目录 2.修改rc.local权限 chmod 755 rc.local 3.添加启动sh脚本 增加一行 &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin&#x2F;nginx 4.重启测试一下
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-07-16 14:46" pubdate>
+              2019-07-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/linux/">linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">linux</a>
+            
+              <a href="/tags/nginx/">nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/12/21/linux/linux%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BDjdk/" target="_self">
+          linux安装与卸载jdk
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/12/21/linux/linux%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BDjdk/" target="_self">
+          
+          1、卸载JDK1.1、查看已安装的JDKrpm -qa|grep jdk返回值： 12[root@izbp17drmb0m8oy3dd1zx7z ~]# rpm -qa | grep jdkjdk1.8-1.8.0_191-fcs.x86_64 1.2、删除环境变量vim &#x2F;etc&#x2F;profile删除JAVA_HOME环境变量 1.3、卸载JDKrpm -e –nodeps j
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-12-21 15:42" pubdate>
+              2018-12-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/linux/">linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/jdk/">jdk</a>
+            
+              <a href="/tags/linux/">linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/07/hexo/hexo%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/" target="_self">
+          hexo生成静态博客
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/07/hexo/hexo%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/" target="_self">
+          
+          https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F;  hexo官网 https:&#x2F;&#x2F;github.com&#x2F;A-limon&#x2F;pacman hexo主题https:&#x2F;&#x2F;www.haomwei.com&#x2F;technology&#x2F;maupassant-hexo.html https:&#x2F;&#x2F;github.com&#x2F;bubkoo&#x2F;hexo-filter-flowchart hexo支持流程图 https:&#x2F;&#x2F;github.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-07 10:52" pubdate>
+              2018-05-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/hexo/">hexo</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hexo/">hexo</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/03/23/maven/Maven%20%E7%B4%A2%E5%BC%95/" target="_self">
           maven
         </a>

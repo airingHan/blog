@@ -191,6 +191,249 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/06/22/spring/spring_boot%E6%9F%A5%E6%89%BE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          spring_boot查找配置文件源码分析
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/22/spring/spring_boot%E6%9F%A5%E6%89%BE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          
+          源码分析1.找到配置文件 2.根据profile加载对应的文件或属性 3.把加载后的属性放到spring 容器中 spring boot项目的入口为main方法 加载配置的入口是有设计的。是观察者设计模式。 12345678910111213141516SpringApplication.run(SpringLogbackApplication.class, args);new SpringApp
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-22 16:22" pubdate>
+              2022-06-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-boot/">spring boot</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-boot/">spring boot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/16/spring_cloud/hystrix%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84/" target="_self">
+          hystrix怎么做的
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/16/spring_cloud/hystrix%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84/" target="_self">
+          
+          流程图下图显示了当您通过 Hystrix 向服务依赖项发出请求时会发生什么：  以下部分将更详细地解释此流程：  构造一个HystrixCommand或HystrixObservableCommand对象 执行命令 响应是否缓存？ 电路是否打开？ 线程池&#x2F;队列&#x2F;信号量是否已满？ HystrixObservableCommand.construct()或者HystrixComma
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-16 16:19" pubdate>
+              2022-06-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/hystrix/">hystrix</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hystrix/">hystrix</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/15/spring_cloud/hystrix%E5%AD%A6%E4%B9%A0/" target="_self">
+          hystrix学习
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/15/spring_cloud/hystrix%E5%AD%A6%E4%B9%A0/" target="_self">
+          
+          官网https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix  源码 https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;Hystrix&#x2F;wiki&#x2F;   wiki  Getting Started  入门  How it Works  架构设计  How To Use  如何用   Hystrix 是什么  在分布式环境下，难免出现许多服务之间调用失败的场景， Hystrix 是一个
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-15 10:03" pubdate>
+              2022-06-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/hystrix/">hystrix</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hystrix/">hystrix</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          spring_cloud_feign_ribbon_hystrix源码分析
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/14/spring_cloud/spring_cloud_feign_ribbon_hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          
+          流程图 @EnableFeignClients开启Feign功能使用时都是在spring boot 启动类加上@EnableFeignClients注解。 123@Import(FeignClientsRegistrar.class)public @interface EnableFeignClients &amp;#123;&amp;#125;  注解上有FeignClientsRegistrar类 Feign
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-14 15:12" pubdate>
+              2022-06-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-cloud/">spring_cloud</a>
+            
+              <a href="/categories/spring-cloud/feign/">feign</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-cloud/">spring_cloud</a>
+            
+              <a href="/tags/feign/">feign</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/06/11/spring_cloud/spring_cloud_feign%E5%AE%9E%E8%B7%B5/" target="_self">
+          spring_cloud_feign实践
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/06/11/spring_cloud/spring_cloud_feign%E5%AE%9E%E8%B7%B5/" target="_self">
+          
+          简单使用https:&#x2F;&#x2F;docs.spring.io&#x2F;spring-cloud-openfeign&#x2F;docs&#x2F;current&#x2F;reference&#x2F;html&#x2F;  官网 在eureka的实践中，service-a的基础上。 pom.xml添加依赖 1234&lt;dependency&gt;    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-11 16:16" pubdate>
+              2022-06-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-cloud/">spring_cloud</a>
+            
+              <a href="/categories/spring-cloud/feign/">feign</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-cloud/">spring_cloud</a>
+            
+              <a href="/tags/feign/">feign</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/06/08/java/exception%E4%B8%8D%E6%89%93%E5%8D%B0%E5%A0%86%E6%A0%88%E4%BF%A1%E6%81%AF/" target="_self">
           exception不打印堆栈信息
         </a>
@@ -425,241 +668,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/spring-boot/">spring boot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/28/java/logback%E6%BA%90%E7%A0%81%E5%8F%8A%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" target="_self">
-          logback源码及原理分析
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/28/java/logback%E6%BA%90%E7%A0%81%E5%8F%8A%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" target="_self">
-          
-          如何看源码及原理分析原理及源码查看是相辅相成。只能了解原理才能更好的了解源码；只有相应的了解源码才能知道是怎么原理实现。 原理： ​	自已设计一个。配合源码查看，验证框架设计者是怎么设计的。 源码： ​	只要知道入口。使用时分几步。分别查看。 logback简单使用加入依赖 1234567891011121314151617&lt;dependencies&gt;    &lt;dependenc
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-28 14:28" pubdate>
-              2022-05-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/23/linux/linux%E6%9F%A5%E7%9C%8BCPU%E6%88%96%E5%86%85%E5%AD%98%E5%A4%9A%E7%9A%84%E8%BF%9B%E7%A8%8B/" target="_self">
-          linux查看CPU或内存多的进程
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/23/linux/linux%E6%9F%A5%E7%9C%8BCPU%E6%88%96%E5%86%85%E5%AD%98%E5%A4%9A%E7%9A%84%E8%BF%9B%E7%A8%8B/" target="_self">
-          
-          CPU占用最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k3|head -10  内存消耗最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k4|head -10  虚拟内存使用最多的前10个进程1ps auxw|head -1;ps auxw|sort -rn -k5|head -10  ps出显示参数含义%MEM
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-23 19:25" pubdate>
-              2022-05-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/21/spring/spring%20boot%E8%B7%A8%E5%9F%9F/" target="_self">
-          spring boot跨域
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/21/spring/spring%20boot%E8%B7%A8%E5%9F%9F/" target="_self">
-          
-          前置同源策略是什么？同源策略是一种约定，它是浏览器最核心也最基本的安全功能如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。它是一个安全策略。所有支持JavaScript的浏览器都会使用这个策略 满足同源的三个条件：所谓同源是指，域名、协议、端口相同。 为什么要同源限制？同源策略存在的意义：  非同源下的 cookie
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-21 15:01" pubdate>
-              2022-05-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-boot/">spring boot</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-boot/">spring boot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/20/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/spring%20security%E5%AE%9E%E8%B7%B5/" target="_self">
-          spring security实践
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/20/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/spring%20security%E5%AE%9E%E8%B7%B5/" target="_self">
-          
-          官网操作及阅读https:&#x2F;&#x2F;spring.io&#x2F; 点击 projects 选择 spring security 首先看到的overview下有简介和特色或者功能还有快速开始。 Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。它是保护基于 Spring 的应用程序的事实标准。 Spring Security 是一个专注于为 Java 应用程序提供身份验证和授权的
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-20 11:18" pubdate>
-              2022-05-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring/">spring</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring/">spring</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/19/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/oauth/" target="_self">
-          oauth参考
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/19/%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6/oauth/" target="_self">
-          
-          https:&#x2F;&#x2F;oauth.net&#x2F; 官网 http:&#x2F;&#x2F;blog.csdn.net&#x2F;dreamkid0924&#x2F;article&#x2F;details&#x2F;53284863 OAuth完全手册_国内篇 https:&#x2F;&#x2F;huoding.com&#x2F;2011&#x2F;11&#x2F;08&#x2F;126 OAuth的改变
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-19 16:23" pubdate>
-              2022-05-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/oauth/">oauth</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/oauth/">oauth</a>
             
           </div>
         
