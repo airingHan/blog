@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Maven 索引maven是apache公司开源项目，是项目构建的工具。用来依赖管理 maven的好处jar包的管理，用户只关心自己的代码，不用再去提交第三方的jar包到自已的版本控制器。 项目构建；项目依赖管理；软件项目持续集成；版本管理；项目的站点描述信息管理； maven的好处如何实现maven的两大核心： 依赖管理：对jar包管理过程 项目构建：项目在编码完成后，对项目进行编译、测试、打包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="maven">
+<meta property="og:url" content="http://hanqichuan.com/2018/03/23/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/Maven%20%E7%B4%A2%E5%BC%95/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="Maven 索引maven是apache公司开源项目，是项目构建的工具。用来依赖管理 maven的好处jar包的管理，用户只关心自己的代码，不用再去提交第三方的jar包到自已的版本控制器。 项目构建；项目依赖管理；软件项目持续集成；版本管理；项目的站点描述信息管理； maven的好处如何实现maven的两大核心： 依赖管理：对jar包管理过程 项目构建：项目在编码完成后，对项目进行编译、测试、打包">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-23T06:23:12.000Z">
+<meta property="article:modified_time" content="2023-10-18T02:17:09.201Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="maven">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>maven - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="maven">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-03-23 14:23" pubdate>
+        2018年3月23日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">maven</h1>
+            
+            <div class="markdown-body">
+              <h1 id="Maven-索引"><a href="#Maven-索引" class="headerlink" title="Maven 索引"></a>Maven 索引</h1><p>maven是apache公司开源项目，是项目构建的工具。用来依赖管理</p>
+<h2 id="maven的好处"><a href="#maven的好处" class="headerlink" title="maven的好处"></a>maven的好处</h2><p>jar包的管理，用户只关心自己的代码，不用再去提交第三方的jar包到自已的版本控制器。</p>
+<p><strong>项目构建；项目依赖管理；软件项目持续集成；版本管理；项目的站点描述信息管理；</strong></p>
+<h2 id="maven的好处如何实现"><a href="#maven的好处如何实现" class="headerlink" title="maven的好处如何实现"></a>maven的好处如何实现</h2><p>maven的两大核心：</p>
+<p>依赖管理：对jar包管理过程</p>
+<p>项目构建：项目在编码完成后，对项目进行编译、测试、打包、部署一系列的操作都通过命令来实现</p>
+<p>通过maven命令将web项目发布到tomcat:</p>
+<span id="more"></span>
+
+<h2 id="maven的重点"><a href="#maven的重点" class="headerlink" title="maven的重点"></a>maven的重点</h2><p>生命周期是重点</p>
+<p>依赖范围与依赖传递是重点</p>
+<p>依赖冲突解决是重点</p>
+<p>排除依赖是重点</p>
+<p>maven的概念模型是重点</p>
+<table>
+<thead>
+<tr>
+<th>依赖范围</th>
+<th>对于编译classpath有效</th>
+<th>对于测试classpath有效</th>
+<th>对于运行时classpath有效</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>compile</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>spring-core</td>
+</tr>
+<tr>
+<td>test</td>
+<td>-</td>
+<td>Y</td>
+<td>-</td>
+<td>junit</td>
+</tr>
+<tr>
+<td>provided</td>
+<td>Y</td>
+<td>Y</td>
+<td>-</td>
+<td>servlet-api</td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>-</td>
+<td>Y</td>
+<td>Y</td>
+<td>jdbc驱动</td>
+</tr>
+<tr>
+<td>system</td>
+<td>Y</td>
+<td>Y</td>
+<td>-</td>
+<td>本地的，maven仓库之外的类库</td>
+</tr>
+</tbody></table>
+<p>##maven传递依赖冲突解决<br>传递依赖：A(项目)依赖B,B依赖C(1.1版本)，B是A的直接依赖，C就是A的传递依赖，导入依赖D,D依赖C(1.2版本)</p>
+<p>###1.1 maven自己调解原则</p>
+<p>####1.1.1 第一声明者优先原则</p>
+<p>谁先定义的就用谁的传递依赖。</p>
+<h4 id="1-1-2路径近者优先原则"><a href="#1-1-2路径近者优先原则" class="headerlink" title="1.1.2路径近者优先原则"></a>1.1.2路径近者优先原则</h4><p>直接依赖级别高于传递依赖。</p>
+<h3 id="1-2排除依赖"><a href="#1-2排除依赖" class="headerlink" title="1.2排除依赖"></a>1.2排除依赖</h3><p>###1.3版本锁定(推荐使用)</p>
+<p>##maven对项目进行拆分、聚合(重点)</p>
+<p>对现在已有maven ssh项目进行拆分，拆分思路：将dao层的代码已经配置文件全体提取出来到一个表现上独立的工程中。同样service、action拆分。</p>
+<p>ssh-parent：父工程</p>
+<p>ssh-dao（子模块）、ssh-service、ssh-web</p>
+<p>拆分完成对拆分后的项目进行聚合，提出概念父工程</p>
+<h3 id="1-1创建父工程"><a href="#1-1创建父工程" class="headerlink" title="1.1创建父工程"></a>1.1创建父工程</h3><h3 id="1-2将创建父工程发布到本地仓库"><a href="#1-2将创建父工程发布到本地仓库" class="headerlink" title="1.2将创建父工程发布到本地仓库"></a>1.2将创建父工程发布到本地仓库</h3><h3 id="1-3创建子模块ssh-dao"><a href="#1-3创建子模块ssh-dao" class="headerlink" title="1.3创建子模块ssh-dao"></a>1.3创建子模块ssh-dao</h3><p>ssh-dao负责数据访问层：包含dao相关代码&amp;配置文件</p>
+<h3 id="1-4创建子模块ssh-service"><a href="#1-4创建子模块ssh-service" class="headerlink" title="1.4创建子模块ssh-service"></a>1.4创建子模块ssh-service</h3><h3 id="1-5创建子模块ssh-web"><a href="#1-5创建子模块ssh-web" class="headerlink" title="1.5创建子模块ssh-web"></a>1.5创建子模块ssh-web</h3><h3 id="1-6运行方式"><a href="#1-6运行方式" class="headerlink" title="1.6运行方式"></a>1.6运行方式</h3><h2 id="maven私服安装"><a href="#maven私服安装" class="headerlink" title="maven私服安装"></a>maven私服安装</h2><p>maven项目–》本地仓库–》私服–》中央仓库</p>
+<h3 id="1-私服安装"><a href="#1-私服安装" class="headerlink" title="1.私服安装"></a>1.私服安装</h3><h3 id="2-私服仓库类型"><a href="#2-私服仓库类型" class="headerlink" title="2.私服仓库类型"></a>2.私服仓库类型</h3><p>hosted:宿主仓库;存放本公司开发的jar包（正式版本、测试版本、第三方：存在版本问题-oracle）</p>
+<p>proxy:代理仓库;代理中央仓库、apache下测试版本的jar包</p>
+<p>group:组仓库;将来连接组仓库。包含hosted、proxy</p>
+<h3 id="3-上传jar包到私服上"><a href="#3-上传jar包到私服上" class="headerlink" title="3.上传jar包到私服上"></a>3.上传jar包到私服上</h3><h3 id="4-下载jar包到本地仓库-应用"><a href="#4-下载jar包到本地仓库-应用" class="headerlink" title="4.下载jar包到本地仓库(应用)"></a>4.下载jar包到本地仓库(应用)</h3>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/">构建工具</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/maven/">maven</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/05/07/node/hexo%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">hexo生成静态博客</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
