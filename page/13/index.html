@@ -191,6 +191,104 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/05/06/hexo/node%E5%AE%89%E8%A3%85+hexo%E6%89%A7%E8%A1%8C+%E5%B8%83%E7%BD%B2%E7%BD%91%E9%A1%B5/" target="_self">
+          node安装+hexo执行+布署网页
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/06/hexo/node%E5%AE%89%E8%A3%85+hexo%E6%89%A7%E8%A1%8C+%E5%B8%83%E7%BD%B2%E7%BD%91%E9%A1%B5/" target="_self">
+          
+          node安装下载：https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F; 点击安装 验证： node -v npm -v 创建环境变量: 123vim .bash_profile  PATH&#x3D;$PATH:&#x2F;usr&#x2F;local&#x2F;bin&#x2F;:wq    使环境变量生效: 1echo $PATH  npm 下载时有问题，使用cnpm 12345npm get registrynpm config set regis
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-06 10:14" pubdate>
+              2022-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/hexo/">hexo</a>
+            
+              <a href="/categories/hexo/node/">node</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hexo/">hexo</a>
+            
+              <a href="/tags/node/">node</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/05/mysql/mysql%E7%83%AD%E5%A4%87%E4%BB%BD/" target="_self">
+          mysql热备份
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/05/mysql/mysql%E7%83%AD%E5%A4%87%E4%BB%BD/" target="_self">
+          
+          理论采用数据库已经入库的数据进行备份。对binlog进行备份。 准备数据库mysqldump逻辑备份1&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;bin&#x2F;mysqldump -h127.0.0.1 -P3306 -uroot -p&amp;#x27;密码&amp;#x27; trans-core-dev --single-transaction --default-character-set&#x3D;utf8mb4  | gzip
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-05 10:13" pubdate>
+              2022-05-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/04/22/nginx/nginx%E5%9B%9B%E5%B1%82%E8%B4%9F%E8%BD%BD%E9%85%8D%E7%BD%AE/" target="_self">
           nginx四层负载
         </a>
@@ -310,10 +408,17 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/kettle/">kettle</a>
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
             
           </div>
         
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kettle/">kettle</a>
+            
+          </div>
         
       </div>
     </article>
@@ -533,100 +638,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/mysql/">mysql</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
-          mycat与sharding-sphere对比
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/02/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/mycat%E4%B8%8Esharding-sphere%E5%AF%B9%E6%AF%94/" target="_self">
-          
-          参考文档： https:&#x2F;&#x2F;dbaplus.cn&#x2F;news-11-1854-1.html 1.方案对比mycat是db 代理的分库分表解决方案。 sharding-sphere中sharding-jdbc是对jdbc 代理的分库分表解决方案。 从解决方案&#x2F;架构来看sharding-jdbc更符合分布式架构的设计，直连数据库，没有中间应用，理论性能是最高的（实际性能需要结合具体的代码实现
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-02-07 09:23" pubdate>
-              2022-02-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">分库分表</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
-          elk安装
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/01/21/elk/elk%E5%AE%89%E8%A3%85/" target="_self">
-          
-          1.创建linux用户与组12345678910添加工作组groupadd elastic创建elastic用户useradd -g elastic elastic设置密码passwd elastic修改目录权限chown -R elastic:elastic &#x2F;usr&#x2F;local&#x2F;elk切换用户su elastic  2. 安装elasticsearch 7.6下载解压： 123cd &#x2F;usr&#x2F;
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-01-21 16:23" pubdate>
-              2022-01-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/elk/">elk</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/elk/">elk</a>
             
           </div>
         
