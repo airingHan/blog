@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="购物车在很多电商系统中，用户不会一件一件的买商品，不是同一店铺，都是先加入购物车，然后去生成订单一起支付。购物车的概念对应超市中的购物车。 购物车的存储存储至数据库(mysql)数据库有连接上、存储上的瓶颈。 前端存储至localstorage 或者sessionstoragelocalstorage 没有过期时间 sessionstorage关闭浏览器后消失。 存储至缓存(redis)因为是缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="购物车存储">
+<meta property="og:url" content="http://hanqichuan.com/2023/10/19/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="购物车在很多电商系统中，用户不会一件一件的买商品，不是同一店铺，都是先加入购物车，然后去生成订单一起支付。购物车的概念对应超市中的购物车。 购物车的存储存储至数据库(mysql)数据库有连接上、存储上的瓶颈。 前端存储至localstorage 或者sessionstoragelocalstorage 没有过期时间 sessionstorage关闭浏览器后消失。 存储至缓存(redis)因为是缓存">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-19T02:05:00.000Z">
+<meta property="article:modified_time" content="2023-10-19T02:21:45.308Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="系统设计">
+<meta property="article:tag" content="购物车">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>购物车存储 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="购物车存储">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-10-19 10:05" pubdate>
+        2023年10月19日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      64 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">购物车存储</h1>
+            
+            <div class="markdown-body">
+              <h2 id="购物车"><a href="#购物车" class="headerlink" title="购物车"></a>购物车</h2><p>在很多电商系统中，用户不会一件一件的买商品，不是同一店铺，都是先加入购物车，然后去生成订单一起支付。购物车的概念对应超市中的购物车。</p>
+<h2 id="购物车的存储"><a href="#购物车的存储" class="headerlink" title="购物车的存储"></a>购物车的存储</h2><h3 id="存储至数据库-mysql"><a href="#存储至数据库-mysql" class="headerlink" title="存储至数据库(mysql)"></a>存储至数据库(mysql)</h3><p>数据库有连接上、存储上的瓶颈。</p>
+<h3 id="前端存储至localstorage-或者sessionstorage"><a href="#前端存储至localstorage-或者sessionstorage" class="headerlink" title="前端存储至localstorage 或者sessionstorage"></a>前端存储至localstorage 或者sessionstorage</h3><p>localstorage 没有过期时间</p>
+<p>sessionstorage关闭浏览器后消失。</p>
+<h3 id="存储至缓存-redis"><a href="#存储至缓存-redis" class="headerlink" title="存储至缓存(redis)"></a>存储至缓存(redis)</h3><p>因为是缓存会有可能会丢失，但是购物车的业务有丢失也可以忍受。</p>
+<h3 id="存储至缓存-redis-缓存同步至数据库-mysql"><a href="#存储至缓存-redis-缓存同步至数据库-mysql" class="headerlink" title="存储至缓存(redis),缓存同步至数据库(mysql)"></a>存储至缓存(redis),缓存同步至数据库(mysql)</h3><p>只有特殊需求时才需要，用到数据库的查询与统计能力之类。</p>
+<h2 id="存储至缓存-redis-实现"><a href="#存储至缓存-redis-实现" class="headerlink" title="存储至缓存(redis)实现"></a>存储至缓存(redis)实现</h2><figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiModel</span><br><span class="hljs-meta">@Data</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartItemRequest</span> &#123;<br><br>    <span class="hljs-meta">@ApiModelProperty(value = &quot;商品id&quot;,example = &quot;11&quot;)</span><br>    <span class="hljs-meta">@JsonProperty(&quot;product_id&quot;)</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> productId;<br><br>    <span class="hljs-meta">@ApiModelProperty(value = &quot;购买数量&quot;,example = &quot;1&quot;)</span><br>    <span class="hljs-meta">@JsonProperty(&quot;buy_num&quot;)</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> buyNum;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartVO</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购物项</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;cart_items&quot;)</span><br>    <span class="hljs-keyword">private</span> List&lt;CartItemVO&gt; cartItems;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购买总件数</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;total_num&quot;)</span><br>    <span class="hljs-keyword">private</span> Integer totalNum;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购物车总价格</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;total_amount&quot;)</span><br>    <span class="hljs-keyword">private</span> BigDecimal totalAmount;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购物车实际支付价格</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;real_pay_amount&quot;)</span><br>    <span class="hljs-keyword">private</span> BigDecimal realPayAmount;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 总件数</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getTotalNum</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">this</span>.cartItems!=<span class="hljs-literal">null</span>)&#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">total</span> <span class="hljs-operator">=</span> cartItems.stream().mapToInt(CartItemVO::getBuyNum).sum();<br>            <span class="hljs-keyword">return</span> total;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 总价格</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BigDecimal <span class="hljs-title function_">getTotalAmount</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">BigDecimal</span> <span class="hljs-variable">amount</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BigDecimal</span>(<span class="hljs-string">&quot;0&quot;</span>);<br>        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">this</span>.cartItems!=<span class="hljs-literal">null</span>)&#123;<br>            <span class="hljs-keyword">for</span>(CartItemVO cartItemVO : cartItems)&#123;<br>                <span class="hljs-type">BigDecimal</span> <span class="hljs-variable">itemTotalAmount</span> <span class="hljs-operator">=</span>  cartItemVO.getTotalAmount();<br>                amount = amount.add(itemTotalAmount);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> amount;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购物车里面实际支付的价格</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BigDecimal <span class="hljs-title function_">getRealPayAmount</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">BigDecimal</span> <span class="hljs-variable">amount</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BigDecimal</span>(<span class="hljs-string">&quot;0&quot;</span>);<br>        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">this</span>.cartItems!=<span class="hljs-literal">null</span>)&#123;<br>            <span class="hljs-keyword">for</span>(CartItemVO cartItemVO : cartItems)&#123;<br>                <span class="hljs-type">BigDecimal</span> <span class="hljs-variable">itemTotalAmount</span> <span class="hljs-operator">=</span>  cartItemVO.getTotalAmount();<br>                amount = amount.add(itemTotalAmount);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> amount;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> List&lt;CartItemVO&gt; <span class="hljs-title function_">getCartItems</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> cartItems;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCartItems</span><span class="hljs-params">(List&lt;CartItemVO&gt; cartItems)</span> &#123;<br>        <span class="hljs-built_in">this</span>.cartItems = cartItems;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartItemVO</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 商品id</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;product_id&quot;)</span><br>    <span class="hljs-keyword">private</span> Long productId;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购买数量</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;buy_num&quot;)</span><br>    <span class="hljs-keyword">private</span> Integer buyNum;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 商品标题</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;product_title&quot;)</span><br>    <span class="hljs-keyword">private</span> String productTitle;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 图片</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;product_img&quot;)</span><br>    <span class="hljs-keyword">private</span> String productImg;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 商品单价</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> BigDecimal amount;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 总价格，单价+数量</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@JsonProperty(&quot;total_amount&quot;)</span><br>    <span class="hljs-keyword">private</span> BigDecimal totalAmount;<br><br><br>    <span class="hljs-keyword">public</span> Long <span class="hljs-title function_">getProductId</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> productId;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProductId</span><span class="hljs-params">(Long productId)</span> &#123;<br>        <span class="hljs-built_in">this</span>.productId = productId;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getBuyNum</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> buyNum;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setBuyNum</span><span class="hljs-params">(Integer buyNum)</span> &#123;<br>        <span class="hljs-built_in">this</span>.buyNum = buyNum;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getProductTitle</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> productTitle;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProductTitle</span><span class="hljs-params">(String productTitle)</span> &#123;<br>        <span class="hljs-built_in">this</span>.productTitle = productTitle;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getProductImg</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> productImg;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProductImg</span><span class="hljs-params">(String productImg)</span> &#123;<br>        <span class="hljs-built_in">this</span>.productImg = productImg;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> BigDecimal <span class="hljs-title function_">getAmount</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> amount;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setAmount</span><span class="hljs-params">(BigDecimal amount)</span> &#123;<br>        <span class="hljs-built_in">this</span>.amount = amount;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 商品单价 * 购买数量</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BigDecimal <span class="hljs-title function_">getTotalAmount</span><span class="hljs-params">()</span> &#123;<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.amount.multiply(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BigDecimal</span>(<span class="hljs-built_in">this</span>.buyNum));<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Service</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CartServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">CartService</span> &#123;<br><br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> ProductService productService;<br><br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> RedisTemplate redisTemplate;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addToCart</span><span class="hljs-params">(CartItemRequest cartItemRequest)</span> &#123;<br><br>        <span class="hljs-type">long</span> <span class="hljs-variable">productId</span> <span class="hljs-operator">=</span> cartItemRequest.getProductId();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">buyNum</span> <span class="hljs-operator">=</span> cartItemRequest.getBuyNum();<br><br>        <span class="hljs-comment">//获取购物车</span><br>        BoundHashOperations&lt;String,Object,Object&gt; myCart =  getMyCartOps();<br><br>        <span class="hljs-type">Object</span> <span class="hljs-variable">cacheObj</span> <span class="hljs-operator">=</span> myCart.get(productId);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>        <span class="hljs-keyword">if</span>(cacheObj!=<span class="hljs-literal">null</span>)&#123;<br>           result =  (String)cacheObj;<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(StringUtils.isBlank(result))&#123;<br>            <span class="hljs-comment">//不存在则新建一个商品</span><br>            <span class="hljs-type">CartItemVO</span> <span class="hljs-variable">cartItemVO</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CartItemVO</span>();<br><br>            <span class="hljs-type">ProductVO</span> <span class="hljs-variable">productVO</span> <span class="hljs-operator">=</span> productService.findDetailById(productId);<br>            <span class="hljs-keyword">if</span>(productVO == <span class="hljs-literal">null</span>)&#123;<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BizException</span>(BizCodeEnum.CART_FAIL);&#125;<br><br>            cartItemVO.setAmount(productVO.getAmount());<br>            cartItemVO.setBuyNum(buyNum);<br>            cartItemVO.setProductId(productId);<br>            cartItemVO.setProductImg(productVO.getCoverImg());<br>            cartItemVO.setProductTitle(productVO.getTitle());<br>            myCart.put(productId,JSON.toJSONString(cartItemVO));<br><br>        &#125;<span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">//存在商品，修改数量</span><br>            <span class="hljs-type">CartItemVO</span> <span class="hljs-variable">cartItem</span> <span class="hljs-operator">=</span> JSON.parseObject(result,CartItemVO.class);<br>            cartItem.setBuyNum(cartItem.getBuyNum()+buyNum);<br>            myCart.put(productId,JSON.toJSONString(cartItem));<br>        &#125;<br><br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 清空购物车</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">clear</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">cartKey</span> <span class="hljs-operator">=</span> getCartKey();<br>        redisTemplate.delete(cartKey);<br><br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 删除购物项</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> productId</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteItem</span><span class="hljs-params">(<span class="hljs-type">long</span> productId)</span> &#123;<br><br>        BoundHashOperations&lt;String,Object,Object&gt; mycart =  getMyCartOps();<br><br>        mycart.delete(productId);<br><br>    &#125;<br><br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">changeItemNum</span><span class="hljs-params">(CartItemRequest cartItemRequest)</span> &#123;<br>        BoundHashOperations&lt;String,Object,Object&gt; mycart =  getMyCartOps();<br><br>        <span class="hljs-type">Object</span> <span class="hljs-variable">cacheObj</span> <span class="hljs-operator">=</span> mycart.get(cartItemRequest.getProductId());<br><br>        <span class="hljs-keyword">if</span>(cacheObj==<span class="hljs-literal">null</span>)&#123;<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BizException</span>(BizCodeEnum.CART_FAIL);&#125;<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> (String)cacheObj;<br><br>        <span class="hljs-type">CartItemVO</span> <span class="hljs-variable">cartItemVO</span> <span class="hljs-operator">=</span>  JSON.parseObject(obj,CartItemVO.class);<br>        cartItemVO.setBuyNum(cartItemRequest.getBuyNum());<br>        mycart.put(cartItemRequest.getProductId(),JSON.toJSONString(cartItemVO));<br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> CartVO <span class="hljs-title function_">getMyCart</span><span class="hljs-params">()</span> &#123;<br><br>        <span class="hljs-comment">//获取全部购物项</span><br>        List&lt;CartItemVO&gt; cartItemVOList = buildCartItem(<span class="hljs-literal">false</span>);<br>        <br>        <span class="hljs-comment">//封装成cartvo</span><br>        <span class="hljs-type">CartVO</span> <span class="hljs-variable">cartVO</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CartVO</span>();<br>        cartVO.setCartItems(cartItemVOList);<br><br>        <span class="hljs-keyword">return</span> cartVO;<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取最新的购物项，</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> latestPrice 是否获取最新价格</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> List&lt;CartItemVO&gt; <span class="hljs-title function_">buildCartItem</span><span class="hljs-params">(<span class="hljs-type">boolean</span> latestPrice)</span> &#123;<br><br>        BoundHashOperations&lt;String,Object,Object&gt; myCart = getMyCartOps();<br><br>        List&lt;Object&gt; itemList = myCart.values();<br><br>        List&lt;CartItemVO&gt; cartItemVOList = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br>        <span class="hljs-comment">//拼接id列表查询最新价格</span><br>        List&lt;Long&gt; productIdList = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br>        <span class="hljs-keyword">for</span>(Object item: itemList)&#123;<br>            <span class="hljs-type">CartItemVO</span> <span class="hljs-variable">cartItemVO</span> <span class="hljs-operator">=</span> JSON.parseObject((String)item,CartItemVO.class);<br>            cartItemVOList.add(cartItemVO);<br><br>            productIdList.add(cartItemVO.getProductId());<br>        &#125;<br><br>        <span class="hljs-comment">//查询最新的商品价格</span><br>        <span class="hljs-keyword">if</span>(latestPrice)&#123;<br><br>            setProductLatestPrice(cartItemVOList,productIdList);<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> cartItemVOList;<br><br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 设置商品最新价格</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> cartItemVOList</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> productIdList</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProductLatestPrice</span><span class="hljs-params">(List&lt;CartItemVO&gt; cartItemVOList, List&lt;Long&gt; productIdList)</span> &#123;<br><br>        <span class="hljs-comment">//批量查询</span><br>        List&lt;ProductVO&gt; productVOList = productService.findProductsByIdBatch(productIdList);<br><br>        <span class="hljs-comment">//分组</span><br>        Map&lt;Long,ProductVO&gt; maps = productVOList.stream().collect(Collectors.toMap(ProductVO::getId,Function.identity()));<br><br><br>        cartItemVOList.stream().forEach(item-&gt;&#123;<br><br>            <span class="hljs-type">ProductVO</span> <span class="hljs-variable">productVO</span> <span class="hljs-operator">=</span> maps.get(item.getProductId());<br>            item.setProductTitle(productVO.getTitle());<br>            item.setProductImg(productVO.getCoverImg());<br>            item.setAmount(productVO.getAmount());<br><br>        &#125;);<br><br><br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 抽取我的购物车，通用方法</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> BoundHashOperations&lt;String,Object,Object&gt; <span class="hljs-title function_">getMyCartOps</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">cartKey</span> <span class="hljs-operator">=</span> getCartKey();<br>        <span class="hljs-keyword">return</span> redisTemplate.boundHashOps(cartKey);<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 购物车 key</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> String <span class="hljs-title function_">getCartKey</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">LoginUser</span> <span class="hljs-variable">loginUser</span> <span class="hljs-operator">=</span> LoginInterceptor.threadLocal.get();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">cartKey</span> <span class="hljs-operator">=</span> String.format(CacheKey.CART_KEY,loginUser.getId());<br>        <span class="hljs-keyword">return</span> cartKey;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%B4%AD%E7%89%A9%E8%BD%A6/">购物车</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/19/java/%E9%98%BF%E9%87%8C%E4%BA%91OSS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%AD%BE%E5%90%8D%E5%90%8E%E7%9B%B4%E4%BC%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">阿里云OSS服务端签名后直传</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/">
+                        <span class="hidden-mobile">流量削峰</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -24,7 +24,7 @@
 <meta property="og:description" content="1. 使用 git checkout 撤销本地修改即放弃对本地已修改但尚未提交的文件的修改，还原其到未修改前的状态。注意： 已 add&#x2F; commit 的文件不适用个方法，应该用本文提到的第二种方法。 命令如下： 1234git checkout .      # 撤销对所有已修改但未提交的文件的修改，但不包括新增的文件git checkout [filename]     # 撤销对指">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-23T08:05:00.000Z">
-<meta property="article:modified_time" content="2023-06-15T06:12:46.172Z">
+<meta property="article:modified_time" content="2023-10-20T06:12:16.918Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      466 字
+      729 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      7 分钟
     </span>
   
 
@@ -247,6 +247,15 @@
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">git reset <span class="hljs-attr">--hard</span> <span class="hljs-selector-attr">[commit-hashcode]</span><br></code></pre></td></tr></table></figure>
 <p>commit-hashcode是某个 commit 的哈希值，可以用 git log 查看。<br>因此一般用法是先用 Git log 查看具体commit的哈希值，然后 reset 到那个版本。</p>
 <p>说明：<br>这两个命令都不会对新增文件起作用。因为新增的文件是还未加到 git 的记录里面的，即属于未被 tracked 的状态，所以撤销修改和回退均对其不影响。我们直接手动删除文件就行了。</p>
+<h3 id="idea中如何操作"><a href="#idea中如何操作" class="headerlink" title="idea中如何操作"></a>idea中如何操作</h3><p>在idea中英文为 reset Head操作按钮,中文为 重置 Head按钮。</p>
+<p>mixed</p>
+<p>mixed 默认方式，只保留源码，回退commit和index信息</p>
+<p>回退之后如下，文件也显示未加入 git 管理</p>
+<p>soft</p>
+<p>soft：回退到某个版本，只回退了commit的信息，不会恢复到index file一级。如果还要提交，直接commit。</p>
+<p>hard</p>
+<p>hard：彻底回退，本地源码也会变成上一个版本内容<br>这种方式回退之后，上一次提交的代码也就没有了。</p>
+<p>写上commit id，比如 有提交A  提交B， A早于B,   如果不想要B，要填A的commit id。</p>
 
             </div>
             <hr>
