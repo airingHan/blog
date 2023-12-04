@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="同步刷盘与异步刷盘跟mysql的同步刷盘和异步刷盘一样。 先放到内存中，是发送一条消息就刷到磁盘中，还是几条消息才刷到磁盘中。 同步复制与异步复制同mysql的同步复制与异步复制。 当出现主备主从架构后，主同步数据至备或者从。同步就是一条消息发送到主后，再同步到备或者从，都同步后才返回消息提交成功。 异步是只发送到主，就返回提交成功，异步传输到备或者从。 RAID10磁盘RAID 10（也称为RA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rocketmq的cluster布署">
+<meta property="og:url" content="http://hanqichuan.com/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="同步刷盘与异步刷盘跟mysql的同步刷盘和异步刷盘一样。 先放到内存中，是发送一条消息就刷到磁盘中，还是几条消息才刷到磁盘中。 同步复制与异步复制同mysql的同步复制与异步复制。 当出现主备主从架构后，主同步数据至备或者从。同步就是一条消息发送到主后，再同步到备或者从，都同步后才返回消息提交成功。 异步是只发送到主，就返回提交成功，异步传输到备或者从。 RAID10磁盘RAID 10（也称为RA">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-18T13:14:00.000Z">
+<meta property="article:modified_time" content="2023-11-20T12:33:57.331Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="mq">
+<meta property="article:tag" content="rocketmq">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>rocketmq的cluster布署 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="rocketmq的cluster布署">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-11-18 21:14" pubdate>
+        2023年11月18日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      10k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      88 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">rocketmq的cluster布署</h1>
+            
+            <div class="markdown-body">
+              <h2 id="同步刷盘与异步刷盘"><a href="#同步刷盘与异步刷盘" class="headerlink" title="同步刷盘与异步刷盘"></a>同步刷盘与异步刷盘</h2><p>跟mysql的同步刷盘和异步刷盘一样。</p>
+<p>先放到内存中，是发送一条消息就刷到磁盘中，还是几条消息才刷到磁盘中。</p>
+<h2 id="同步复制与异步复制"><a href="#同步复制与异步复制" class="headerlink" title="同步复制与异步复制"></a>同步复制与异步复制</h2><p>同mysql的同步复制与异步复制。</p>
+<p>当出现主备主从架构后，主同步数据至备或者从。同步就是一条消息发送到主后，再同步到备或者从，都同步后才返回消息提交成功。</p>
+<p>异步是只发送到主，就返回提交成功，异步传输到备或者从。</p>
+<h2 id="RAID10磁盘"><a href="#RAID10磁盘" class="headerlink" title="RAID10磁盘"></a>RAID10磁盘</h2><p>RAID 10（也称为RAID 1+0）是一种磁盘阵列配置，它结合了RAID 1和RAID 0的特性。RAID 1提供了数据冗余，通过在两个或更多的磁盘上镜像存储数据，而RAID 0提供了性能增益，通过将数据分成块并在多个磁盘上并行读写。RAID 10通过将这两种方法结合起来，旨在提供更好的性能和更高的可靠性。</p>
+<p>在RAID 10中，至少需要四个磁盘驱动器。数据被分成块，并且每个块都被写入两个磁盘中，这两个磁盘构成一个镜像对。然后，这些镜像对被组合成一个RAID 0阵列，以提供性能增益。因此，RAID 10同时提供了数据冗余和良好的读&#x2F;写性能。</p>
+<p>主要优点包括：</p>
+<ol>
+<li><strong>高性能：</strong> RAID 10提供了比许多其他RAID级别更好的读&#x2F;写性能，因为它可以利用RAID 0的并行性。</li>
+<li><strong>高可靠性：</strong> 由于数据被镜像到多个磁盘上，RAID 10提供了较高的可靠性。即使一个磁盘出现故障，仍然有其他镜像磁盘上的数据可用。</li>
+<li><strong>容忍多个磁盘故障：</strong> 在某些情况下，RAID 10可以容忍多个磁盘的故障，具体取决于这些故障是如何发生的。</li>
+</ol>
+<p>然而，与之相关的缺点包括：</p>
+<ol>
+<li><strong>成本：</strong> RAID 10至少需要四个磁盘，并且由于提供冗余的磁盘，相对于其他RAID级别，成本较高。</li>
+<li><strong>存储效率：</strong> 由于镜像，RAID 10的存储效率较低，只有总容量的一半可以用于存储数据。</li>
+</ol>
+<p>总体而言，RAID 10是一种适用于需要高性能和数据冗余的应用场景的磁盘配置。</p>
+<h2 id="什么是proxy"><a href="#什么是proxy" class="headerlink" title="什么是proxy"></a>什么是proxy</h2><p>RocketMQ Proxy是一个RocketMQ Broker的代理服务，支持客户端用GRPC协议访问Broker。</p>
+<p>RocketMQ Proxy主要解决了4.9.X版本客户端多语言客户端（c&#x2F;c++, golang, csharp,rust,python, nodejs）实现Remoing协议难度大、复杂、功能不一致、维护工作大的问题。</p>
+<p>RocketMQ Proxy使用业界熟悉的GRPC协议， 各个语言代码统一、简单，使得多语言使用RocketMQ更方便、容易。</p>
+<p>Proxy 承担了协议适配、权限管理、消息管理等计算功能，Broker 则更加专注于存储。这样存储和计算相分离，在云原生环境下可以更好地进行资源调度。</p>
+<h2 id="模式部署方式介绍"><a href="#模式部署方式介绍" class="headerlink" title="模式部署方式介绍"></a>模式部署方式介绍</h2><p><a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/deploymentOperations/01deploy">https://rocketmq.apache.org/zh/docs/deploymentOperations/01deploy</a></p>
+<p>Apache RocketMQ 5.0 版本完成基本消息收发，包括 NameServer、Broker、Proxy 组件。 在 5.0 版本中 Proxy 和 Broker 根据实际诉求可以分为 Local 模式和 Cluster 模式，一般情况下如果没有特殊需求，或者遵循从早期版本平滑升级的思路，可以选用Local模式。</p>
+<ul>
+<li>在 Local 模式下，Broker 和 Proxy 是同进程部署，只是在原有 Broker 的配置基础上新增 Proxy 的简易配置就可以运行。</li>
+<li>在 Cluster 模式下，Broker 和 Proxy 分别部署，即在原有的集群基础上，额外再部署 Proxy 即可。</li>
+</ul>
+<p>在 Cluster 模式下，Broker 与 Proxy分别部署，我可以在 NameServer和 Broker都启动完成之后再部署 Proxy。</p>
+<p>在 Cluster模式下，一个 Proxy集群和 Broker集群为一一对应的关系，可以在 Proxy的配置文件 <code>rmq-proxy.json</code> 中使用 <code>rocketMQClusterName</code> 进行配置</p>
+<h3 id="nameServer"><a href="#nameServer" class="headerlink" title="nameServer"></a>nameServer</h3><p>NameServer需要先于Broker启动，且如果在生产环境使用，为了保证高可用，建议一般规模的集群启动3个NameServer，各节点的启动命令相同。</p>
+<p>nameServer不管是Local还是Cluster都是一样的。</p>
+<h3 id="broker和proxy在Local和Cluster的区别"><a href="#broker和proxy在Local和Cluster的区别" class="headerlink" title="broker和proxy在Local和Cluster的区别"></a>broker和proxy在Local和Cluster的区别</h3><p>主要是broker和proxy是否在一起布署。</p>
+<h3 id="多组节点（集群）单副本模式-（多主）"><a href="#多组节点（集群）单副本模式-（多主）" class="headerlink" title="多组节点（集群）单副本模式 （多主）"></a>多组节点（集群）单副本模式 （多主）</h3><p>一个集群内全部部署 Master 角色，不部署Slave 副本，例如2个Master或者3个Master，这种模式的优缺点如下：</p>
+<ul>
+<li>优点：配置简单，单个Master宕机或重启维护对应用无影响，在磁盘配置为RAID10时，即使机器宕机不可恢复情况下，由于RAID10磁盘非常可靠，消息也不会丢（异步刷盘丢失少量消息，同步刷盘一条不丢），性能最高；</li>
+<li>缺点：单台机器宕机期间，这台机器上未被消费的消息在机器恢复之前不可订阅，消息实时性会受到影响。</li>
+</ul>
+<p>在单个NameServer情况下使用的。对于多个NameServer的集群，Broker启动命令中<code>-n</code>后面的地址列表用分号隔开即可，例如 <code>192.168.1.1:9876;192.161.2:9876</code>。</p>
+<h3 id="多节点（集群）多副本模式-异步复制（多主多从异步复制）"><a href="#多节点（集群）多副本模式-异步复制（多主多从异步复制）" class="headerlink" title="多节点（集群）多副本模式-异步复制（多主多从异步复制）"></a>多节点（集群）多副本模式-异步复制（多主多从异步复制）</h3><p>每个Master配置一个Slave，有多组 Master-Slave，HA采用异步复制方式，主备有短暂消息延迟（毫秒级），这种模式的优缺点如下：</p>
+<ul>
+<li>优点：即使磁盘损坏，消息丢失的非常少，且消息实时性不会受影响，同时Master宕机后，消费者仍然可以从Slave消费，而且此过程对应用透明，不需要人工干预，性能同多Master模式几乎一样；</li>
+<li>缺点：Master宕机，磁盘损坏情况下会丢失少量消息。</li>
+</ul>
+<h4 id="多节点（集群）多副本模式-同步双写（多主多从同步复制）"><a href="#多节点（集群）多副本模式-同步双写（多主多从同步复制）" class="headerlink" title="多节点（集群）多副本模式-同步双写（多主多从同步复制）"></a>多节点（集群）多副本模式-同步双写（多主多从同步复制）</h4><p>每个Master配置一个Slave，有多对 Master-Slave，HA采用同步双写方式，即只有主备都写成功，才向应用返回成功，这种模式的优缺点如下：</p>
+<ul>
+<li>优点：数据与服务都无单点故障，Master宕机情况下，消息无延迟，服务可用性与数据可用性都非常高；</li>
+<li>缺点：性能比异步复制模式略低（大约低10%左右），发送单个消息的RT会略高，且目前版本在主节点宕机后，备机不能自动切换为主机。</li>
+</ul>
+<h2 id="主备自动切换模式部署"><a href="#主备自动切换模式部署" class="headerlink" title="主备自动切换模式部署"></a>主备自动切换模式部署</h2><p><a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/deploymentOperations/03autofailover">https://rocketmq.apache.org/zh/docs/deploymentOperations/03autofailover</a></p>
+<p>主要增加支持自动主从切换的 Controller 组件，其可以独立部署也可以内嵌在 NameServer 中。</p>
+<p>Controller 组件提供选主能力，若需要保证 Controller 具备容错能力，Controller 部署需要三副本及以上（遵循 Raft 的多数派协议）。</p>
+<p>Controller 部署有两种方式。一种是嵌入于 NameServer 进行部署，可以通过配置 enableControllerInNamesrv 打开（可以选择性打开，并不强制要求每一台 NameServer 都打开），在该模式下，NameServer 本身能力仍然是无状态的，也就是内嵌模式下若 NameServer 挂掉多数派，只影响切换能力，不影响原来路由获取等功能。另一种是独立部署，需要单独部署 Controller 组件。</p>
+<h2 id="Cluster模式多主多从同步复制部署"><a href="#Cluster模式多主多从同步复制部署" class="headerlink" title="Cluster模式多主多从同步复制部署"></a>Cluster模式多主多从同步复制部署</h2><h3 id="机器规划"><a href="#机器规划" class="headerlink" title="机器规划"></a>机器规划</h3><table>
+<thead>
+<tr>
+<th>ip</th>
+<th>配置</th>
+<th>部署内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.158.139</td>
+<td>内存3G,硬盘24G</td>
+<td>namerServer、broker -a master、proxy、controller</td>
+</tr>
+<tr>
+<td>192.168.158.140</td>
+<td>内存3G,硬盘24G</td>
+<td>namerServer、broker-b master、proxy、controller</td>
+</tr>
+<tr>
+<td>192.168.158.141</td>
+<td>内存3G,硬盘24G</td>
+<td>namerServer、broker-a slave、proxy、controller</td>
+</tr>
+<tr>
+<td>192.168.158.142</td>
+<td>内存1.5G硬盘24G</td>
+<td>Broker-b slave</td>
+</tr>
+</tbody></table>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>vim &#x2F;etc&#x2F;profile</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">export</span> JAVA_HOME=/usr/java/jdk1.8.0-aarch64<br><span class="hljs-built_in">export</span> JRE_HOME=<span class="hljs-variable">$&#123;JAVA_HOME&#125;</span>/jre<br><span class="hljs-built_in">export</span> CLASSPATH=.:<span class="hljs-variable">$&#123;JAVA_HOME&#125;</span>/lib:<span class="hljs-variable">$&#123;JRE_HOME&#125;</span>/lib<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$&#123;JAVA_HOME&#125;</span>/bin:<span class="hljs-variable">$PATH</span><br><span class="hljs-built_in">export</span> M2_HOME=/usr/local/apache-maven-3.9.5<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$M2_HOME</span>/bin<br><span class="hljs-built_in">export</span> ROCKETMQ_HOME=/usr/local/rocketmq-all-5.1.4-bin-release<br></code></pre></td></tr></table></figure>
+
+<p>source &#x2F;etc&#x2F;profile</p>
+<h3 id="nameServer-1"><a href="#nameServer-1" class="headerlink" title="nameServer"></a>nameServer</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">### 首先启动Name Server</span><br><span class="hljs-built_in">nohup</span> sh mqnamesrv &amp;<br> <br><span class="hljs-comment">### 验证Name Server 是否启动成功</span><br><span class="hljs-built_in">tail</span> -f ~/logs/rocketmqlogs/namesrv.log<br>The Name Server boot success...<br></code></pre></td></tr></table></figure>
+
+<p>把9876端口打开。</p>
+<h3 id="broker"><a href="#broker" class="headerlink" title="broker"></a>broker</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">在runbroker.sh文件中 -XX:+UseG1GC之前加上-XX:+UnlockExperimentalVMOptions<br>把堆内存改小，原来8g改为1g。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">### 在机器A，启动第一个Master，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqbroker -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> -c <span class="hljs-variable">$ROCKETMQ_HOME</span>/conf/2m-2s-<span class="hljs-built_in">sync</span>/broker-a.properties &amp;<br> <br><span class="hljs-comment">### 在机器B，启动第二个Master，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqbroker -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> -c <span class="hljs-variable">$ROCKETMQ_HOME</span>/conf/2m-2s-<span class="hljs-built_in">sync</span>/broker-b.properties &amp;<br> <br><span class="hljs-comment">### 在机器C，启动第一个Slave，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqbroker -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> -c <span class="hljs-variable">$ROCKETMQ_HOME</span>/conf/2m-2s-<span class="hljs-built_in">sync</span>/broker-a-s.properties &amp;<br> <br><span class="hljs-comment">### 在机器D，启动第二个Slave，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqbroker -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> -c <span class="hljs-variable">$ROCKETMQ_HOME</span>/conf/2m-2s-<span class="hljs-built_in">sync</span>/broker-b-s.properties &amp;<br></code></pre></td></tr></table></figure>
+
+<p>把10909、10911、10912端口打开</p>
+<h3 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">### 在机器A，启动第一个Proxy，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqproxy -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> &amp;<br><br><span class="hljs-comment">### 在机器B，启动第二个Proxy，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqproxy -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> &amp;<br><br><span class="hljs-comment">### 在机器C，启动第三个Proxy，例如NameServer的IP为：192.168.1.1</span><br><span class="hljs-built_in">nohup</span> sh bin/mqproxy -n <span class="hljs-string">&quot;192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876&quot;</span> &amp;<br></code></pre></td></tr></table></figure>
+
+<p>把8080、8081端口打开</p>
+<h3 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h3><p>下载Dashboard。</p>
+<p>修改配置文件application.properties:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">rocketmq.config.namesrvAddr</span>=<span class="hljs-string">192.168.158.139:9876;192.168.158.140:9876;192.168.158.141:9876</span><br></code></pre></td></tr></table></figure>
+
+<p>好像也不支持proxy。</p>
+<h3 id="java程序"><a href="#java程序" class="headerlink" title="java程序"></a>java程序</h3><p>使用官网中快速开始的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientConfiguration;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientConfigurationBuilder;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientException;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientServiceProvider;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.message.Message;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.producer.Producer;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.producer.SendReceipt;<br><span class="hljs-keyword">import</span> org.slf4j.Logger;<br><span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProducerExample</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(ProducerExample.class);<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ClientException &#123;<br>        <span class="hljs-comment">// 接入点地址，需要设置成Proxy的地址和端口列表，一般是xxx:8081;xxx:8081。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">endpoint</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;192.168.158.139:8081;192.168.158.140:8081;192.168.158.141:8081&quot;</span>;<br>        <span class="hljs-comment">// 消息发送的目标Topic名称，需要提前创建。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">topic</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;TestTopic&quot;</span>;<br>        <span class="hljs-type">ClientServiceProvider</span> <span class="hljs-variable">provider</span> <span class="hljs-operator">=</span> ClientServiceProvider.loadService();<br>        <span class="hljs-type">ClientConfigurationBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> ClientConfiguration.newBuilder().setEndpoints(endpoint);<br>        <span class="hljs-type">ClientConfiguration</span> <span class="hljs-variable">configuration</span> <span class="hljs-operator">=</span> builder.build();<br>        <span class="hljs-comment">// 初始化Producer时需要设置通信配置以及预绑定的Topic。</span><br>        <span class="hljs-type">Producer</span> <span class="hljs-variable">producer</span> <span class="hljs-operator">=</span> provider.newProducerBuilder()<br>            .setTopics(topic)<br>            .setClientConfiguration(configuration)<br>            .build();<br>        <span class="hljs-comment">// 普通消息发送。</span><br>        <span class="hljs-type">Message</span> <span class="hljs-variable">message</span> <span class="hljs-operator">=</span> provider.newMessageBuilder()<br>            .setTopic(topic)<br>            <span class="hljs-comment">// 设置消息索引键，可根据关键字精确查找某条消息。</span><br>            .setKeys(<span class="hljs-string">&quot;messageKey&quot;</span>)<br>            <span class="hljs-comment">// 设置消息Tag，用于消费端根据指定Tag过滤消息。</span><br>            .setTag(<span class="hljs-string">&quot;messageTag&quot;</span>)<br>            <span class="hljs-comment">// 消息体。</span><br>            .setBody(<span class="hljs-string">&quot;messageBody&quot;</span>.getBytes())<br>            .build();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// 发送消息，需要关注发送结果，并捕获失败等异常。</span><br>            <span class="hljs-type">SendReceipt</span> <span class="hljs-variable">sendReceipt</span> <span class="hljs-operator">=</span> producer.send(message);<br>            logger.info(<span class="hljs-string">&quot;Send message successfully, messageId=&#123;&#125;&quot;</span>, sendReceipt.getMessageId());<br>        &#125; <span class="hljs-keyword">catch</span> (ClientException e) &#123;<br>            logger.error(<span class="hljs-string">&quot;Failed to send message&quot;</span>, e);<br>        &#125;<br>        <span class="hljs-comment">// producer.close();</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.util.Collections;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientConfiguration;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientException;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.ClientServiceProvider;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.consumer.ConsumeResult;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.consumer.FilterExpression;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.consumer.FilterExpressionType;<br><span class="hljs-keyword">import</span> org.apache.rocketmq.client.apis.consumer.PushConsumer;<br><span class="hljs-keyword">import</span> org.slf4j.Logger;<br><span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PushConsumerExample</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(PushConsumerExample.class);<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-title function_">PushConsumerExample</span><span class="hljs-params">()</span> &#123;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ClientException, IOException, InterruptedException &#123;<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">ClientServiceProvider</span> <span class="hljs-variable">provider</span> <span class="hljs-operator">=</span> ClientServiceProvider.loadService();<br>        <span class="hljs-comment">// 接入点地址，需要设置成Proxy的地址和端口列表，一般是xxx:8081;xxx:8081。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">endpoints</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;192.168.158.139:8081;192.168.158.140:8081;192.168.158.141:8081&quot;</span>;<br>        <span class="hljs-type">ClientConfiguration</span> <span class="hljs-variable">clientConfiguration</span> <span class="hljs-operator">=</span> ClientConfiguration.newBuilder()<br>            .setEndpoints(endpoints)<br>            .build();<br>        <span class="hljs-comment">// 订阅消息的过滤规则，表示订阅所有Tag的消息。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">tag</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;*&quot;</span>;<br>        <span class="hljs-type">FilterExpression</span> <span class="hljs-variable">filterExpression</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FilterExpression</span>(tag, FilterExpressionType.TAG);<br>        <span class="hljs-comment">// 为消费者指定所属的消费者分组，Group需要提前创建。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">consumerGroup</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;YourConsumerGroup&quot;</span>;<br>        <span class="hljs-comment">// 指定需要订阅哪个目标Topic，Topic需要提前创建。</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">topic</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;TestTopic&quot;</span>;<br>        <span class="hljs-comment">// 初始化PushConsumer，需要绑定消费者分组ConsumerGroup、通信参数以及订阅关系。</span><br>        <span class="hljs-type">PushConsumer</span> <span class="hljs-variable">pushConsumer</span> <span class="hljs-operator">=</span> provider.newPushConsumerBuilder()<br>            .setClientConfiguration(clientConfiguration)<br>            <span class="hljs-comment">// 设置消费者分组。</span><br>            .setConsumerGroup(consumerGroup)<br>            <span class="hljs-comment">// 设置预绑定的订阅关系。</span><br>            .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))<br>            <span class="hljs-comment">// 设置消费监听器。</span><br>            .setMessageListener(messageView -&gt; &#123;<br>                <span class="hljs-comment">// 处理消息并返回消费结果。</span><br>                logger.info(<span class="hljs-string">&quot;Consume message successfully, messageId=&#123;&#125;&quot;</span>, messageView.getMessageId());<br>                <span class="hljs-keyword">return</span> ConsumeResult.SUCCESS;<br>            &#125;)<br>            .build();<br>        Thread.sleep(Long.MAX_VALUE);<br>        <span class="hljs-comment">// 如果不需要再使用 PushConsumer，可关闭该实例。</span><br>        <span class="hljs-comment">// pushConsumer.close();</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>spring boot 好像不太支持proxy模式，写nameServer的地址是可以的。</p>
+<h3 id="controller主备自动切换模式"><a href="#controller主备自动切换模式" class="headerlink" title="controller主备自动切换模式"></a>controller主备自动切换模式</h3><p>使用内嵌部署方式部署controller。</p>
+<p>先停止nameServer和broker和proxy。</p>
+<h4 id="namerServer"><a href="#namerServer" class="headerlink" title="namerServer"></a>namerServer</h4><p>添加namerServer的配置文件namesrv.conf ：</p>
+<p>139:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">enableControllerInNamesrv</span> = <span class="hljs-string">true</span><br><span class="hljs-attr">controllerDLegerGroup</span> = <span class="hljs-string">group1</span><br><span class="hljs-attr">controllerDLegerPeers</span> = <span class="hljs-string">n0-192.168.158.139:9877;n1-192.168.158.140:9878;n2-192.168.158.141:9879</span><br><span class="hljs-attr">controllerDLegerSelfId</span> = <span class="hljs-string">n0</span><br><span class="hljs-attr">controllerStorePath</span> = <span class="hljs-string">/root/DledgerController</span><br><span class="hljs-attr">enableElectUncleanMaster</span> = <span class="hljs-string">false</span><br><span class="hljs-attr">notifyBrokerRoleChanged</span> = <span class="hljs-string">true</span><br></code></pre></td></tr></table></figure>
+
+<p>140:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">enableControllerInNamesrv</span> = <span class="hljs-string">true</span><br><span class="hljs-attr">controllerDLegerGroup</span> = <span class="hljs-string">group1</span><br><span class="hljs-attr">controllerDLegerPeers</span> = <span class="hljs-string">n0-192.168.158.139:9877;n1-192.168.158.140:9878;n2-192.168.158.141:9879</span><br><span class="hljs-attr">controllerDLegerSelfId</span> = <span class="hljs-string">n1</span><br><span class="hljs-attr">controllerStorePath</span> = <span class="hljs-string">/root/DledgerController</span><br><span class="hljs-attr">enableElectUncleanMaster</span> = <span class="hljs-string">false</span><br><span class="hljs-attr">notifyBrokerRoleChanged</span> = <span class="hljs-string">true</span><br></code></pre></td></tr></table></figure>
+
+<p>141:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">enableControllerInNamesrv</span> = <span class="hljs-string">true</span><br><span class="hljs-attr">controllerDLegerGroup</span> = <span class="hljs-string">group1</span><br><span class="hljs-attr">controllerDLegerPeers</span> = <span class="hljs-string">n0-192.168.158.139:9877;n1-192.168.158.140:9878;n2-192.168.158.141:9879</span><br><span class="hljs-attr">controllerDLegerSelfId</span> = <span class="hljs-string">n2</span><br><span class="hljs-attr">controllerStorePath</span> = <span class="hljs-string">/root/DledgerController</span><br><span class="hljs-attr">enableElectUncleanMaster</span> = <span class="hljs-string">false</span><br><span class="hljs-attr">notifyBrokerRoleChanged</span> = <span class="hljs-string">true</span><br></code></pre></td></tr></table></figure>
+
+<p>分别开放9877、9878、9879端口。</p>
+<p>启动namerServer</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">nohup</span> sh bin/mqnamesrv -c conf/namesrv.conf &amp;<br></code></pre></td></tr></table></figure>
+
+<h4 id="broker-1"><a href="#broker-1" class="headerlink" title="broker"></a>broker</h4><p>在配置文件中添加</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">enableControllerMode</span> = <span class="hljs-string">true</span><br><span class="hljs-attr">controllerAddr</span> = <span class="hljs-string">192.168.158.139:9877;192.168.158.140:9878;192.168.158.141:9879</span><br></code></pre></td></tr></table></figure>
+
+<p>更多参数查看官网。</p>
+<p>启动broker</p>
+<p>跟上面启动一样。</p>
+<h4 id="proxy-1"><a href="#proxy-1" class="headerlink" title="proxy"></a>proxy</h4><p>跟上面启动一样。</p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>在139上停止broker:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sh bin/mqshutdown broker<br></code></pre></td></tr></table></figure>
+
+<p>在控制台上发现141变为了master。</p>
+<p>在139上启动broker，在控制台上发现139变为了slave。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/mq/">mq</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/mq/">mq</a>
+                    
+                      <a class="hover-with-bg" href="/tags/rocketmq/">rocketmq</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">rocketmq的面试题及原理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/16/mq/rocketmq%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                        <span class="hidden-mobile">rocketmq的使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

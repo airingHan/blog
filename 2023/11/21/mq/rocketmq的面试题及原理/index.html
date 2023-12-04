@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="消息队列怎么避免重复消息消息队列一般都有重试机制，或者生产者多次发送。 所以需要保证消费者接口幂等性保障： 比如可以使用redis的setnx。 接口幂等性一锁、二判断、三更新 加分布式锁，判断状态机，更新至持久化的数据源中。 rocketmq如何保证消息的可靠性传输需要生产者、broker、消费者共同配置。 生产者使用同步或异步发送，重试。 broker使用多主多从架构，nameServer使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rocketmq的面试题及原理">
+<meta property="og:url" content="http://hanqichuan.com/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="消息队列怎么避免重复消息消息队列一般都有重试机制，或者生产者多次发送。 所以需要保证消费者接口幂等性保障： 比如可以使用redis的setnx。 接口幂等性一锁、二判断、三更新 加分布式锁，判断状态机，更新至持久化的数据源中。 rocketmq如何保证消息的可靠性传输需要生产者、broker、消费者共同配置。 生产者使用同步或异步发送，重试。 broker使用多主多从架构，nameServer使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-21T08:59:00.000Z">
+<meta property="article:modified_time" content="2023-11-21T11:41:50.958Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="mq">
+<meta property="article:tag" content="rocketmq">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>rocketmq的面试题及原理 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="rocketmq的面试题及原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-11-21 16:59" pubdate>
+        2023年11月21日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">rocketmq的面试题及原理</h1>
+            
+            <div class="markdown-body">
+              <h2 id="消息队列怎么避免重复消息"><a href="#消息队列怎么避免重复消息" class="headerlink" title="消息队列怎么避免重复消息"></a>消息队列怎么避免重复消息</h2><p>消息队列一般都有重试机制，或者生产者多次发送。</p>
+<p>所以需要保证消费者接口幂等性保障：</p>
+<p>比如可以使用redis的setnx。</p>
+<h3 id="接口幂等性"><a href="#接口幂等性" class="headerlink" title="接口幂等性"></a>接口幂等性</h3><p>一锁、二判断、三更新</p>
+<p>加分布式锁，判断状态机，更新至持久化的数据源中。</p>
+<h2 id="rocketmq如何保证消息的可靠性传输"><a href="#rocketmq如何保证消息的可靠性传输" class="headerlink" title="rocketmq如何保证消息的可靠性传输"></a>rocketmq如何保证消息的可靠性传输</h2><p>需要生产者、broker、消费者共同配置。</p>
+<p>生产者使用同步或异步发送，重试。</p>
+<p>broker使用多主多从架构，nameServer使用集群，broker采用同步复制及同步刷盘。硬盘使用RAID10。</p>
+<p>消费者消费成功之后返回正确的ACK，异常返回未消费ack。</p>
+<h2 id="消息发生大量堆积应该怎么处理"><a href="#消息发生大量堆积应该怎么处理" class="headerlink" title="消息发生大量堆积应该怎么处理"></a>消息发生大量堆积应该怎么处理</h2><h3 id="消费者可以消费，非bug"><a href="#消费者可以消费，非bug" class="headerlink" title="消费者可以消费，非bug"></a>消费者可以消费，非bug</h3><p>1.增加消费者数量</p>
+<p>2.如果是消费者代码慢，优化代码。</p>
+<p>3.降低生产者生产的速度。</p>
+<p>4.清理过期数据，比如有一些消息已经处理过了或者过期了。</p>
+<p>5.调整消费者的配置参数，提高消费者的效率。</p>
+<p>6.增加topic队列数。</p>
+<h3 id="消费者bug-堆积消息"><a href="#消费者bug-堆积消息" class="headerlink" title="消费者bug, 堆积消息"></a>消费者bug, 堆积消息</h3><p>没有做好监控，做好监控，提前报警。</p>
+<p>1.增加消费者，看是否能抗住压力。这种会影响正在运的用户。</p>
+<p>2.改变offset，旧的队列直接从最新开始，从旧topic快速读取新的临时topic，新的topic增加多队列数，启动新的消费者消费新topic。</p>
+<h2 id="rocketmq如何保障顺序消息的顺序性"><a href="#rocketmq如何保障顺序消息的顺序性" class="headerlink" title="rocketmq如何保障顺序消息的顺序性"></a>rocketmq如何保障顺序消息的顺序性</h2><p>rocketmq保障消息队列的顺序。</p>
+<p>慎用顺序消息。</p>
+<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><p>4.0 生产者使用MessageQueueSelector，同一业务ID(比如订单ID)的发送到同一消息队列中。</p>
+<p>4.0感觉也不太对。</p>
+<p>5.0的文档：</p>
+<p>单一生产者 + 串行发送。</p>
+<p>比如说有两个订单服务，服务A支付成功，服务B接收到取消订单，因为网络问题有可能取消订单在支付成功之前，这时没有退款，所以需要保证同一订单，要访问一个服务。或者直接支侍时使用支付中，支付中不能取消，不使用顺序消息。</p>
+<h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><p>消费者使用消费模式使用ConsumeMode.ORDERLY 顺序消费模式。</p>
+<p>rocketmq的消费逻辑是，申请分布式锁，这时只有这个消费者内的线程可以消费，去申请broker的messageQueue锁，然后只有这个线程可以消费，然后消费者线程去申请broker的processQueue进行加锁，当新增加消费者时，不会把消息重复给新的消费者。</p>
+<h2 id="延时消息如何实现的"><a href="#延时消息如何实现的" class="headerlink" title="延时消息如何实现的"></a>延时消息如何实现的</h2><p>当消息发送到broker后，根据延时级别存储消息(不能消费)，然后使用不同延时级别的定时器把消息改为可以消费。</p>
+<p>延时定时器：它只支持：1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h这几个时长。</p>
+<h2 id="广播消息与集群消息怎么做到的"><a href="#广播消息与集群消息怎么做到的" class="headerlink" title="广播消息与集群消息怎么做到的"></a>广播消息与集群消息怎么做到的</h2><p>是消息者设置的消息模式。</p>
+<p>当广播消息时，是每个消费者都有offset。</p>
+<p>当集群消息时，一个消息队列一个offset。</p>
+<h2 id="rocketmq的消息是推还是拉？"><a href="#rocketmq的消息是推还是拉？" class="headerlink" title="rocketmq的消息是推还是拉？"></a>rocketmq的消息是推还是拉？</h2><p>Push是服务端主动推送消息给客户端，pull是客户端需要主动到服务端轮询获取数据。</p>
+<p>推：及时性比较好。</p>
+<p>拉：流处理框架场景下集成使用。</p>
+<p>推模式：</p>
+<p>推模式其底层的实现还是基于pull实现的，SDK内置了一个长轮询线程，先将消息异步拉取到SDK内置的缓存队列中，再分别提交到消费线程中，触发监听器执行本地消费逻辑。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/mq/">mq</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/mq/">mq</a>
+                    
+                      <a class="hover-with-bg" href="/tags/rocketmq/">rocketmq</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/11/22/mysql/linux%E7%9A%84mysql%E5%AE%89%E8%A3%85/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux的mysql安装</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/">
+                        <span class="hidden-mobile">rocketmq的cluster布署</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

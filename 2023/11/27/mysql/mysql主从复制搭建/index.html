@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="韩启川">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="文档https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.2&#x2F;en&#x2F;replication.html 本文档只是记录一些简单或者常用的复制，遇到问题还是看官网或者查资料吧。 简单主从复制   Ip 内容    192.168.158.140 Mysql   master   192.168.158.141 Mysql  slave   两台机器都安装mysql。 在master服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql主从复制搭建">
+<meta property="og:url" content="http://hanqichuan.com/2023/11/27/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="这是一个很酷的事">
+<meta property="og:description" content="文档https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.2&#x2F;en&#x2F;replication.html 本文档只是记录一些简单或者常用的复制，遇到问题还是看官网或者查资料吧。 简单主从复制   Ip 内容    192.168.158.140 Mysql   master   192.168.158.141 Mysql  slave   两台机器都安装mysql。 在master服务">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-27T05:35:12.000Z">
+<meta property="article:modified_time" content="2023-11-28T09:24:55.834Z">
+<meta property="article:author" content="韩启川">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>mysql主从复制搭建 - 这是一个很酷的事</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"hanqichuan.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>这是一件很酷的事</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mysql主从复制搭建">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-11-27 13:35" pubdate>
+        2023年11月27日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      49 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">mysql主从复制搭建</h1>
+            
+            <div class="markdown-body">
+              <h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication.html">https://dev.mysql.com/doc/refman/8.2/en/replication.html</a></p>
+<p>本文档只是记录一些简单或者常用的复制，遇到问题还是看官网或者查资料吧。</p>
+<h2 id="简单主从复制"><a href="#简单主从复制" class="headerlink" title="简单主从复制"></a>简单主从复制</h2><table>
+<thead>
+<tr>
+<th>Ip</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.158.140</td>
+<td>Mysql   master</td>
+</tr>
+<tr>
+<td>192.168.158.141</td>
+<td>Mysql  slave</td>
+</tr>
+</tbody></table>
+<p>两台机器都安装mysql。</p>
+<p>在master服务器创建用户并授权：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><pre><code class="hljs pgsql">## 创建用户<br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">&#x27;replication_root&#x27;</span>@<span class="hljs-string">&#x27;192.168.158.141&#x27;</span><br>  IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;123456&#x27;</span>;<br>## 授权<br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">REPLICATION</span> SLAVE<br>  <span class="hljs-keyword">ON</span> *.*<br>  <span class="hljs-keyword">TO</span> <span class="hljs-string">&#x27;replication_root&#x27;</span>@<span class="hljs-string">&#x27;192.168.158.141&#x27;</span><br>  <span class="hljs-keyword">WITH</span> <span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">OPTION</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="主服务器设置"><a href="#主服务器设置" class="headerlink" title="主服务器设置"></a>主服务器设置</h3><h4 id="查看是否开启了binlog"><a href="#查看是否开启了binlog" class="headerlink" title="查看是否开启了binlog"></a>查看是否开启了binlog</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;log_bin&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>on 为开启, OFF为关闭。</p>
+<p>Bin log记录这个mysql实例的所有库的所有表。可以使用 binlog-do-db 和binlog-ignore-db 记录你想复制的库，一般生产环境，一个mysql实例只使用一个库，所以下面使用的是所有库都记录binlog。</p>
+<p>bin log的一些配置请查看官网：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-options-binary-log.html">https://dev.mysql.com/doc/refman/8.2/en/replication-options-binary-log.html</a></p>
+<p>配置主服务器的server_id：默认是1，所以可以不用配置。</p>
+<p>临时配置：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> server_id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>添加或修改&#x2F;etc&#x2F;my.cnf</p>
+<p>my.cnf配置规则：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/option-files.html">https://dev.mysql.com/doc/refman/8.2/en/option-files.html</a></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">[mysqld]</span><br><span class="hljs-attr">server-id</span>=<span class="hljs-string">2</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="从服务器设置"><a href="#从服务器设置" class="headerlink" title="从服务器设置"></a>从服务器设置</h3><p>添加或修改&#x2F;etc&#x2F;my.cnf</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">[mysqld]</span><br><span class="hljs-attr">server-id</span>=<span class="hljs-string">3</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">service mysql start<br></code></pre></td></tr></table></figure>
+
+<h4 id="SSL配置"><a href="#SSL配置" class="headerlink" title="SSL配置"></a>SSL配置</h4><p>我这个版本的复制时，需要ssl配置。</p>
+<p>在从服务器上：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /usr/local/mysql/data/master_ssl<br></code></pre></td></tr></table></figure>
+
+<p>在主服务器上：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /usr/local/mysql/data<br><span class="hljs-comment"># chmod +r client-key.pem </span><br>scp ca.pem client-cert.pem client-key.pem root@192.168.158.141:/usr/local/mysql/data/master_ssl<br></code></pre></td></tr></table></figure>
+
+<p>在从服务器上：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> +r client-key.pem <br></code></pre></td></tr></table></figure>
+
+<p>如果创建的用户只能用ssl登录：</p>
+<p>创建：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">CREATE USER <span class="hljs-string">&#x27;repl&#x27;</span>@<span class="hljs-string">&#x27;192.168.158.141&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;123456&#x27;</span> REQUIRE SSL;<br>GRANT REPLICATION SLAVE ON *.* TO <span class="hljs-string">&#x27;repl&#x27;</span>@<span class="hljs-string">&#x27;192.168.158.141&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>修改：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ALTER USER <span class="hljs-string">&#x27;repl&#x27;</span>@<span class="hljs-string">&#x27;192.168.158.141&#x27;</span> REQUIRE SSL;<br></code></pre></td></tr></table></figure>
+
+<p>可以使用登录语句测试：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./mysql -urepl -h192.168.158.140 --ssl-ca=/usr/local/mysql/data/master_ssl/ca.pem --ssl-cert=/usr/local/mysql/data/master_ssl/client-cert.pem --ssl-key=/usr/local/mysql/data/master_ssl/client-key.pem -p<br></code></pre></td></tr></table></figure>
+
+<h3 id="获取主的binlog名称及坐标"><a href="#获取主的binlog名称及坐标" class="headerlink" title="获取主的binlog名称及坐标"></a>获取主的binlog名称及坐标</h3><p>1.加全局锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">Flush tables <span class="hljs-keyword">with</span> read lock <br></code></pre></td></tr></table></figure>
+
+<p>我使用的新库，不用，生产上这肯定不行，需要停服的。</p>
+<p>2.查看</p>
+<p>8.2以前</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> MASTER STATUS<br></code></pre></td></tr></table></figure>
+
+<p>8.2以后</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> <span class="hljs-type">BINARY</span> LOG STATUS<br></code></pre></td></tr></table></figure>
+
+<p>在msyql命令行时可以在结尾加\G，好看一点。</p>
+<p>记录file与Position的值用于下一节的sql。</p>
+<h3 id="执行复制语句"><a href="#执行复制语句" class="headerlink" title="执行复制语句"></a>执行复制语句</h3><p>在主服务器上解锁：</p>
+<p>这一句是跟上面配套的。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">UNLOCK TABLES;<br></code></pre></td></tr></table></figure>
+
+<p>在从服务器上执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs mysql">CHANGE REPLICATION SOURCE TO<br>   SOURCE_HOST=&#x27;192.168.158.140&#x27;,<br>   SOURCE_USER=&#x27;repl&#x27;,<br>   SOURCE_PASSWORD=&#x27;123456&#x27;,<br>   SOURCE_LOG_FILE=&#x27;binlog.000005&#x27;,<br>   SOURCE_LOG_POS=157,<br>   SOURCE_SSL = 1,<br>   SOURCE_SSL_CA = &#x27;/usr/local/mysql/data/master_ssl/ca.pem&#x27;,<br>   SOURCE_SSL_CERT = &#x27;/usr/local/mysql/data/master_ssl/client-cert.pem&#x27;,<br>   SOURCE_SSL_KEY = &#x27;/usr/local/mysql/data/master_ssl/client-key.pem&#x27;;<br></code></pre></td></tr></table></figure>
+
+<p>CHANGE REPLICATION SOURCE TO 语句的详情说明：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/change-replication-source-to.html">https://dev.mysql.com/doc/refman/8.2/en/change-replication-source-to.html</a></p>
+<h3 id="启动从复制"><a href="#启动从复制" class="headerlink" title="启动从复制"></a>启动从复制</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">start</span> slave; <br><span class="hljs-keyword">show</span> slave status;<br>stop slave;<br></code></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">start</span> REPLICA;<br><span class="hljs-keyword">show</span> REPLICA status;<br>stop REPLICA;<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在主上创建数据test，可以同步。</p>
+<p>在主上创建表test,可以同步。</p>
+<p>在主上插入语句，可以同步。</p>
+<h2 id="主从复制原理"><a href="#主从复制原理" class="headerlink" title="主从复制原理"></a>主从复制原理</h2><p>从服务器启动复制后，会跟主服务器建立连接，主服务器会创建一个线程发送binlog, 从服务器创建一个IO线程，接收binlog,把binlog转换为relay log（中继日志），从服务器创建一个或多个SQL线程(worker),从relay log中读取，执行sql语句。</p>
+<h2 id="从库挂了，会怎么样"><a href="#从库挂了，会怎么样" class="headerlink" title="从库挂了，会怎么样"></a>从库挂了，会怎么样</h2><p>挂了，最终是监控及告警的任务。</p>
+<h3 id="直接启动"><a href="#直接启动" class="headerlink" title="直接启动"></a>直接启动</h3><p>正常同步。</p>
+<p>注意：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">start</span> REPLICA;<br></code></pre></td></tr></table></figure>
+
+<p>这个命令会重新从CHANGE REPLICATION SOURCE TO 设定的位置开始同步，所以配置完同步后，就不要再执行该语句。</p>
+<h3 id="从新的位置开始复制"><a href="#从新的位置开始复制" class="headerlink" title="从新的位置开始复制"></a>从新的位置开始复制</h3><p>异常情况需要从新的位置开始复制。</p>
+<p>跳进复制启动：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/mysqld_safe --user=mysql  --skip-replica-start &amp;<br></code></pre></td></tr></table></figure>
+
+<p>获取新的位置：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">show</span> REPLICA status;<br></code></pre></td></tr></table></figure>
+
+<p>Source_log_File 及 read_source_log_Pos 记录下来。</p>
+<p>006  446</p>
+<p>重新建立复制：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">## 这个命令执行完后，就看不了同步到哪了。 mysql库下slave_开头的表将被重置。<br>RESET SLAVE;<br></code></pre></td></tr></table></figure>
+
+<p>使用新文件及位置：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sql"> CHANGE REPLICATION SOURCE <span class="hljs-keyword">TO</span><br>    SOURCE_HOST<span class="hljs-operator">=</span><span class="hljs-string">&#x27;192.168.158.140&#x27;</span>,<br>    SOURCE_USER<span class="hljs-operator">=</span><span class="hljs-string">&#x27;repl&#x27;</span>,<br>    SOURCE_PASSWORD<span class="hljs-operator">=</span><span class="hljs-string">&#x27;123456&#x27;</span>,<br>    SOURCE_LOG_FILE<span class="hljs-operator">=</span><span class="hljs-string">&#x27;binlog.000006&#x27;</span>,<br>    SOURCE_LOG_POS<span class="hljs-operator">=</span><span class="hljs-number">446</span>,<br>    SOURCE_SSL <span class="hljs-operator">=</span> <span class="hljs-number">1</span>,<br>    SOURCE_SSL_CA <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/ca.pem&#x27;</span>,<br>    SOURCE_SSL_CERT <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/client-cert.pem&#x27;</span>,<br>    SOURCE_SSL_KEY <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/client-key.pem&#x27;</span>;<br>## 查看是否改变<br><span class="hljs-keyword">show</span> REPLICA status;<br>## 启动复制<br><span class="hljs-keyword">start</span> REPLICA;<br>## 查看是否启动成功<br><span class="hljs-keyword">show</span> REPLICA status;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="已经有数据使用binlog复制"><a href="#已经有数据使用binlog复制" class="headerlink" title="已经有数据使用binlog复制"></a>已经有数据使用binlog复制</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-howto.html">https://dev.mysql.com/doc/refman/8.2/en/replication-howto.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-howto-masterstatus.html">https://dev.mysql.com/doc/refman/8.2/en/replication-howto-masterstatus.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-snapshot-method.html">https://dev.mysql.com/doc/refman/8.2/en/replication-snapshot-method.html</a></p>
+<p>官网获取binlog文件名及位置说明，如果主上有数据当锁住表后，生成数据快照，其实就是把主数据保存下来，并在备库执行。</p>
+<p>先停止上面的服务器的复制。</p>
+<p>创造一些数据（比如创建库、创建表、插入数据）。</p>
+<h3 id="使用mysqldump创建数据快照"><a href="#使用mysqldump创建数据快照" class="headerlink" title="使用mysqldump创建数据快照"></a>使用mysqldump创建数据快照</h3><p>跟上面获取位置一样，需要全局锁，导出后解锁。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysqldump --all-databases --source-data=2 &gt; dbdump.db<br></code></pre></td></tr></table></figure>
+
+<p>–source-data[&#x3D;value] </p>
+<p>value默认是1，1的时候会有一条CHANGE REPLICATION SOURCE TO 生成，在导入数据时会执行。</p>
+<p>2时会生成CHANGE REPLICATION SOURCE TO，但是在注释里。</p>
+<h3 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql -h <span class="hljs-built_in">source</span> &lt; fulldb.dump<br></code></pre></td></tr></table></figure>
+
+<p>执行上面简单复制的流程，看是否会复制。都会停服，所以要一开始决定，或者做好公告之类的。导出导入数据还是比较耗时的。</p>
+<h2 id="添加新的从服务器"><a href="#添加新的从服务器" class="headerlink" title="添加新的从服务器"></a>添加新的从服务器</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-howto-additionalslaves.html">https://dev.mysql.com/doc/refman/8.2/en/replication-howto-additionalslaves.html</a></p>
+<p>如果已经有主从架构后，再添加新的从服务器，不需要停止主服务器，可以根据从服务器进行操作。</p>
+<h2 id="使用GTID复制"><a href="#使用GTID复制" class="headerlink" title="使用GTID复制"></a>使用GTID复制</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-gtids.html">https://dev.mysql.com/doc/refman/8.2/en/replication-gtids.html</a></p>
+<p>可以停服的复制。因为要启用GTID。</p>
+<h3 id="查看服务器是否启用GTID"><a href="#查看服务器是否启用GTID" class="headerlink" title="查看服务器是否启用GTID"></a>查看服务器是否启用GTID</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">show VARIABLES like <span class="hljs-string">&quot;gtid_mode&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：没有 GTID 的事务的binlog不能在启用 GTID 的服务器上使用</p>
+<p>步骤1、2是已经有了binlog复制的需要步骤。以前没有主从复制直接从步骤3开始。</p>
+<h3 id="步骤1-只读，完成复制"><a href="#步骤1-只读，完成复制" class="headerlink" title="步骤1 只读，完成复制"></a>步骤1 只读，完成复制</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> @<span class="hljs-variable">@GLOBAL</span>.read_only <span class="hljs-operator">=</span> <span class="hljs-keyword">ON</span>;<br></code></pre></td></tr></table></figure>
+
+<p>使主从完成复制。相当停服，只能读。</p>
+<h3 id="步骤2-停止两台服务器"><a href="#步骤2-停止两台服务器" class="headerlink" title="步骤2 停止两台服务器"></a>步骤2 停止两台服务器</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysqladmin -uroot -p shutdown<br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤3-启动两台启用-GTID-的服务器"><a href="#步骤3-启动两台启用-GTID-的服务器" class="headerlink" title="步骤3 启动两台启用 GTID 的服务器"></a>步骤3 启动两台启用 GTID 的服务器</h3><p>在my.cnf文件中[mysqld]中添加</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">gtid_mode</span>=<span class="hljs-string">ON</span><br><span class="hljs-attr">enforce-gtid-consistency</span>=<span class="hljs-string">ON</span><br></code></pre></td></tr></table></figure>
+
+<p>启用 gtid_mode</p>
+<p>enforce_gtid_consistency启用该变量以确保仅记录对于基于 GTID 的复制安全的语句。</p>
+<p>启动时使用：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">bin/mysqld_safe --user=mysql  --skip-replica-start &amp;<br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤4-配置副本使用基于-GTID-的自动定位"><a href="#步骤4-配置副本使用基于-GTID-的自动定位" class="headerlink" title="步骤4 配置副本使用基于 GTID 的自动定位"></a>步骤4 配置副本使用基于 GTID 的自动定位</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql">CHANGE REPLICATION SOURCE <span class="hljs-keyword">TO</span><br>   SOURCE_HOST<span class="hljs-operator">=</span><span class="hljs-string">&#x27;192.168.158.140&#x27;</span>,<br>   SOURCE_USER<span class="hljs-operator">=</span><span class="hljs-string">&#x27;repl&#x27;</span>,<br>   SOURCE_PASSWORD<span class="hljs-operator">=</span><span class="hljs-string">&#x27;123456&#x27;</span>,<br>   SOURCE_AUTO_POSITION <span class="hljs-operator">=</span> <span class="hljs-number">1</span>,<br>   SOURCE_SSL <span class="hljs-operator">=</span> <span class="hljs-number">1</span>,<br>   SOURCE_SSL_CA <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/ca.pem&#x27;</span>,<br>   SOURCE_SSL_CERT <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/client-cert.pem&#x27;</span>,<br>   SOURCE_SSL_KEY <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;/usr/local/mysql/data/master_ssl/client-key.pem&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤5-进行新的备份"><a href="#步骤5-进行新的备份" class="headerlink" title="步骤5 进行新的备份"></a>步骤5 进行新的备份</h3><p>启用 GTID，则在启用 GTID 之前所做的现有备份将无法再在这些服务器上使用。此时进行新的备份，这样您就不会没有可用的备份。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">FLUSH LOGS<br></code></pre></td></tr></table></figure>
+
+<p>可以备份数据及binlog。</p>
+<h3 id="步骤6-启动副本并禁用只读模式。"><a href="#步骤6-启动副本并禁用只读模式。" class="headerlink" title="步骤6 启动副本并禁用只读模式。"></a>步骤6 启动副本并禁用只读模式。</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">START</span> REPLICA;<br>## 两台机器都执行<br><span class="hljs-keyword">SET</span> @<span class="hljs-variable">@GLOBAL</span>.read_only <span class="hljs-operator">=</span> OFF;<br></code></pre></td></tr></table></figure>
+
+<h2 id="启用GTID的主服务器，不停服，添加从"><a href="#启用GTID的主服务器，不停服，添加从" class="headerlink" title="启用GTID的主服务器，不停服，添加从"></a>启用GTID的主服务器，不停服，添加从</h2><p>当主服务器已经开启了GTID后，添加从时，只要按照上面的步骤3至步骤6只操作从服务器，并且保障从服务器的server-id与主服务器不同。</p>
+<h2 id="binlog复制与GTID复制的"><a href="#binlog复制与GTID复制的" class="headerlink" title="binlog复制与GTID复制的"></a>binlog复制与GTID复制的</h2><p>binlog复制需要binlog的文件名及位置，如果文件名和位置错误，会造成脏数据，比如插入两条除ID外一样的数据，多次修改等问题。</p>
+<p>gtid复制会自动定位，不需要运维操作，执行过的gtid不会重复执行，服务器会跳过。</p>
+<h2 id="异步复制、半同步复制、全同步复制"><a href="#异步复制、半同步复制、全同步复制" class="headerlink" title="异步复制、半同步复制、全同步复制"></a>异步复制、半同步复制、全同步复制</h2><p>mysql默认使用的就是异步复制。</p>
+<p>半同步复制：&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;lib&#x2F;plugin下的semisync_slave.so</p>
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/replication-semisync.html">https://dev.mysql.com/doc/refman/8.2/en/replication-semisync.html</a></p>
+<p>全同步复制：使用mysql的group Replication  的多主复制。</p>
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.2/en/group-replication.html">https://dev.mysql.com/doc/refman/8.2/en/group-replication.html</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/mysql/">mysql</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/20223/10/10/spring_cloud/spring_cloud_alibaba%E4%B9%8Bnacos%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring_cloud_alibaba之nacos使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/22/mysql/linux%E7%9A%84mysql%E5%AE%89%E8%A3%85/">
+                        <span class="hidden-mobile">linux的mysql安装</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+  <!-- 备案信息 -->
+  <div class="beian">
+    <span>
+      <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+        京ICP备18028493号
+      </a>
+    </span>
+    
+      
+        <span>
+          <a
+            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035713"
+            rel="nofollow noopener"
+            class="beian-police"
+            target="_blank"
+          >
+            
+              <span style="visibility: hidden; width: 0">|</span>
+              <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+            
+            <span>11010502035713</span>
+          </a>
+        </span>
+      
+    
+  </div>
+
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

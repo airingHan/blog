@@ -24,7 +24,7 @@
 <meta property="og:description" content="1.SQL注入1select count(1) from a where name &#x3D; &amp;#x27;name输入值&amp;#x27; and mobile &#x3D; &amp;#x27;mobile输入值&amp;#x27;  原本软件必须要两个输入项都匹配才能命中数据，返回。 这时恶意的人，只输入name输入值为 ‘or 1&#x3D; 1 –  时 1select count(1) from crm_admin wher">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-18T03:22:00.000Z">
-<meta property="article:modified_time" content="2023-05-30T01:15:20.998Z">
+<meta property="article:modified_time" content="2022-04-25T07:58:01.587Z">
 <meta property="article:author" content="韩启川">
 <meta property="article:tag" content="CAS">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      530 字
+      undefined 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      NaN 分钟
     </span>
   
 
@@ -238,20 +238,20 @@
             <h1 style="display: none">java的SQL注入-PreparedStatement</h1>
             
             <div class="markdown-body">
-              <h3 id="1-SQL注入"><a href="#1-SQL注入" class="headerlink" title="1.SQL注入"></a>1.SQL注入</h3><figure class="highlight sql"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> a <span class="hljs-keyword">where</span> name <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;name输入值&#x27;</span> <span class="hljs-keyword">and</span> mobile <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;mobile输入值&#x27;</span><br></code></pre></td></tr></table></figure>
+              <h3 id="1-SQL注入"><a href="#1-SQL注入" class="headerlink" title="1.SQL注入"></a>1.SQL注入</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> a <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;name输入值&#x27;</span> <span class="keyword">and</span> mobile <span class="operator">=</span> <span class="string">&#x27;mobile输入值&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>原本软件必须要两个输入项都匹配才能命中数据，返回。</p>
 <p>这时恶意的人，只输入name输入值为 ‘or 1&#x3D; 1 –  时</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> crm_admin <span class="hljs-keyword">where</span> name <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;&#x27;</span><span class="hljs-keyword">or</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-comment">-- &#x27; and mobile = &#x27;mobile输入值&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> crm_admin <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;&#x27;</span><span class="keyword">or</span> <span class="number">1</span><span class="operator">=</span> <span class="number">1</span> <span class="comment">-- &#x27; and mobile = &#x27;mobile输入值&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>这时就会返回值</p>
-<h3 id="2-PreparedStatement-准备好的Statement"><a href="#2-PreparedStatement-准备好的Statement" class="headerlink" title="2.PreparedStatement(准备好的Statement)"></a>2.PreparedStatement(准备好的Statement)</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> a <span class="hljs-keyword">where</span> name <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;name输入值&#x27;</span> <span class="hljs-keyword">and</span> mobile <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;mobile输入值&#x27;</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-PreparedStatement-准备好的Statement"><a href="#2-PreparedStatement-准备好的Statement" class="headerlink" title="2.PreparedStatement(准备好的Statement)"></a>2.PreparedStatement(准备好的Statement)</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> a <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;name输入值&#x27;</span> <span class="keyword">and</span> mobile <span class="operator">=</span> <span class="string">&#x27;mobile输入值&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>语句会变为</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> a <span class="hljs-keyword">where</span> name <span class="hljs-operator">=</span> ？ <span class="hljs-keyword">and</span> mobile <span class="hljs-operator">=</span> ？<br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> a <span class="keyword">where</span> name <span class="operator">=</span> ？ <span class="keyword">and</span> mobile <span class="operator">=</span> ？</span><br></pre></td></tr></table></figure>
 
 <p>输入参数会做为一个字符串传进去，不再进行sql的解析与准备</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> crm_admin <span class="hljs-keyword">where</span> name <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;\&#x27;</span><span class="hljs-keyword">or</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-comment">--&#x27; and mobile = &#x27;1580000001&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> crm_admin <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;\&#x27;</span><span class="keyword">or</span> <span class="number">1</span><span class="operator">=</span> <span class="number">1</span> <span class="comment">--&#x27; and mobile = &#x27;1580000001&#x27;</span></span><br></pre></td></tr></table></figure>
             </div>
             <hr>
             <div>

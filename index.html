@@ -338,6 +338,296 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/11/27/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%90%AD%E5%BB%BA/" target="_self">
+          mysql主从复制搭建
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/27/mysql/mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%90%AD%E5%BB%BA/" target="_self">
+          
+          文档https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.2&#x2F;en&#x2F;replication.html 本文档只是记录一些简单或者常用的复制，遇到问题还是看官网或者查资料吧。 简单主从复制   Ip 内容    192.168.158.140 Mysql   master   192.168.158.141 Mysql  slave   两台机器都安装mysql。 在master服务
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-27 13:35" pubdate>
+              2023-11-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/22/mysql/linux%E7%9A%84mysql%E5%AE%89%E8%A3%85/" target="_self">
+          linux的mysql安装
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/22/mysql/linux%E7%9A%84mysql%E5%AE%89%E8%A3%85/" target="_self">
+          
+          查看是否已经安装mysql服务1rpm -qa | grep mysql  或者 1ps -ef | grep mysql  1netstat -tunlp | grep 3306  使用二进制包安装使用包管理器也可以安装，详情可以看官方文档。 https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.2&#x2F;en&#x2F; 下载https:&#x2F;&#x2F;dev.mysql.com&#x2F;downloads&#x2F;my
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-22 18:30" pubdate>
+              2023-11-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/" target="_self">
+          rocketmq的面试题及原理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/" target="_self">
+          
+          消息队列怎么避免重复消息消息队列一般都有重试机制，或者生产者多次发送。 所以需要保证消费者接口幂等性保障： 比如可以使用redis的setnx。 接口幂等性一锁、二判断、三更新 加分布式锁，判断状态机，更新至持久化的数据源中。 rocketmq如何保证消息的可靠性传输需要生产者、broker、消费者共同配置。 生产者使用同步或异步发送，重试。 broker使用多主多从架构，nameServer使用
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-21 16:59" pubdate>
+              2023-11-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rocketmq/">rocketmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/" target="_self">
+          rocketmq的cluster布署
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/" target="_self">
+          
+          同步刷盘与异步刷盘跟mysql的同步刷盘和异步刷盘一样。 先放到内存中，是发送一条消息就刷到磁盘中，还是几条消息才刷到磁盘中。 同步复制与异步复制同mysql的同步复制与异步复制。 当出现主备主从架构后，主同步数据至备或者从。同步就是一条消息发送到主后，再同步到备或者从，都同步后才返回消息提交成功。 异步是只发送到主，就返回提交成功，异步传输到备或者从。 RAID10磁盘RAID 10（也称为RA
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-18 21:14" pubdate>
+              2023-11-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rocketmq/">rocketmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/16/mq/rocketmq%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          rocketmq的使用
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/16/mq/rocketmq%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          
+          使用https:&#x2F;&#x2F;rocketmq.apache.org&#x2F;zh&#x2F;docs&#x2F;quickStart&#x2F;01quickstart 安装条件 64位操作系统，推荐 Linux&#x2F;Unix&#x2F;macOS 64位 JDK 1.8+ 如果源码编译安装需要安装maven  下载源码并编译12345wget https:&#x2F;&#x2F;dist.apache.org&#x2F;repos&#x2F;dist&#x2F;release&#x2F;roc
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-16 15:31" pubdate>
+              2023-11-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rocketmq/">rocketmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/02/mybatis/mybatis_plus%E6%95%B4%E5%90%88%E5%88%B0springboot%E4%BD%BF%E7%94%A8/" target="_self">
+          mybatis_plus整合到springboot使用
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/02/mybatis/mybatis_plus%E6%95%B4%E5%90%88%E5%88%B0springboot%E4%BD%BF%E7%94%A8/" target="_self">
+          
+          概述MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具。 https:&#x2F;&#x2F;baomidou.com&#x2F; https:&#x2F;&#x2F;baomidou.com&#x2F;pages&#x2F;24112f&#x2F; 使用准备sql123456789101112131415CREATE TABLE &#96;user&#96;(    id BIGINT NOT NULL COMMENT &amp;#x27;主键ID&amp;#x27;,    nam
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-02 13:50" pubdate>
+              2023-11-02
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mybatis/">mybatis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mybatis/">mybatis</a>
+            
+              <a href="/tags/mybatis-plus/">mybatis-plus</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/10/23/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" target="_self">
           分布式事务解决方案
         </a>
@@ -374,306 +664,6 @@
               <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
             
               <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/19/java/%E9%98%BF%E9%87%8C%E4%BA%91OSS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%AD%BE%E5%90%8D%E5%90%8E%E7%9B%B4%E4%BC%A0/" target="_self">
-          阿里云OSS服务端签名后直传
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/19/java/%E9%98%BF%E9%87%8C%E4%BA%91OSS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%AD%BE%E5%90%8D%E5%90%8E%E7%9B%B4%E4%BC%A0/" target="_self">
-          
-          阿里云OSS第一步注册登录阿里云 第二步搜索对象存储oss并开通进入OSS管理控制台 第三步创建bucket仓库 第四步修改CORS(否则上传图片会有跨域问题) 第五步获取自己的AccessKey 会有accesskey id 和 accesskey secret  引入SDKpom.xml 12345&lt;dependency&gt;    &lt;groupId&gt;com.aliyun.
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-19 11:45" pubdate>
-              2023-10-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
-            
-              <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/">阿里云</a>
-            
-              <a href="/tags/OSS/">OSS</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/19/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%AD%98%E5%82%A8/" target="_self">
-          购物车存储
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/19/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%AD%98%E5%82%A8/" target="_self">
-          
-          购物车在很多电商系统中，用户不会一件一件的买商品，不是同一店铺，都是先加入购物车，然后去生成订单一起支付。购物车的概念对应超市中的购物车。 购物车的存储存储至数据库(mysql)数据库有连接上、存储上的瓶颈。 前端存储至localstorage 或者sessionstoragelocalstorage 没有过期时间 sessionstorage关闭浏览器后消失。 存储至缓存(redis)因为是缓存
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-19 10:05" pubdate>
-              2023-10-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-              <a href="/tags/%E8%B4%AD%E7%89%A9%E8%BD%A6/">购物车</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/" target="_self">
-          流量削峰
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/" target="_self">
-          
-          需求当系统发布后，系统在一定时间内总会有一个流量高峰，尤其是秒杀系统，在秒杀开始的那一秒是一条很直很直的线，这是因为秒杀请求在时间上高度集中于某一特定的时间点。一个特别高的流量峰值对资源的消耗是瞬时的。 为什么削峰服务器处理资源能力是恒定的，用或不用都是一样的，所以出现峰值会导致处理不过来，峰值过后又会闲下来。我们要保证服务质量，一般会按照峰值时计算，比如最大在线人数等指标。 削峰的目的： 一、可
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-18 15:31" pubdate>
-              2023-10-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
-            
-              <a href="/tags/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/">流量削峰</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/" target="_self">
-          高并发下扣减库存
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/" target="_self">
-          
-          需求系统中有商品，商品有库存数量，用户买商品扣减商品的库存。 扣减库存的几种方式下单扣减下单后立马扣减。有的人下单后不付款，恶意的人直接把库存下单完，影响商品销售。需要结合安全和反作弊的措施。 比如： 给经常下单不付款的买家进行标识(不扣减付款后再扣减) 某此类目最大购买数量 下单不付款的操作进行限制 付款扣减付款后再扣减。影响用户体验，用户下单后以为成功了，会出现下单后付不了款。 超卖现象。超卖
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-18 11:08" pubdate>
-              2023-10-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
-            
-              <a href="/tags/%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/">扣减库存</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
-          越权攻击
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
-          
-          什么是越权攻击越权攻击（Authorization Bypass）是一种安全漏洞，它允许攻击者在未经授权的情况下访问系统或资源，或执行不应该具有权限的操作。这种攻击通常发生在身份验证和授权机制的不当实施中。越权攻击可能导致敏感数据的泄露，功能滥用，或其他不安全行为。 常见的越权攻击水平越权攻击者尝试访问与他拥有相同权限的用户的资源。 比如 接口设计为   http:&#x2F;&#x2F;localhost&#x2F;user
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-17 17:20" pubdate>
-              2023-10-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-              <a href="/tags/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/">越权攻击</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
-          spring_boot发送邮件
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
-          
-          概述发送邮件，一个发送，一个接收，在软件中一般都是使用发送。 发送需要一个邮箱，这时候需要去那邮箱进行授权。    邮箱类型 SMTP服务器地址 端口号    QQ邮箱 smtp.qq.com 465或587   sina邮箱 smtp.sina.cn 465或587   126邮箱 smtp.126.com 465或994   aliyun邮箱 smtp.aliyun.com 465或994
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-17 15:27" pubdate>
-              2023-10-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-boot/">spring boot</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-boot/">spring boot</a>
-            
-              <a href="/tags/mail/">mail</a>
             
           </div>
         

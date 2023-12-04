@@ -191,6 +191,306 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/10/19/java/%E9%98%BF%E9%87%8C%E4%BA%91OSS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%AD%BE%E5%90%8D%E5%90%8E%E7%9B%B4%E4%BC%A0/" target="_self">
+          阿里云OSS服务端签名后直传
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/19/java/%E9%98%BF%E9%87%8C%E4%BA%91OSS%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%AD%BE%E5%90%8D%E5%90%8E%E7%9B%B4%E4%BC%A0/" target="_self">
+          
+          阿里云OSS第一步注册登录阿里云 第二步搜索对象存储oss并开通进入OSS管理控制台 第三步创建bucket仓库 第四步修改CORS(否则上传图片会有跨域问题) 第五步获取自己的AccessKey 会有accesskey id 和 accesskey secret  引入SDKpom.xml 12345&lt;dependency&gt;    &lt;groupId&gt;com.aliyun.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-19 11:45" pubdate>
+              2023-10-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">java</a>
+            
+              <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/">阿里云</a>
+            
+              <a href="/tags/OSS/">OSS</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/19/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%AD%98%E5%82%A8/" target="_self">
+          购物车存储
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/19/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B4%AD%E7%89%A9%E8%BD%A6%E5%AD%98%E5%82%A8/" target="_self">
+          
+          购物车在很多电商系统中，用户不会一件一件的买商品，不是同一店铺，都是先加入购物车，然后去生成订单一起支付。购物车的概念对应超市中的购物车。 购物车的存储存储至数据库(mysql)数据库有连接上、存储上的瓶颈。 前端存储至localstorage 或者sessionstoragelocalstorage 没有过期时间 sessionstorage关闭浏览器后消失。 存储至缓存(redis)因为是缓存
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-19 10:05" pubdate>
+              2023-10-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+              <a href="/tags/%E8%B4%AD%E7%89%A9%E8%BD%A6/">购物车</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/" target="_self">
+          流量削峰
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/" target="_self">
+          
+          需求当系统发布后，系统在一定时间内总会有一个流量高峰，尤其是秒杀系统，在秒杀开始的那一秒是一条很直很直的线，这是因为秒杀请求在时间上高度集中于某一特定的时间点。一个特别高的流量峰值对资源的消耗是瞬时的。 为什么削峰服务器处理资源能力是恒定的，用或不用都是一样的，所以出现峰值会导致处理不过来，峰值过后又会闲下来。我们要保证服务质量，一般会按照峰值时计算，比如最大在线人数等指标。 削峰的目的： 一、可
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-18 15:31" pubdate>
+              2023-10-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+            
+              <a href="/tags/%E6%B5%81%E9%87%8F%E5%89%8A%E5%B3%B0/">流量削峰</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/" target="_self">
+          高并发下扣减库存
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/18/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/" target="_self">
+          
+          需求系统中有商品，商品有库存数量，用户买商品扣减商品的库存。 扣减库存的几种方式下单扣减下单后立马扣减。有的人下单后不付款，恶意的人直接把库存下单完，影响商品销售。需要结合安全和反作弊的措施。 比如： 给经常下单不付款的买家进行标识(不扣减付款后再扣减) 某此类目最大购买数量 下单不付款的操作进行限制 付款扣减付款后再扣减。影响用户体验，用户下单后以为成功了，会出现下单后付不了款。 超卖现象。超卖
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-18 11:08" pubdate>
+              2023-10-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+              <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+            
+              <a href="/tags/%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/">扣减库存</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
+          越权攻击
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
+          
+          什么是越权攻击越权攻击（Authorization Bypass）是一种安全漏洞，它允许攻击者在未经授权的情况下访问系统或资源，或执行不应该具有权限的操作。这种攻击通常发生在身份验证和授权机制的不当实施中。越权攻击可能导致敏感数据的泄露，功能滥用，或其他不安全行为。 常见的越权攻击水平越权攻击者尝试访问与他拥有相同权限的用户的资源。 比如 接口设计为   http:&#x2F;&#x2F;localhost&#x2F;user
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-17 17:20" pubdate>
+              2023-10-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
+            
+              <a href="/tags/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/">越权攻击</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
+          spring_boot发送邮件
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
+          
+          概述发送邮件，一个发送，一个接收，在软件中一般都是使用发送。 发送需要一个邮箱，这时候需要去那邮箱进行授权。    邮箱类型 SMTP服务器地址 端口号    QQ邮箱 smtp.qq.com 465或587   sina邮箱 smtp.sina.cn 465或587   126邮箱 smtp.126.com 465或994   aliyun邮箱 smtp.aliyun.com 465或994
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-17 15:27" pubdate>
+              2023-10-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/spring-boot/">spring boot</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring-boot/">spring boot</a>
+            
+              <a href="/tags/mail/">mail</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/10/10/spring_cloud/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%96%B9%E6%A1%88%E7%AE%80%E4%BB%8B/" target="_self">
           微服务方案简介
         </a>
@@ -238,13 +538,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/10/07/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E4%B9%8BTinyhttpd/" target="_self">
+        <a href="/2023/10/07/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E4%B9%8BTinyhttpd/" target="_self">
           C语言学习之Tinyhttpd
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2023/10/07/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E4%B9%8BTinyhttpd/" target="_self">
+        <a href="/2023/10/07/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E4%B9%8BTinyhttpd/" target="_self">
           
           前言学完C语言语法之后，没有方向。网上搜索，搜索到tinyhttpd是超轻量型Http server, 使用C语言开发，全部代码只有502行(包括注释)，附带一个简单的Client，可以通过阅读这段代码理解一个 Http Server 的本质。 但是发现根本看不懂，或者不知道从哪里入手。 还是要学下去的。 下载源码github上都是fork的，没有找到官方地址。但是都大同小异，源码没有变化。找星多
         </a>
@@ -285,13 +585,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/10/07/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E6%9F%A5%E7%9C%8B%E5%8F%8A%E5%A4%B4%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B/" target="_self">
+        <a href="/2023/10/07/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E6%9F%A5%E7%9C%8B%E5%8F%8A%E5%A4%B4%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B/" target="_self">
           C语言标准查看及头文件查看
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2023/10/07/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E6%9F%A5%E7%9C%8B%E5%8F%8A%E5%A4%B4%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B/" target="_self">
+        <a href="/2023/10/07/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E6%9F%A5%E7%9C%8B%E5%8F%8A%E5%A4%B4%E6%96%87%E4%BB%B6%E6%9F%A5%E7%9C%8B/" target="_self">
           
           概述c语言是一个非跨平台的语言。c语言是最接近底层的高级语言。硬件上有不同的CPU指令集就有不同的汇编。所以c语言编译时，是由编译器来翻译的，所以编译器有着不同的标准。如果完全不同就乱了，所以有ISO出的Cxx标准。 ISOhttps:&#x2F;&#x2F;www.iso.org&#x2F;  官网 搜索c compiler   这里要购买的，没有用。 GUN GCC查看C语言标准：  gcc –version   没看出来
         </a>
@@ -332,13 +632,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/09/26/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" target="_self">
+        <a href="/2023/09/26/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" target="_self">
           c语言入门
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2023/09/26/C%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" target="_self">
+        <a href="/2023/09/26/c%E8%AF%AD%E8%A8%80/C%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" target="_self">
           
           开发环境安装编译器linuxgcc 一个用于linux系统下的编程语言编译器。 windowsMInGW  是Minimalist GNU for Windows的缩写。MinGW就是windows下gcc的版本。 下载安装后，配置环境变量。 验证gcc -v 编辑器sublime Codeblocks   历史C语⾔言标准ANSI C 或者 C891989年C语言标准被批准，这个版本的C语言标准
         </a>
@@ -366,288 +666,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/c/">c</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/14/linux/linux%E5%91%BD%E4%BB%A4%E5%85%A5%E9%97%A8/" target="_self">
-          linux命令入门
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/09/14/linux/linux%E5%91%BD%E4%BB%A4%E5%85%A5%E9%97%A8/" target="_self">
-          
-          man命令man 是 manuals  说明书的缩写。所有命令都可以使用man 命令进行查看该命令的说明书。 所有命令一般都支持命令 -h 或者 -？ 或者 -help  –help之类的查看帮助。 用户管理添加用户命令： 1234# 添加用户并创建一个同名的组useradd 用户名# 添加指定组的用户useradd -g 用户组ID 用户名  设置密码命令： 1234# 设置指用户的密码pass
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-14 14:46" pubdate>
-              2023-09-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/06/%E7%9B%91%E6%8E%A7/prometheus+nightingale+categraf%E4%BD%BF%E7%94%A8/" target="_self">
-          prometheus+nightingale+categraf使用
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/09/06/%E7%9B%91%E6%8E%A7/prometheus+nightingale+categraf%E4%BD%BF%E7%94%A8/" target="_self">
-          
-          prometheus安装prometheus在此次的使用中，当做时序库。使用版本prometheus-2.45.0.linux-amd64.tar.gz。 下载及解压1234mkdir -p &#x2F;opt&#x2F;prometheus可以使用wget 下载 prometheus-2.45.0.linux-amd64.tar.gztar xf prometheus-2.45.0.linux-amd64.tar.
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-06 13:43" pubdate>
-              2023-09-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%9B%91%E6%8E%A7/">监控</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%9B%91%E6%8E%A7/">监控</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/08/23/java/java8%E7%9A%84Optional/" target="_self">
-          java8的Optional
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/08/23/java/java8%E7%9A%84Optional/" target="_self">
-          
-          看源码类注释一个容器对象，可以包含或不包含非空值。 如果存在一个值，{@code isPresent()}将返回{@code true}，{@code get()}将返回该值。 提供了依赖于包含值的存在与否的其他方法，例如{@link #orElse(java.lang.Object) orElse()}（如果值不存在，则返回默认值）和{@link #ifPresent(java.util.fun
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-23 11:22" pubdate>
-              2023-08-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/08/23/java/java8%E7%9A%84Stream/" target="_self">
-          java8的Stream
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/08/23/java/java8%E7%9A%84Stream/" target="_self">
-          
-          StreamJava 8 API添加了一个新的抽象称为流Stream，可以让你以一种声明的方式处理数据。 Stream 使用一种类似用 SQL 语句从数据库查询数据的直观方式来提供一种对 Java 集合运算和表达的高阶抽象。 Stream API可以极大提高Java程序员的生产力，让程序员写出高效率、干净、简洁的代码。 这种风格将要处理的元素集合看作一种流， 流在管道中传输， 并且可以在管道的节点
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-23 11:22" pubdate>
-              2023-08-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/08/23/java/java8%E7%9A%84lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3/" target="_self">
-          java8的lambda表达式与函数接口
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/08/23/java/java8%E7%9A%84lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3/" target="_self">
-          
-          lambda表达式Lambda 表达式，也可称为闭包。Lambda 允许把函数作为一个方法的参数（函数作为参数传递进方法中）。 使用 Lambda 表达式可以使代码变的更加简洁紧凑。 语法123(parameters) -&gt; expression或(parameters) -&gt;&amp;#123; statements; &amp;#125;  1234567891011121314&#x2F;&#x2F; 1. 不需要
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-23 11:22" pubdate>
-              2023-08-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/08/23/java/java8%E7%9A%84%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8/" target="_self">
-          java8的方法引用
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/08/23/java/java8%E7%9A%84%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8/" target="_self">
-          
-          方法引用方法引用通过方法的名字来指向一个方法。 方法引用可以使语言的构造更紧凑简洁，减少冗余代码。 方法引用使用一对冒号 :: 。 123456789101112131415161718class Car &amp;#123;        public static Car create(final Supplier&lt;Car&gt; supplier) &amp;#123;        return s
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-23 11:22" pubdate>
-              2023-08-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">java</a>
             
           </div>
         
