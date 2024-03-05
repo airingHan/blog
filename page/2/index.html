@@ -191,6 +191,104 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/" target="_self">
+          rocketmq的面试题及原理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/21/mq/rocketmq%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%8A%E5%8E%9F%E7%90%86/" target="_self">
+          
+          消息队列怎么避免重复消息消息队列一般都有重试机制，或者生产者多次发送。 所以需要保证消费者接口幂等性保障： 比如可以使用redis的setnx。 接口幂等性一锁、二判断、三更新 加分布式锁，判断状态机，更新至持久化的数据源中。 rocketmq如何保证消息的可靠性传输需要生产者、broker、消费者共同配置。 生产者使用同步或异步发送，重试。 broker使用多主多从架构，nameServer使用
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-21 16:59" pubdate>
+              2023-11-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rocketmq/">rocketmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/" target="_self">
+          rocketmq的cluster布署
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/11/18/mq/rocketmq%E7%9A%84cluster%E5%B8%83%E7%BD%B2/" target="_self">
+          
+          同步刷盘与异步刷盘跟mysql的同步刷盘和异步刷盘一样。 先放到内存中，是发送一条消息就刷到磁盘中，还是几条消息才刷到磁盘中。 同步复制与异步复制同mysql的同步复制与异步复制。 当出现主备主从架构后，主同步数据至备或者从。同步就是一条消息发送到主后，再同步到备或者从，都同步后才返回消息提交成功。 异步是只发送到主，就返回提交成功，异步传输到备或者从。 RAID10磁盘RAID 10（也称为RA
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-11-18 21:14" pubdate>
+              2023-11-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/mq/">mq</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mq/">mq</a>
+            
+              <a href="/tags/rocketmq/">rocketmq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/11/16/mq/rocketmq%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
           rocketmq的使用
         </a>
@@ -576,104 +674,6 @@
               <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
             
               <a href="/tags/%E6%89%A3%E5%87%8F%E5%BA%93%E5%AD%98/">扣减库存</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
-          越权攻击
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/17/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/" target="_self">
-          
-          什么是越权攻击越权攻击（Authorization Bypass）是一种安全漏洞，它允许攻击者在未经授权的情况下访问系统或资源，或执行不应该具有权限的操作。这种攻击通常发生在身份验证和授权机制的不当实施中。越权攻击可能导致敏感数据的泄露，功能滥用，或其他不安全行为。 常见的越权攻击水平越权攻击者尝试访问与他拥有相同权限的用户的资源。 比如 接口设计为   http:&#x2F;&#x2F;localhost&#x2F;user
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-17 17:20" pubdate>
-              2023-10-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">系统设计</a>
-            
-              <a href="/tags/%E8%B6%8A%E6%9D%83%E6%94%BB%E5%87%BB/">越权攻击</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
-          spring_boot发送邮件
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/10/17/spring/spring_boot%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/" target="_self">
-          
-          概述发送邮件，一个发送，一个接收，在软件中一般都是使用发送。 发送需要一个邮箱，这时候需要去那邮箱进行授权。    邮箱类型 SMTP服务器地址 端口号    QQ邮箱 smtp.qq.com 465或587   sina邮箱 smtp.sina.cn 465或587   126邮箱 smtp.126.com 465或994   aliyun邮箱 smtp.aliyun.com 465或994
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-17 15:27" pubdate>
-              2023-10-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/spring-boot/">spring boot</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring-boot/">spring boot</a>
-            
-              <a href="/tags/mail/">mail</a>
             
           </div>
         

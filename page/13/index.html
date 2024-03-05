@@ -191,6 +191,53 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
+          如何保证数据库与缓存的数据一致性
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/17/redis/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" target="_self">
+          
+          前置Mysql 做数据库   redis做缓存 如何保证数据库与缓存的数据一致性?cache aside pattern 1.命中：程序先从缓存中读取数据，如果命中，则直接返回 2.失效：程序先从缓存中读取数据，如果没有命中，则从数据库中读取，成功之后将数据放到缓存中 3.更新：程序先更新数据库，在删缓存。 先更新数据库，再删除缓存, 是不是就没有问题？假设这会有两个请求，一个请求A做查询操作，一
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-17 09:20" pubdate>
+              2022-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/redis/">redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/redis/">redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/05/17/redis/%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%E4%B8%8E%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E4%B8%8E%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F/" target="_self">
           缓存雪崩与缓存击穿与缓存穿透
         </a>
@@ -601,53 +648,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/maven/">maven</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/05/07/linux/centos7%E7%9A%84firewall%E9%98%B2%E7%81%AB%E5%A2%99/" target="_self">
-          centos7的firewall防火墙
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/05/07/linux/centos7%E7%9A%84firewall%E9%98%B2%E7%81%AB%E5%A2%99/" target="_self">
-          
-          一、firewalld(linux防火墙)的基本使用12345启动： systemctl start firewalld查看状态： systemctl status firewalld停止： systemctl disable firewalld禁用： systemctl stop firewalld查看防火墙允许端口：firewall-cmd --list-all (使用前置条件为：防火墙已开启
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-05-07 09:29" pubdate>
-              2022-05-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">linux</a>
             
           </div>
         
